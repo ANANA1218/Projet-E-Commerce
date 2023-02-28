@@ -1,19 +1,24 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/HomePage';
-import ProductList from './pages/ProductList';
-/*import Products from './components/Products';
-import Cart from './components/Cart';
-import Account from './components/Account';
-*/
+import Template from "./template/Template";
+import ProductDetail from "./products/detail/ProductDetail";
+import { Routes, Route } from "react-router-dom";
+import Landing from "./landing/Landing";
+import ProductList from "./products/ProductList";
+
 function App() {
   return (
-    <Router>
+    <Template>
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/products" element={<ProductList />} />
+        <Route path="/products" exact>
+          <ProductList />
+        </Route>
+        <Route path="/products/:slug">
+          <ProductDetail />
+        </Route>
+        <Route path="/" exact>
+          <Landing />
+        </Route>
       </Routes>
-    </Router>
+    </Template>
   );
 }
 
