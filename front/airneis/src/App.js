@@ -8,15 +8,9 @@ function App() {
   return (
     <Template>
       <Routes>
-        <Route path="/products" exact>
-          <ProductList />
-        </Route>
-        <Route path="/products/:slug">
-          <ProductDetail />
-        </Route>
-        <Route path="/" exact>
-          <Landing />
-        </Route>
+        <Route exact path="/" element={<Landing />} />
+        <Route exact path="/products" element={<ProductList />} />
+        <Route exact path="/products/:slug" element={<ProductDetail />} />       
       </Routes>
     </Template>
   );
