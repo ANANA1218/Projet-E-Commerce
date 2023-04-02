@@ -1,7 +1,8 @@
 import Image from "../../assets/img/products/nillkin-case-1.jpg";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function RelatedProduct(props) {
+function Product(props) {
     const price = 10000;
     let percentOff;
     let offPrice = `${price}Ks`;
@@ -24,29 +25,31 @@ function RelatedProduct(props) {
     }
 
     return (
-        <Link
-            to="/products/1"
-            className="col text-decoration-none"
-            href="!#"
-            replace
-        >
+        <div className="col">
             <div className="card shadow-sm">
-                {percentOff}
-                <img
-                    className="card-img-top bg-dark cover"
-                    height="200"
-                    alt=""
-                    src={Image}
-                />
+                <Link to="/products/1" href="!#" replace>
+                    {percentOff}
+                    <img
+                        className="card-img-top bg-dark cover"
+                        height="200"
+                        alt=""
+                        src={Image}
+                    />
+                </Link>
                 <div className="card-body">
                     <h5 className="card-title text-center text-dark text-truncate">
                         Nillkin iPhone X cover
                     </h5>
-                    <p className="card-text text-center text-muted">{offPrice}</p>
+                    <p className="card-text text-center text-muted mb-0">{offPrice}</p>
+                    <div className="d-grid d-block">
+                        <button className="btn btn-outline-dark mt-3">
+                            <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
+                        </button>
+                    </div>
                 </div>
             </div>
-        </Link>
+        </div>
     );
 }
 
-export default RelatedProduct;
+export default Product;

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 
 function ScrollToTopOnMount() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-  return null;
+    return null;
 }
 
 export default ScrollToTopOnMount;
