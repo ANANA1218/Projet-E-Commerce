@@ -38,7 +38,7 @@ function Header() {
               </li>
             </ul>
             <button type="button" className="btn btn-outline-dark me-3 d-none d-lg-inline">
-            <a href="!#/commandes">
+            <a href="/#/commandes">
             <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
             </a>
               <span className="ms-3 badge rounded-pill bg-dark">0</span>
@@ -46,7 +46,7 @@ function Header() {
             <ul className="navbar-nav mb-2 mb-lg-0">
               <li className="nav-item dropdown">
                 <a
-                  href="!#"// chaner pour envoyer à la page commande
+                  href="/"// chaner pour envoyer à la page commande
                   className="nav-link dropdown-toggle"
                   data-toggle="dropdown"
                   id="userDropdown"
