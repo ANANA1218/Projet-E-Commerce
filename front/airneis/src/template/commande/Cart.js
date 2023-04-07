@@ -1,103 +1,80 @@
-import React, { useState } from 'react';
-import { Box, Typography, Grid, Button, TextField } from '@mui/material';
+import React from "react";
+import { makeStyles } from "@mui/styles";
+import {
+  Grid,
+  Typography,
+  Paper,
+  Button,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+  },
+  item: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    padding: theme.spacing(2),
+    margin: theme.spacing(2),
+    maxWidth: "500px",
+  },
+  image: {
+    width: "100%",
+    height: "auto",
+    objectFit: "cover",
+  },
+  button: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Product 1',
-      price: 10.99,
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: 'Product 2',
-      price: 19.99,
-      quantity: 1,
-    },
-  ]);
-
-  const handleQuantityChange = (id, quantity) => {
-    setCartItems(prevItems =>
-      prevItems.map(item => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
-
-  const handleRemoveItem = id => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
-  };
-
-  const handleCheckout = () => {
-    // Handle checkout logic
-  };
-
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-  };
+  const classes = useStyles();
 
   return (
-    <Box sx={{ width: '100%', marginTop: '60px' }}>
-  <Typography variant="h4" sx={{ mb: 2 }}>
-    Your Cart
-  </Typography>
-  {cartItems.length > 0 ? (
-    <React.Fragment>
+    <div className={classes.root}>
+      <Typography variant="h4" gutterBottom>
+        Panier
+      </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
-          {cartItems.map(item => (
-            <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Box sx={{ width: '30%' }}>
-                <img src={`https://picsum.photos/id/${item.id}/200/200`} alt={item.name} />
-              </Box>
-              <Box sx={{ flex: '1' }}>
-                <Typography variant="h5">{item.name}</Typography>
-                <Typography variant="subtitle1" sx={{ mt: 1, mb: 2 }}>
-                  ${item.price.toFixed(2)}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <TextField
-                    label="Quantity"
-                    type="number"
-                    variant="outlined"
-                    size="small"
-                    value={item.quantity}
-                    onChange={e => handleQuantityChange(item.id, e.target.value)}
-                    sx={{ mr: 2 }}
-                  />
-                  <Button onClick={() => handleRemoveItem(item.id)} variant="outlined">
-                    Remove
-                  </Button>
-                </Box>
-              </Box>
-            </Box>
-          ))}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Box sx={{ p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Summary
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="subtitle1">Subtotal</Typography>
-              <Typography variant="subtitle1">${getTotalPrice()}</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="subtitle1">Shipping</Typography>
-              <Typography variant="subtitle1">$0.00</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography variant="subtitle1">Total</Typography>
-              <Typography variant="subtitle1">$100.00</Typography>
-            </Box>
-          </Box>
-        </Grid>
+        {[...Array(3)].map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Paper className={classes.item}>
+              <img
+                className={classes.image}
+                src="https://picsum.photos/500/300?random=1"
+                alt="Product"
+              />
+              <Typography variant="h6" gutterBottom>
+                Titre du produit
+              </Typography>
+              <Typography variant="body1">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Prix: 99.99€
+              </Typography>
+              <IconButton>
+                <DeleteIcon />
+              </IconButton>
+            </Paper>
+          </Grid>
+        ))}
       </Grid>
-    </React.Fragment>
-  ) : (
-    <Typography variant="subtitle1">Your cart is empty.</Typography>
-  )}
-</Box>
+      <Button
+        variant="contained"
+        color="primary"
+        className={classes.button}
+      >
+        Commander
+      </Button>
+    </div>
+  );
+};
 
-      )
-}
 export default Cart;
