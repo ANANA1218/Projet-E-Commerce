@@ -16,7 +16,7 @@ function FeatureProduct() {
           <p className="card-text text-center text-muted">10000 Ks</p>
           <div className="d-grid gap-2">
             <Link to="/products/1" className="btn btn-outline-dark" replace>
-              Detail
+              Details
             </Link>
           </div>
         </div>
