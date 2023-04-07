@@ -20,6 +20,7 @@ export default function  RegisterForm() {
           onChange={(event) => setUsername(event.target.value)}
           margin="normal"
           fullWidth
+          sx={{marginTop: '80px' }}
         />
         <TextField
           label="Mot de passe"
@@ -39,7 +40,7 @@ export default function  RegisterForm() {
           type="password"
           fullWidth
         />
-        <Button variant="contained" type="submit" color="primary">
+        <Button variant="contained" type="submit" color="primary" sx={{marginBottom: '60px' }}>
           S'inscrire
         </Button>
       </form>

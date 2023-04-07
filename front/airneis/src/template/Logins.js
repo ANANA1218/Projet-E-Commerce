@@ -19,7 +19,7 @@ export default function  LoginForm() {
         onChange={(event) => setUsername(event.target.value)}
         margin="normal"
         fullWidth
-        sx={{ width: '100%', marginTop: '100px' }}
+        sx={{ marginTop: '100px' }}
       />
       <TextField
         label="Mot de passe"
