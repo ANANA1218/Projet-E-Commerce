@@ -58,10 +58,10 @@ const Cart = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Produit</TableCell>
-                <TableCell align="right">Prix</TableCell>
-                <TableCell align="right">Quantité</TableCell>
-                <TableCell align="right">Total</TableCell>
-                <TableCell align="right"></TableCell>
+                <TableCell align="center">Prix</TableCell>
+                <TableCell align="center">Quantité</TableCell>
+                <TableCell align="center">Total</TableCell>
+                <TableCell align="center"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -75,8 +75,8 @@ const Cart = () => {
                       <Typography variant="body1">{item.name}</Typography>
                     </Box>
                   </TableCell>
-                  <TableCell align="right">${item.price.toFixed(2)}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">${item.price.toFixed(2)}</TableCell>
+                  <TableCell align="center">
                     <TextField
                       label="Quantity"
                       type="number"
@@ -86,8 +86,8 @@ const Cart = () => {
                       onChange={(e) => handleQuantityChange(item.id, e.target.value)}
                     />
                   </TableCell>
-                  <TableCell align="right">${(item.price * item.quantity).toFixed(2)}</TableCell>
-                  <TableCell align="right">
+                  <TableCell align="center">${(item.price * item.quantity).toFixed(2)}</TableCell>
+                  <TableCell align="center">
                     <IconButton aria-label="remove item" onClick={() => handleRemoveItem(item.id)}>
                       <RemoveCircleOutlineIcon />
                     </IconButton>

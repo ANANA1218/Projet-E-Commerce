@@ -3,6 +3,7 @@ import { Stepper, Step, StepLabel, Button } from '@mui/material';
 import Cart from './Cart';
 import DeliveryAddress from './DeliveryAddress';
 import Payment from './Payment';
+import ProductList from "../../products/ProductList";
 
 const steps = ['Panier', 'Adresse de livraison', 'Paiement'];
 
@@ -15,7 +16,7 @@ function getStepContent(step, setCompletedSteps) {
     case 2:
       return <Payment />;
     default:
-      return 'Unknown step';
+      return <ProductList />;
   }
 }
 
@@ -51,7 +52,7 @@ function StepperExample() {
           const stepProps = {};
           const labelProps = {};
           if (isStepCompleted(index)) {
-            labelProps.optional = <Button onClick={handleReset}>Reset</Button>;
+            labelProps.optional = <Button onClick={handleReset}> ..</Button>;
           }
           return (
             <Step key={label} {...stepProps}>
