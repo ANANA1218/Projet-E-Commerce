@@ -1,15 +1,15 @@
-import Header from "./Header";
-import Content from "./Content";
-import Footer from "./Footer";
+import Header from "../components/layouts/Header";
+import Content from "../components/layouts/Content";
+import Footer from "../components/layouts/Footer";
 
 function Template(props) {
-  return (
-    <>
-      <Header />
-      <Content>{props.children}</Content>
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <Header />
+            <Content>{props.children}</Content>
+            <Footer />
+        </>
+    );
 }
 
 export default Template;
