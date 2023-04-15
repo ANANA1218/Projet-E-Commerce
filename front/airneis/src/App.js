@@ -1,6 +1,6 @@
-import Template from "./template/Template";
-import LoginForm from "./template/Logins";
-import RegisterForm from "./template/Register";
+import Template from "./components/layouts/Template";
+import LoginForm from "./pages/Logins";
+import RegisterForm from "./pages/Register";
 import Commande from "./pages/commande/Commande";
 import ProductDetail from "./pages/ProductDetail";
 import { Routes, Route } from "react-router-dom";
