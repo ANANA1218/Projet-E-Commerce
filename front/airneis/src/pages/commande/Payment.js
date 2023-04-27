@@ -11,6 +11,7 @@ import {
   Typography,
   Modal
 } from "@mui/material";
+import { Link } from 'react-router-dom';
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -35,6 +36,43 @@ setIsModalOpen(false);
 <Typography variant="h6" sx={{ mb: 2, justifyContent: 'center', display: 'flex',  alignItems: 'center' }}>
 Payment Details
 </Typography>
+<Modal
+  open={isModalOpen}
+  onClose={handleModalClose}
+  aria-labelledby="confirmation-modal-title"
+  aria-describedby="confirmation-modal-description"
+>
+  <Box
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+    }}
+  >
+    <Typography id="confirmation-modal-title" variant="h6" component="h2" gutterBottom>
+    Votre paiement a été effectué avec succès.
+    </Typography>
+    <Typography id="confirmation-modal-description" variant="body1" component="p" gutterBottom>
+      Merci de votre achat !
+
+      Votre commande a bien été enregistrée sous le numéro XXXXXXX. Vous pouvez suivre son état depuis votre espace client.
+    </Typography>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+      <Button onClick={handleModalClose} color="secondary" variant="contained" sx={{ mr: 2 }} component={Link} to="/products">
+        Continuer les achats
+      </Button>
+      <Button onClick={handleModalClose} color="secondary" variant="contained" sx={{ mr: 2 }} component={Link} to="/commandes">
+        Voir mes commandes
+      </Button>
+    </Box>
+  </Box>
+</Modal>
 
 <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Grid item xs={12} md={6}>
@@ -55,29 +93,7 @@ Payment Details
 
         {paymentMethod === "card" && (
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              Accepted Cards
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src="https://i.imgur.com/A10tVev.png"
-                alt="Visa"
-                height="25px"
-                sx={{ mr: 1 }}
-              />
-              <img
-                src="https://i.imgur.com/g5JHv5B.png"
-                alt="Mastercard"
-                height="25px"
-                sx={{ mr: 1 }}
-              />
-              <img
-                src="https://i.imgur.com/kY1NHVW.png"
-                alt="American Express"
-                height="25px"
-              />
-            </Box>
-
+            
             <Box sx={{ mt: 2 }}>
               <Typography variant="body1" sx={{ mb: 1 }}>
                 Card Details
@@ -105,29 +121,27 @@ Payment Details
                 fullWidth
                 sx={{ mt: 2 }}
               />
+                 <Box sx={{ mt: 2 }}>
+          <Button variant="contained" color="secondary" onClick={handlePaymentSubmit} >
+            Payer
+          </Button>
+        </Box>
             </Box>
           </Box>
+          
         )}
 
         {paymentMethod === "paypal" && (
           <Box sx={{ mt: 2 }}>
-            <Typography variant="body1">
-              You will be redirected to PayPal to complete your payment.
-            </Typography>
-            <img
-              src="https://i.imgur.com/jN9T30T.png"
-              alt="PayPal"
-              height="50px"
-              sx={{ mt: 2 }}
-            />
-          </Box>
-        )}
-
-        <Box sx={{ mt: 2 }}>
-          <Button variant="contained" color="secondary">
+              <Box sx={{ mt: 2 }}>
+          <Button variant="contained" color="secondary" component={Link} to="https://www.paypal.com/fr/signin">
             Payer
           </Button>
         </Box>
+          </Box>
+        )}
+
+     
       </Grid>
     </Grid>
   </Box>
