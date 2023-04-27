@@ -3,7 +3,7 @@ import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField
 import * as React from 'react';
 import Cart from './Cart';
 
-
+import { Link } from 'react-router-dom';
 
 const DeliveryAddress = ({ onNext }) => {
   const [firstName, setFirstName] = useState('');
@@ -14,6 +14,7 @@ const DeliveryAddress = ({ onNext }) => {
   const [postalCode, setPostalCode] = useState('');
   const [region, setRegion] = useState('');
   const [country, setCountry] = useState('');
+
 
   const handleNext = () => {
     onNext({
@@ -29,12 +30,13 @@ const DeliveryAddress = ({ onNext }) => {
   };
 
   return (
-    <Box sx={{ width: '100%', marginTop: '60px' }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Delivery Address
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <Box sx={{ width: '50%', p: 4, border: '1px solid #ccc', borderRadius: '4px' }}>
+      <Typography variant="h6" sx={{ mb: 2, justifyContent: 'center', display: 'flex',  alignItems: 'center' }}>
+      Adresse de livraison
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Grid item xs={12} md={6}>
         {/* Ajouter l'adresse de livraison ici */}
         <Grid container spacing={2}>
@@ -117,14 +119,15 @@ const DeliveryAddress = ({ onNext }) => {
         </Grid>
         
       </Grid>
-      <Grid item xs={12} md={6}>
-        {/* Afficher les produits du panier ici */}
-
-        test 1
-
-      </Grid>
+    
     </Grid>
     </Grid>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Button component={Link} to="/paiements" variant="contained" color="secondary">
+           Passer au Paiement
+          </Button>
+        </Box>
+    </Box>
         </Box>
   )
 }

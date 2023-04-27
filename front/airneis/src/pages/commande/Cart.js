@@ -70,10 +70,10 @@ const Cart = () => {
                       <Box sx={{ width: '30%', mr: 2 }}>
                         <img src={`https://picsum.photos/id/${item.id}/200/200`} alt={item.name} />
                       </Box>
-                      <Typography variant="body1">{item.name}</Typography>
+                     
                     </Box>
                   </TableCell>
-                  <TableCell align="center">${item.price.toFixed(2)}</TableCell>
+                  <TableCell align="center">{item.price.toFixed(2)} €</TableCell>
                   <TableCell align="center">
                     <TextField
                       label="Quantity"
@@ -84,7 +84,7 @@ const Cart = () => {
                       onChange={(e) => handleQuantityChange(item.id, e.target.value)}
                     />
                   </TableCell>
-                  <TableCell align="center">${(item.price * item.quantity).toFixed(2)}</TableCell>
+                  <TableCell align="center">{(item.price * item.quantity).toFixed(2)} €</TableCell>
                   <TableCell align="center">
                     <IconButton aria-label="remove item" onClick={() => handleRemoveItem(item.id)}>
                       <RemoveCircleOutlineIcon />
@@ -103,22 +103,24 @@ const Cart = () => {
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="subtitle1">Subtotal</Typography>
-            <Typography variant="subtitle1">${getTotalPrice()}</Typography>
+            <Typography variant="subtitle1">{getTotalPrice()} €</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
             <Typography variant="subtitle1">Shipping</Typography>
-            <Typography variant="subtitle1">$0.00</Typography>
+            <Typography variant="subtitle1">0.00 €</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="subtitle1">Total</Typography>
-            <Typography variant="subtitle1">${getTotalPrice()}</Typography>
+            <Typography variant="subtitle1">{getTotalPrice()}€</Typography>
           </Box>
         </Box>
       </Grid>
     </Grid>
+   
   ) : (
     <Typography variant="subtitle1">Your cart is empty.</Typography>
   )}
+   <br/>
 </Box>
 
       )
