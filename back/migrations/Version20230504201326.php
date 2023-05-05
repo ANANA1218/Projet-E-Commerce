@@ -20,11 +20,9 @@ final class Version20230504201326 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE adresse DROP FOREIGN KEY adresse_ibfk_1');
         $this->addSql('ALTER TABLE image DROP FOREIGN KEY image_ibfk_1');
         $this->addSql('ALTER TABLE image DROP FOREIGN KEY image_ibfk_2');
         $this->addSql('ALTER TABLE utilisateur DROP FOREIGN KEY utilisateur_ibfk_1');
-        $this->addSql('ALTER TABLE statut DROP FOREIGN KEY statut_ibfk_1');
         $this->addSql('ALTER TABLE commande DROP FOREIGN KEY commande_ibfk_1');
         $this->addSql('ALTER TABLE commande DROP FOREIGN KEY commande_ibfk_2');
         $this->addSql('ALTER TABLE commande DROP FOREIGN KEY commande_ibfk_3');
@@ -34,14 +32,9 @@ final class Version20230504201326 extends AbstractMigration
         $this->addSql('ALTER TABLE contact DROP FOREIGN KEY contact_ibfk_1');
         $this->addSql('ALTER TABLE mode_paiement DROP FOREIGN KEY mode_paiement_ibfk_1');
         $this->addSql('DROP TABLE adresse');
-        $this->addSql('DROP TABLE image');
-        $this->addSql('DROP TABLE utilisateur');
-        $this->addSql('DROP TABLE statut');
+       $this->addSql('DROP TABLE statut');
         $this->addSql('DROP TABLE commande');
-        $this->addSql('DROP TABLE role');
         $this->addSql('DROP TABLE asso_produit_materiel');
-        $this->addSql('DROP TABLE categorie');
-        $this->addSql('DROP TABLE reduction');
         $this->addSql('DROP TABLE produit');
         $this->addSql('DROP TABLE contact');
         $this->addSql('DROP TABLE mode_paiement');
@@ -67,7 +60,7 @@ final class Version20230504201326 extends AbstractMigration
         $this->addSql('ALTER TABLE image ADD CONSTRAINT image_ibfk_1 FOREIGN KEY (id_categorie) REFERENCES categorie (id_categorie) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE image ADD CONSTRAINT image_ibfk_2 FOREIGN KEY (id_produit) REFERENCES produit (id_produit) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE utilisateur ADD CONSTRAINT utilisateur_ibfk_1 FOREIGN KEY (id_role) REFERENCES role (id_role) ON UPDATE NO ACTION ON DELETE NO ACTION');
-        $this->addSql('ALTER TABLE statut ADD CONSTRAINT statut_ibfk_1 FOREIGN KEY (id_commande) REFERENCES commande (id_commande) ON UPDATE NO ACTION ON DELETE NO ACTION');
+       $this->addSql('ALTER TABLE statut ADD CONSTRAINT statut_ibfk_1 FOREIGN KEY (id_commande) REFERENCES commande (id_commande) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE commande ADD CONSTRAINT commande_ibfk_1 FOREIGN KEY (id) REFERENCES reduction (id) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE commande ADD CONSTRAINT commande_ibfk_2 FOREIGN KEY (id_adresse) REFERENCES adresse (id_adresse) ON UPDATE NO ACTION ON DELETE NO ACTION');
         $this->addSql('ALTER TABLE commande ADD CONSTRAINT commande_ibfk_3 FOREIGN KEY (id_client) REFERENCES utilisateur (id_client) ON UPDATE NO ACTION ON DELETE NO ACTION');
