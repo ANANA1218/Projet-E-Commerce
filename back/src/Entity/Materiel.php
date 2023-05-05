@@ -11,39 +11,24 @@ class Materiel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
     private ?int $id_materiel = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nom = null;
+    #[ORM\Column(length: 255)]
+    private ?string $nom_materiel = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getIdMateriel(): ?int
+    public function getId_materiel(): ?int
     {
         return $this->id_materiel;
     }
 
-    public function setIdMateriel(int $id_materiel): self
+    public function getNomMateriel(): ?string
     {
-        $this->id_materiel = $id_materiel;
-
-        return $this;
+        return $this->nom_materiel;
     }
 
-    public function getNom(): ?string
+    public function setNomMateriel(string $nom_materiel): self
     {
-        return $this->nom;
-    }
-
-    public function setNom(?string $nom): self
-    {
-        $this->nom = $nom;
+        $this->nom_materiel = $nom_materiel;
 
         return $this;
     }
