@@ -11,9 +11,6 @@ class Materiel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column]
     private ?int $id_materiel = null;
 
     #[ORM\Column(length: 255, nullable: true)]
