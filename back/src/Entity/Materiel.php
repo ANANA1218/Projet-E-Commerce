@@ -14,21 +14,21 @@ class Materiel
     private ?int $id_materiel = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom_materiel = null;
+    private ?string $nom = null;
 
-    public function getId_materiel(): ?int
+    public function getIdMateriel(): ?int
     {
         return $this->id_materiel;
     }
 
-    public function getNomMateriel(): ?string
+    public function getNom(): ?string
     {
-        return $this->nom_materiel;
+        return $this->nom;
     }
 
-    public function setNomMateriel(string $nom_materiel): self
+    public function setNom(string $nom): self
     {
-        $this->nom_materiel = $nom_materiel;
+        $this->nom = $nom;
 
         return $this;
     }
