@@ -37,9 +37,13 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'id_client', targetEntity: Contact::class)]
     private Collection $contacts;
 
+    #[ORM\OneToMany(mappedBy: 'id_client', targetEntity: Adresse::class)]
+    private Collection $adresses;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
+        $this->adresses = new ArrayCollection();
     }
 
     public function getIdUtilisateur(): ?int
@@ -143,6 +147,36 @@ class Utilisateur
             // set the owning side to null (unless already changed)
             if ($contact->getIdClient() === $this) {
                 $contact->setIdClient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Adresse>
+     */
+    public function getAdresses(): Collection
+    {
+        return $this->adresses;
+    }
+
+    public function addAdress(Adresse $adress): self
+    {
+        if (!$this->adresses->contains($adress)) {
+            $this->adresses->add($adress);
+            $adress->setIdClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdress(Adresse $adress): self
+    {
+        if ($this->adresses->removeElement($adress)) {
+            // set the owning side to null (unless already changed)
+            if ($adress->getIdClient() === $this) {
+                $adress->setIdClient(null);
             }
         }
 
