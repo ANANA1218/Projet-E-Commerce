@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdresseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
@@ -37,6 +39,17 @@ class Adresse
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'adresses')]
     #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id_utilisateur', nullable: false)]
     private ?Utilisateur $id_client = null;
+
+    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'id_adresse')]
+    #[ORM\JoinTable(name: 'commande_adresse')]
+    #[ORM\JoinColumn(name: 'id_adresse', referencedColumnName: 'id_adresse')]
+    #[ORM\InverseJoinColumn(name: 'id_commande', referencedColumnName: 'id_commande')]
+    private Collection $commandes;
+
+    public function __construct()
+    {
+        $this->commandes = new ArrayCollection();
+    }
 
     public function getIdAdresse(): ?int
     {
@@ -135,6 +148,33 @@ class Adresse
     public function setIdClient(?Utilisateur $id_client): self
     {
         $this->id_client = $id_client;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->addIdAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            $commande->removeIdAdresse($this);
+        }
 
         return $this;
     }

@@ -43,11 +43,15 @@ class Utilisateur
     #[ORM\ManyToMany(mappedBy: 'id_utilisateur', targetEntity: ModePaiement::class)]
     private Collection $ModePaiements;
 
+    #[ORM\OneToMany(mappedBy: 'id_utilisateur', targetEntity: Commande::class)]
+    private Collection $commandes;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->adresses = new ArrayCollection();
         $this->ModePaiements = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getIdUtilisateur(): ?int
@@ -209,6 +213,36 @@ class Utilisateur
     {
         if ($this->ModePaiements->removeElement($ModePaiement)) {
             $ModePaiement->removeIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getIdUtilisateur() === $this) {
+                $commande->setIdUtilisateur(null);
+            }
         }
 
         return $this;

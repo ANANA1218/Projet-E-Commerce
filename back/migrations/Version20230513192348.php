@@ -25,7 +25,11 @@ final class Version20230513192348 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        $tableExists = $this->connection->fetchOne("SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'materiel'");
+
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE materiel');
+        if ($tableExists) {
+            $this->addSql('DROP TABLE materiel');
+        }
     }
 }
