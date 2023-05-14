@@ -40,10 +40,14 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'id_client', targetEntity: Adresse::class)]
     private Collection $adresses;
 
+    #[ORM\ManyToMany(mappedBy: 'id_utilisateur', targetEntity: ModePaiement::class)]
+    private Collection $ModePaiements;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->adresses = new ArrayCollection();
+        $this->ModePaiements = new ArrayCollection();
     }
 
     public function getIdUtilisateur(): ?int
@@ -178,6 +182,33 @@ class Utilisateur
             if ($adress->getIdClient() === $this) {
                 $adress->setIdClient(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModePaiement>
+     */
+    public function getModePaiements(): Collection
+    {
+        return $this->ModePaiements;
+    }
+
+    public function addModePaiement(ModePaiement $ModePaiement): self
+    {
+        if (!$this->ModePaiements->contains($ModePaiement)) {
+            $this->ModePaiements->add($ModePaiement);
+            $ModePaiement->addIdUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModePaiement(ModePaiement $ModePaiement): self
+    {
+        if ($this->ModePaiements->removeElement($ModePaiement)) {
+            $ModePaiement->removeIdUtilisateur($this);
         }
 
         return $this;
