@@ -38,9 +38,16 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'id_produit', targetEntity: Image::class)]
     private Collection $images;
 
+    #[ORM\ManyToMany(targetEntity: Materiel::class, inversedBy: 'produits')]
+    #[ORM\JoinTable(name: 'asso_materiel_produit')]
+    #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
+    #[ORM\InverseJoinColumn(name: 'id_materiel', referencedColumnName: 'id_materiel')]
+    private Collection $id_materiel;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->id_materiel = new ArrayCollection();
     }
 
     public function getIdProduit(): ?int
@@ -146,6 +153,30 @@ class Produit
                 $image->setIdProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Materiel>
+     */
+    public function getIdMateriel(): Collection
+    {
+        return $this->id_materiel;
+    }
+
+    public function addIdMateriel(Materiel $idMateriel): self
+    {
+        if (!$this->id_materiel->contains($idMateriel)) {
+            $this->id_materiel->add($idMateriel);
+        }
+
+        return $this;
+    }
+
+    public function removeIdMateriel(Materiel $idMateriel): self
+    {
+        $this->id_materiel->removeElement($idMateriel);
 
         return $this;
     }
