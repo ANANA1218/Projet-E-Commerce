@@ -18,7 +18,10 @@ class ModePaiement
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'ModePaiements')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'modePaiements')]
+    #[ORM\JoinTable(name: 'asso_utilisateur_paiement')]
+    #[ORM\JoinColumn(name: 'id_mode_paiement', referencedColumnName: 'id_mode_paiement')]
+    #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
     private Collection $id_utilisateur;
 
     public function __construct()

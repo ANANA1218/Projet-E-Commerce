@@ -41,7 +41,10 @@ class Utilisateur
     private Collection $adresses;
 
     #[ORM\ManyToMany(mappedBy: 'id_utilisateur', targetEntity: ModePaiement::class)]
-    private Collection $ModePaiements;
+    #[ORM\JoinTable(name: 'asso_utilisateur_paiement')]
+    #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    #[ORM\InverseJoinColumn(name: 'id_mode_paiement', referencedColumnName: 'id_mode_paiement')]
+    private Collection $modePaiements;
 
     #[ORM\OneToMany(mappedBy: 'id_utilisateur', targetEntity: Commande::class)]
     private Collection $commandes;
@@ -50,7 +53,7 @@ class Utilisateur
     {
         $this->contacts = new ArrayCollection();
         $this->adresses = new ArrayCollection();
-        $this->ModePaiements = new ArrayCollection();
+        $this->modePaiements = new ArrayCollection();
         $this->commandes = new ArrayCollection();
     }
 
@@ -194,15 +197,15 @@ class Utilisateur
     /**
      * @return Collection<int, ModePaiement>
      */
-    public function getModePaiements(): Collection
+    public function getmodePaiements(): Collection
     {
-        return $this->ModePaiements;
+        return $this->modePaiements;
     }
 
     public function addModePaiement(ModePaiement $ModePaiement): self
     {
-        if (!$this->ModePaiements->contains($ModePaiement)) {
-            $this->ModePaiements->add($ModePaiement);
+        if (!$this->modePaiements->contains($ModePaiement)) {
+            $this->modePaiements->add($ModePaiement);
             $ModePaiement->addIdUtilisateur($this);
         }
 
@@ -211,7 +214,7 @@ class Utilisateur
 
     public function removeModePaiement(ModePaiement $ModePaiement): self
     {
-        if ($this->ModePaiements->removeElement($ModePaiement)) {
+        if ($this->modePaiements->removeElement($ModePaiement)) {
             $ModePaiement->removeIdUtilisateur($this);
         }
 
