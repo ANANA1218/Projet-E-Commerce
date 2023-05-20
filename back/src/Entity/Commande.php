@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -19,14 +20,15 @@ class Commande
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_commande = null;
 
-    #[ORM\Column(type: 'statut_enum')]
+    #[ORM\Column(type: 'string')]
+    #[Assert\Choice(choices: ['en attente de confirmation', 'en cours', 'expedie', 'livre', 'annule', 'retour'])]
     private $statut = null;
 
     #[ORM\Column]
     private ?float $prix_total = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
-    #[ORM\JoinColumn(name: 'id_reduction', referencedColumnName: 'id_reduction', nullable: false)]
+    #[ORM\JoinColumn(name: 'id_reduction', referencedColumnName: 'id_reduction', nullable: true)]
     private ?Reduction $id_reduction = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
