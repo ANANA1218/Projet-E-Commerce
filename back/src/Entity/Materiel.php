@@ -6,6 +6,7 @@ use App\Repository\MaterielRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MaterielRepository::class)]
 class Materiel
@@ -13,15 +14,18 @@ class Materiel
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["materiel"])]
     private ?int $id_materiel = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["materiel"])]
     private ?string $nom = null;
 
     #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'id_materiel')]
     #[ORM\JoinTable(name: 'asso_materiel_produit')]
     #[ORM\JoinColumn(name: 'id_materiel', referencedColumnName: 'id_materiel')]
     #[ORM\InverseJoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
+    #[Groups(["materiel"])]
     private Collection $produits;
 
     public function __construct()
