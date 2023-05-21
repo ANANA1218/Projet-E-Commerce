@@ -6,6 +6,7 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur
@@ -13,6 +14,8 @@ class Utilisateur
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["default"])]
+
     private ?int $id_utilisateur = null;
 
     #[ORM\Column(length: 255)]
