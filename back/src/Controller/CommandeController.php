@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
+use App\Entity\Utilisateur;
+use App\Entity\Reduction;
 use App\Repository\CommandeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CommandeController extends AbstractController
 {
@@ -38,6 +42,34 @@ class CommandeController extends AbstractController
         ]);
 
         return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
+
+    #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
+    public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+     
+        $idReduction = $data['id_reduction'];
+        $idUtilisateur = $data['id_utilisateur'];
+        $dateCommande = $data['date_commande'];
+        $statut = $data['status'];
+        $prixTotal = $data['prix_total'];
+
+        // Créer une instance de Commande
+        $commande = new Commande();
+        $commande->setIdReduction($idReduction);
+        $commande->setIdUtilisateur($idUtilisateur);
+        $commande->setDateCommande($dateCommande);
+        $commande->setStatut($statut);
+        $commande->setPrixTotal($prixTotal);
+
+        // Enregistrer la commande dans la base de données
+        
+        $entityManager->persist($commande);
+        $entityManager->flush();
+
+        return new Response('Commande créée avec succès.', Response::HTTP_CREATED);
     }
 
     
