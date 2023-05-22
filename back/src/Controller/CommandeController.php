@@ -40,11 +40,5 @@ class CommandeController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
-    #[Route('/api/commande/{id}', name: 'getOneCommande', methods: ['GET'])]
-
-    public function getOneCommande(Commande $commande, SerializerInterface $serializer): JsonResponse
-    {
-        $jsonCommande = $serializer->serialize($commande, 'json');
-        return new JsonResponse($jsonCommande, Response::HTTP_OK, ['accept' => 'json'], true);
-    }
+    
 }
