@@ -20,4 +20,12 @@ class CategorieController extends AbstractController
         $jsonCategories = $serializer->serialize($categories, 'json');
         return new JsonResponse($jsonCategories, Response::HTTP_OK, [], true);
     }
+
+    #[Route('/api/categorie/{id}', name: 'getOneCategorie', methods: ['GET'])]
+
+    public function getOneCategorie(Categorie $categorie, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonCategorie = $serializer->serialize($categorie, 'json');
+        return new JsonResponse($jsonCategorie, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
 }
