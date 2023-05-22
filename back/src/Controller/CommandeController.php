@@ -16,16 +16,29 @@ class CommandeController extends AbstractController
 
     public function index(CommandeRepository $commandeRepository, SerializerInterface $serializer): JsonResponse
     {
-        $commandeList = $commandeRepository->findAll();
-        $jsonMaterialList = $serializer->serialize($commandeList, 'json');
-        return new JsonResponse($jsonMaterialList, Response::HTTP_OK, [], true);
+        $query = $commandeRepository->createQueryBuilder('c')
+            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.statut', 'c.prix_total', 'reduc.id_reduction')
+            ->leftJoin('c.id_reduction', 'reduc')
+            ->join('c.id_utilisateur', 'u');
+
+        $commandes = $query->getQuery()->getResult();
+
+        $jsonCommande = $serializer->serialize($commandes, 'json');
+
+        return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
     }
+
 
     #[Route('/api/commande/{id}', name: 'getOneCommande', methods: ['GET'])]
 
     public function getOneCommande(Commande $commande, SerializerInterface $serializer): JsonResponse
     {
-        $jsonCommande = $serializer->serialize($commande, 'json');
-        return new JsonResponse($jsonCommande, Response::HTTP_OK, ['accept' => 'json'], true);
+        $json = $serializer->serialize($commande, 'json', [
+            'groups' => ['commande'],
+        ]);
+
+        return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
+
+    
 }

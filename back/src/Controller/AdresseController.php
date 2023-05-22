@@ -16,17 +16,26 @@ class AdresseController extends AbstractController
 
     public function index(AdresseRepository $adresseRepository, SerializerInterface $serializer): JsonResponse
     {
-        $adresses = $adresseRepository->findAll();
-        $jsonAdresses = $serializer->serialize($adresses, 'json');
-        return new JsonResponse($jsonAdresses, Response::HTTP_OK, [], true);
+        $query = $adresseRepository->createQueryBuilder('a')
+            ->select('a.id_adresse', 'u.id_utilisateur', 'a.type_adresse', 'a.rue', 'a.complement_adresse', 'a.region', 'a.ville', 'a.code_postal', 'a.pays')
+            ->join('a.id_client', 'u');
+
+        $produits = $query->getQuery()->getResult();
+
+        $jsonProduits = $serializer->serialize($produits, 'json');
+
+        return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
 
     #[Route('/api/adresse/{id}', name: 'getOneAdresse', methods: ['GET'])]
 
     public function getOneAdresse(Adresse $adresse, SerializerInterface $serializer): JsonResponse
     {
-        $jsonAdresse = $serializer->serialize($adresse, 'json');
-        return new JsonResponse($jsonAdresse, Response::HTTP_OK, ['accept' => 'json'], true);
+        $json = $serializer->serialize($adresse, 'json', [
+            'groups' => ['default'],
+        ]);
+        return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
+ 
 }

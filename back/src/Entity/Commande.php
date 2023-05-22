@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -15,30 +16,37 @@ class Commande
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["commande"])]
     private ?int $id_commande = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["commande"])]
     private ?\DateTimeInterface $date_commande = null;
 
     #[ORM\Column(type: 'string')]
     #[Assert\Choice(choices: ['en attente de confirmation', 'en cours', 'expedie', 'livre', 'annule', 'retour'])]
+    #[Groups(["commande"])]
     private $statut = null;
 
     #[ORM\Column]
+    #[Groups(["commande"])]
     private ?float $prix_total = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(name: 'id_reduction', referencedColumnName: 'id_reduction', nullable: true)]
+    #[Groups(["commande"])]
     private ?Reduction $id_reduction = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur', nullable: false)]
+    #[Groups(["commande"])]
     private ?Utilisateur $id_utilisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Adresse::class, inversedBy: 'commandes')]
     #[ORM\JoinTable(name: 'commande_adresse')]
     #[ORM\JoinColumn(name: 'id_commande', referencedColumnName: 'id_commande')]
     #[ORM\InverseJoinColumn(name: 'id_adresse', referencedColumnName: 'id_adresse')]
+    #[Groups(["commande"])]
     private Collection $id_adresse;
 
     public function __construct()

@@ -16,26 +16,25 @@ class MaterielController extends AbstractController
 
     public function index(MaterielRepository $materielRepository, SerializerInterface $serializer): JsonResponse
     {
-        $materielList = $materielRepository->findAll();
-        $jsonMaterialList = $serializer->serialize($materielList, 'json');
-        return new JsonResponse($jsonMaterialList, Response::HTTP_OK, [], true);
+        $query = $materielRepository->createQueryBuilder('m')
+            ->select('m.id_materiel', 'm.nom');
+
+        $materiels = $query->getQuery()->getResult();
+
+        $json = $serializer->serialize($materiels, 'json');
+
+        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
-
-    // #[Route('/api/materiel/getAllMateriel', name: 'getAllMateriel', methods: ['GET'])]
-
-    // public function getAllMateriel(MaterielRepository $materielRepository, SerializerInterface $serializer): JsonResponse
-    // {
-    //     $materielList = $materielRepository->findAll();
-    //     $jsonMaterialList = $serializer->serialize($materielList, 'json');
-    //     return new JsonResponse($jsonMaterialList, Response::HTTP_OK, [], true);
-    // }
 
     #[Route('/api/materiel/{id}', name: 'getOneMateriel', methods: ['GET'])]
 
     public function getOneMateriel(Materiel $materiel, SerializerInterface $serializer): JsonResponse
     {
-        $jsonMateriel = $serializer->serialize($materiel, 'json');
-        return new JsonResponse($jsonMateriel, Response::HTTP_OK, ['accept' => 'json'], true);
+        $json = $serializer->serialize($materiel, 'json', [
+            'groups' => ['materiel'],
+        ]);
+
+        return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 }
