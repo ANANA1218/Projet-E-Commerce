@@ -20,4 +20,13 @@ class ProduitController extends AbstractController
         $jsonProduits = $serializer->serialize($produits, 'json');
         return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
+
+    #[Route('/api/produit/{id}', name: 'getOneProduit', methods: ['GET'])]
+
+    public function getOneProduit(Produit $produit, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonProduit = $serializer->serialize($produit, 'json');
+        return new JsonResponse($jsonProduit, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
+
 }

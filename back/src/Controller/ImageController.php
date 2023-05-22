@@ -20,4 +20,13 @@ class ImageController extends AbstractController
         $jsonImages = $serializer->serialize($images, 'json');
         return new JsonResponse($jsonImages, Response::HTTP_OK, [], true);
     }
+
+
+    #[Route('/api/image/{id}', name: 'getOneImage', methods: ['GET'])]
+
+    public function getOneImage(Image $image, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonImage = $serializer->serialize($image, 'json');
+        return new JsonResponse($jsonImage, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
 }

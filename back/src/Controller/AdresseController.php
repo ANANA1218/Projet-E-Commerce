@@ -20,4 +20,13 @@ class AdresseController extends AbstractController
         $jsonAdresses = $serializer->serialize($adresses, 'json');
         return new JsonResponse($jsonAdresses, Response::HTTP_OK, [], true);
     }
+
+    #[Route('/api/adresse/{id}', name: 'getOneAdresse', methods: ['GET'])]
+
+    public function getOneAdresse(Adresse $adresse, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonAdresse = $serializer->serialize($adresse, 'json');
+        return new JsonResponse($jsonAdresse, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
+
 }
