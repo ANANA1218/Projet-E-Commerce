@@ -27,7 +27,7 @@ class ContactController extends AbstractController
 
 
     #[Route('/api/contact/{id}', name: 'getOneContact', methods: ['GET'])]
-    public function getOneCommande(ContactRepository $contactRepository, int $id): JsonResponse
+    public function getOneContact(ContactRepository $contactRepository, int $id): JsonResponse
     {
         $contact = $contactRepository->getOne($id);
 
