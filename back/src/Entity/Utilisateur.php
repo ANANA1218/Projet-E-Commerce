@@ -15,7 +15,6 @@ class Utilisateur
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["default"])]
-
     private ?int $id_utilisateur = null;
 
     #[ORM\Column(length: 255)]
@@ -252,5 +251,24 @@ class Utilisateur
         }
 
         return $this;
+    }
+
+    public function serialize()
+    {
+        $serializedContacts = [];
+
+        foreach ($this->contacts as $contact) {
+            $serializedContacts[] = $contact->serialize();
+        }
+
+        return [
+            'id_utilisateur' => $this->getIdUtilisateur(),
+            'nom' => $this->getNom(),
+            'prenom' => $this->getPrenom(),
+            'email' => $this->getEmail(),
+            'mot_de_passe' => $this->getMotDePasse(),
+            'telephone' => $this->getTelephone(),
+            'contacts' => $serializedContacts,
+        ];
     }
 }
