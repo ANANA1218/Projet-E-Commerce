@@ -133,4 +133,16 @@ class Reduction
 
         return $this;
     }
+
+    public function serialize()
+    {
+        return [
+            'id_reduction' => $this->getIdReduction(),
+            'code_promo' => $this->getCodePromo(),
+            'pourcentage' => $this->getPourcentage(),
+            'actif' => $this->isActif(),
+            'date_debut' => $this->getDateDebut(),
+            'date_fin' => $this->getDateFin(),
+        ];
+    }
 }
