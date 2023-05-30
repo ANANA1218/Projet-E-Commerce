@@ -44,6 +44,9 @@ class Commande
     #[Groups(["commande"])]
     private Collection $id_adresse;
 
+    #[ORM\ManyToOne(inversedBy: 'statut')]
+    private ?Statut $statut = null;
+
     public function __construct()
     {
         $this->id_adresse = new ArrayCollection();
@@ -122,6 +125,18 @@ class Commande
     public function removeIdAdresse(Adresse $idAdresse): self
     {
         $this->id_adresse->removeElement($idAdresse);
+
+        return $this;
+    }
+
+    public function getStatut(): ?Statut
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?Statut $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }
