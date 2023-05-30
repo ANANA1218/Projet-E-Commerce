@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AssoCommandeProduit;
 use App\Entity\Commande;
 use App\Entity\Utilisateur;
 use App\Entity\Reduction;
@@ -13,6 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Produit;
+
 
 class CommandeController extends AbstractController
 {
@@ -45,7 +48,9 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
+ 
     public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
+
     {
         $data = json_decode($request->getContent(), true);
 
@@ -69,4 +74,5 @@ class CommandeController extends AbstractController
 
         return new Response('Commande créée avec succès.', Response::HTTP_CREATED);
     }
+
 }
