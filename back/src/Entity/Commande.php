@@ -23,11 +23,6 @@ class Commande
     #[Groups(["commande"])]
     private ?\DateTimeInterface $date_commande = null;
 
-    #[ORM\Column(type: 'string')]
-    #[Assert\Choice(choices: ['en attente de confirmation', 'en cours', 'expedie', 'livre', 'annule', 'retour'])]
-    #[Groups(["commande"])]
-    private $statut = null;
-
     #[ORM\Column]
     #[Groups(["commande"])]
     private ?float $prix_total = null;
@@ -49,6 +44,9 @@ class Commande
     #[Groups(["commande"])]
     private Collection $id_adresse;
 
+    #[ORM\ManyToOne(inversedBy: 'statut')]
+    private ?Statut $statut = null;
+
     public function __construct()
     {
         $this->id_adresse = new ArrayCollection();
@@ -67,18 +65,6 @@ class Commande
     public function setDateCommande(\DateTimeInterface $date_commande): self
     {
         $this->date_commande = $date_commande;
-
-        return $this;
-    }
-
-    public function getStatut()
-    {
-        return $this->statut;
-    }
-
-    public function setStatut($statut): self
-    {
-        $this->statut = $statut;
 
         return $this;
     }
@@ -139,6 +125,18 @@ class Commande
     public function removeIdAdresse(Adresse $idAdresse): self
     {
         $this->id_adresse->removeElement($idAdresse);
+
+        return $this;
+    }
+
+    public function getStatut(): ?Statut
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?Statut $statut): self
+    {
+        $this->statut = $statut;
 
         return $this;
     }
