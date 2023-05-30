@@ -21,7 +21,7 @@ class CommandeController extends AbstractController
     public function index(CommandeRepository $commandeRepository, SerializerInterface $serializer): JsonResponse
     {
         $query = $commandeRepository->createQueryBuilder('c')
-            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.statut', 'c.prix_total', 'reduc.id_reduction')
+            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction')
             ->leftJoin('c.id_reduction', 'reduc')
             ->join('c.id_utilisateur', 'u');
 
@@ -49,11 +49,10 @@ class CommandeController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-     
+
         $idReduction = $data['id_reduction'];
         $idUtilisateur = $data['id_utilisateur'];
         $dateCommande = $data['date_commande'];
-        $statut = $data['status'];
         $prixTotal = $data['prix_total'];
 
         // Créer une instance de Commande
@@ -61,16 +60,13 @@ class CommandeController extends AbstractController
         $commande->setIdReduction($idReduction);
         $commande->setIdUtilisateur($idUtilisateur);
         $commande->setDateCommande($dateCommande);
-        $commande->setStatut($statut);
         $commande->setPrixTotal($prixTotal);
 
         // Enregistrer la commande dans la base de données
-        
+
         $entityManager->persist($commande);
         $entityManager->flush();
 
         return new Response('Commande créée avec succès.', Response::HTTP_CREATED);
     }
-
-    
 }
