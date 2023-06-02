@@ -50,29 +50,50 @@ class CommandeController extends AbstractController
     #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
  
     public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
-
+   
     {
         $data = json_decode($request->getContent(), true);
-
-
-        $idReduction = $data['id_reduction'];
-        $idUtilisateur = $data['id_utilisateur'];
-        $dateCommande = $data['date_commande'];
-        $prixTotal = $data['prix_total'];
-
-        // Créer une instance de Commande
+    
+        if (!isset($data['id_utilisateur']) || !isset($data['produits'])) {
+            return new Response('Données manquantes', 400);
+        }
+    
         $commande = new Commande();
-        $commande->setIdReduction($idReduction);
-        $commande->setIdUtilisateur($idUtilisateur);
-        $commande->setDateCommande($dateCommande);
-        $commande->setPrixTotal($prixTotal);
-
-        // Enregistrer la commande dans la base de données
-
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
+        $commande->setIdUtilisateur($utilisateur);
+        $commande->setDateCommande(new \DateTime());
+       // $commande->setStatut('En attente');
+        $commande->setPrixTotal(0);
+    
         $entityManager->persist($commande);
+    
+        $prixTotal = 0; 
+    
+        foreach ($data['produits'] as $produitData) {
+            if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
+                return new Response('Données de produit manquantes', 400);
+            }
+    
+            $assoCommandeProduit = new AssoCommandeProduit();
+            $assoCommandeProduit->setIdCommande($commande);
+            $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
+            $assoCommandeProduit->setIdProduit($produit);
+            $assoCommandeProduit->setQuantite($produitData['quantite']);
+    
+            $entityManager->persist($assoCommandeProduit);
+    
+            $produit->setStock($produit->getStock() - $produitData['quantite']);
+    
+           
+            $prixPartiel = $produit->getPrix() * $produitData['quantite'];
+            $prixTotal += $prixPartiel; 
+        }
+    
+        $commande->setPrixTotal($prixTotal); 
+    
         $entityManager->flush();
-
-        return new Response('Commande créée avec succès.', Response::HTTP_CREATED);
+    
+        return new Response('Commande ajoutée avec succès', 200);
     }
 
 }
