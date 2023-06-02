@@ -12,10 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 class ProduitController extends AbstractController
 {
-    #[Route('/api/produit', name: 'getAllProduit', methods: ['GET'])]
+    #[Route('/api/produits', name: 'getAllProduit', methods: ['GET'])]
 
     public function getAllProduit(ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -30,7 +31,7 @@ class ProduitController extends AbstractController
         return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/produit/{id}', name: 'getOneProduit', methods: ['GET'])]
+    #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'])]
 
     public function getOneProduit(Produit $produit, SerializerInterface $serializer): JsonResponse
     {
@@ -39,7 +40,7 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produit', name: 'addProduit', methods: ['POST'])]
+    #[Route('/api/produits', name: 'addProduit', methods: ['POST'])]
     public function addProduit(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
