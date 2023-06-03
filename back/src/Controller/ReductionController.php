@@ -62,4 +62,16 @@ class ReductionController extends AbstractController
 
         return new JsonResponse(['message' => 'Réduction modifiée avec succès'], Response::HTTP_OK);
     }
+
+    #[Route('/api/reduction/{id}', name: 'deleteReduction', methods: ['DELETE'])]
+    public function deleteReduction(ReductionRepository $reductionRepository, int $id): Response
+    {
+        try {
+            $reductionRepository->delete($id);
+
+            return $this->json(['message' => 'Réduction supprimée'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Echec de la suppression'], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }

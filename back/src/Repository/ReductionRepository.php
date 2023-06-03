@@ -109,6 +109,16 @@ class ReductionRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function delete(int $id): void
+    {
+        $reduction = $this->find($id);
+
+        if ($reduction) {
+            $this->getEntityManager()->remove($reduction);
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Reduction[] Returns an array of Reduction objects
     //     */
