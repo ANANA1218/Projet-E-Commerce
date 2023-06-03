@@ -39,6 +39,14 @@ class Commande
     #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut')]
     private ?Statut $statut = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation', nullable: false)]
+    private ?AdresseFacturation $id_adresse_facturation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(name: 'id_adresse_livraison', referencedColumnName: 'id_adresse_livraison', nullable: false)]
+    private ?AdresseLivraison $id_adresse_livraison = null;
+
     public function getIdCommande(): ?int
     {
         return $this->id_commande;
@@ -100,6 +108,30 @@ class Commande
     public function setStatut(?Statut $statut): self
     {
         $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getIdAdresseFacturation(): ?AdresseFacturation
+    {
+        return $this->id_adresse_facturation;
+    }
+
+    public function setIdAdresseFacturation(?AdresseFacturation $id_adresse_facturation): self
+    {
+        $this->id_adresse_facturation = $id_adresse_facturation;
+
+        return $this;
+    }
+
+    public function getIdAdresseLivraison(): ?AdresseLivraison
+    {
+        return $this->id_adresse_livraison;
+    }
+
+    public function setIdAdresseLivraison(?AdresseLivraison $id_adresse_livraison): self
+    {
+        $this->id_adresse_livraison = $id_adresse_livraison;
 
         return $this;
     }

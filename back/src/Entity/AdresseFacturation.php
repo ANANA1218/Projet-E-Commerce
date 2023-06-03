@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdresseFacturationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseFacturationRepository::class)]
@@ -11,7 +13,7 @@ class AdresseFacturation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id_adresse_facturation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
@@ -31,9 +33,17 @@ class AdresseFacturation
     #[ORM\Column(length: 255)]
     private ?string $pays = null;
 
-    public function getId(): ?int
+    #[ORM\OneToMany(mappedBy: 'id_adresse_facturation', targetEntity: Commande::class)]
+    private Collection $commandes;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->commandes = new ArrayCollection();
+    }
+
+    public function getIdAdresseFacturation(): ?int
+    {
+        return $this->id_adresse_facturation;
     }
 
     public function getRue(): ?string
@@ -104,6 +114,36 @@ class AdresseFacturation
     public function setPays(string $pays): self
     {
         $this->pays = $pays;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setIdAdresseFacturation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getIdAdresseFacturation() === $this) {
+                $commande->setIdAdresseFacturation(null);
+            }
+        }
 
         return $this;
     }
