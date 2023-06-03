@@ -11,7 +11,7 @@ class AdresseLivraison
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id_adresse_livraison = null;
 
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
@@ -31,9 +31,9 @@ class AdresseLivraison
     #[ORM\Column(length: 255)]
     private ?string $pays = null;
 
-    public function getId(): ?int
+    public function getIdAdresseLivraison(): ?int
     {
-        return $this->id;
+        return $this->id_adresse_livraison;
     }
 
     public function getRue(): ?string
