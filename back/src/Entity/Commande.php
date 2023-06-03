@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CommandeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -37,20 +35,9 @@ class Commande
     #[Groups(["commande"])]
     private ?Utilisateur $id_utilisateur = null;
 
-    #[ORM\ManyToMany(targetEntity: Adresse::class, inversedBy: 'commandes')]
-    #[ORM\JoinTable(name: 'commande_adresse')]
-    #[ORM\JoinColumn(name: 'id_commande', referencedColumnName: 'id_commande')]
-    #[ORM\InverseJoinColumn(name: 'id_adresse', referencedColumnName: 'id_adresse')]
-    #[Groups(["commande"])]
-    private Collection $id_adresse;
-
     #[ORM\ManyToOne(inversedBy: 'statut')]
+    #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut')]
     private ?Statut $statut = null;
-
-    public function __construct()
-    {
-        $this->id_adresse = new ArrayCollection();
-    }
 
     public function getIdCommande(): ?int
     {
@@ -101,30 +88,6 @@ class Commande
     public function setIdUtilisateur(?Utilisateur $id_utilisateur): self
     {
         $this->id_utilisateur = $id_utilisateur;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Adresse>
-     */
-    public function getIdAdresse(): Collection
-    {
-        return $this->id_adresse;
-    }
-
-    public function addIdAdresse(Adresse $idAdresse): self
-    {
-        if (!$this->id_adresse->contains($idAdresse)) {
-            $this->id_adresse->add($idAdresse);
-        }
-
-        return $this;
-    }
-
-    public function removeIdAdresse(Adresse $idAdresse): self
-    {
-        $this->id_adresse->removeElement($idAdresse);
 
         return $this;
     }

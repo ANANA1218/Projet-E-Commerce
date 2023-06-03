@@ -40,9 +40,6 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'id_client', targetEntity: Contact::class)]
     private Collection $contacts;
 
-    #[ORM\OneToMany(mappedBy: 'id_client', targetEntity: Adresse::class)]
-    private Collection $adresses;
-
     #[ORM\ManyToMany(mappedBy: 'id_utilisateur', targetEntity: ModePaiement::class)]
     #[ORM\JoinTable(name: 'asso_utilisateur_paiement')]
     #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
@@ -55,7 +52,6 @@ class Utilisateur
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
-        $this->adresses = new ArrayCollection();
         $this->modePaiements = new ArrayCollection();
         $this->commandes = new ArrayCollection();
     }
@@ -161,36 +157,6 @@ class Utilisateur
             // set the owning side to null (unless already changed)
             if ($contact->getIdClient() === $this) {
                 $contact->setIdClient(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Adresse>
-     */
-    public function getAdresses(): Collection
-    {
-        return $this->adresses;
-    }
-
-    public function addAdress(Adresse $adress): self
-    {
-        if (!$this->adresses->contains($adress)) {
-            $this->adresses->add($adress);
-            $adress->setIdClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdress(Adresse $adress): self
-    {
-        if ($this->adresses->removeElement($adress)) {
-            // set the owning side to null (unless already changed)
-            if ($adress->getIdClient() === $this) {
-                $adress->setIdClient(null);
             }
         }
 
