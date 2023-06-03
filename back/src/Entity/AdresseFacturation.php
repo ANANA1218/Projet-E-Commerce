@@ -36,9 +36,16 @@ class AdresseFacturation
     #[ORM\OneToMany(mappedBy: 'id_adresse_facturation', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'adresses_facturation')]
+    #[ORM\JoinTable(name: 'asso_adresse_facturation_utilisateur')]
+    #[ORM\JoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation')]
+    #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    private Collection $utilisateurs;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     public function getIdAdresseFacturation(): ?int
@@ -143,6 +150,33 @@ class AdresseFacturation
             if ($commande->getIdAdresseFacturation() === $this) {
                 $commande->setIdAdresseFacturation(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): self
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->addAdressesFacturation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): self
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            $utilisateur->removeAdressesFacturation($this);
         }
 
         return $this;

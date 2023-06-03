@@ -49,11 +49,25 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'id_utilisateur', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\ManyToMany(targetEntity: AdresseLivraison::class, inversedBy: 'utilisateurs')]
+    #[ORM\JoinTable(name: 'asso_adresse_livraison_utilisateur')]
+    #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    #[ORM\InverseJoinColumn(name: 'id_adresse_livraison', referencedColumnName: 'id_adresse_livraison')]
+    private Collection $adresses_livraison;
+
+    #[ORM\ManyToMany(targetEntity: AdresseFacturation::class, inversedBy: 'utilisateurs')]
+    #[ORM\JoinTable(name: 'asso_adresse_facturation_utilisateur')]
+    #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    #[ORM\InverseJoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation')]
+    private Collection $adresses_facturation;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->modePaiements = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+        $this->adresses_livraison = new ArrayCollection();
+        $this->adresses_facturation = new ArrayCollection();
     }
 
     public function getIdUtilisateur(): ?int
@@ -216,6 +230,54 @@ class Utilisateur
                 $commande->setIdUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdresseLivraison>
+     */
+    public function getAdressesLivraison(): Collection
+    {
+        return $this->adresses_livraison;
+    }
+
+    public function addAdressesLivraison(AdresseLivraison $adressesLivraison): self
+    {
+        if (!$this->adresses_livraison->contains($adressesLivraison)) {
+            $this->adresses_livraison->add($adressesLivraison);
+        }
+
+        return $this;
+    }
+
+    public function removeAdressesLivraison(AdresseLivraison $adressesLivraison): self
+    {
+        $this->adresses_livraison->removeElement($adressesLivraison);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AdresseFacturation>
+     */
+    public function getAdressesFacturation(): Collection
+    {
+        return $this->adresses_facturation;
+    }
+
+    public function addAdressesFacturation(AdresseFacturation $adressesFacturation): self
+    {
+        if (!$this->adresses_facturation->contains($adressesFacturation)) {
+            $this->adresses_facturation->add($adressesFacturation);
+        }
+
+        return $this;
+    }
+
+    public function removeAdressesFacturation(AdresseFacturation $adressesFacturation): self
+    {
+        $this->adresses_facturation->removeElement($adressesFacturation);
 
         return $this;
     }

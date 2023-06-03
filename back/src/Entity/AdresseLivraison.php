@@ -36,9 +36,16 @@ class AdresseLivraison
     #[ORM\OneToMany(mappedBy: 'id_adresse_livraison', targetEntity: Commande::class)]
     private Collection $commandes;
 
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'adresses_livraison')]
+    #[ORM\JoinTable(name: 'asso_adresse_livraison_utilisateur')]
+    #[ORM\JoinColumn(name: 'id_adresse_livraison', referencedColumnName: 'id_adresse_livraison')]
+    #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    private Collection $utilisateurs;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     public function getIdAdresseLivraison(): ?int
@@ -143,6 +150,33 @@ class AdresseLivraison
             if ($commande->getIdAdresseLivraison() === $this) {
                 $commande->setIdAdresseLivraison(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): self
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->addAdressesLivraison($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): self
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            $utilisateur->removeAdressesLivraison($this);
         }
 
         return $this;
