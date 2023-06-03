@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
 {
@@ -42,7 +43,9 @@ class Produit
     #[ORM\JoinColumn(name: 'id_categorie', referencedColumnName: 'id_categorie', nullable: false)]
     private ?Categorie $id_categorie = null;
 
+   
     #[ORM\OneToMany(mappedBy: 'id_produit', targetEntity: Image::class)]
+    #[Groups(["product"])]
     private Collection $images;
 
     #[ORM\ManyToMany(targetEntity: Materiel::class, inversedBy: 'produits')]

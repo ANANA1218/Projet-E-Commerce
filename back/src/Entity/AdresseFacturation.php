@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\AdresseRepository;
+use App\Repository\AdresseFacturationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AdresseRepository::class)]
-class Adresse
+#[ORM\Entity(repositoryClass: AdresseFacturationRepository::class)]
+class AdresseFacturation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id_adresse = null;
+    private ?int $id_adresse_facturation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
@@ -33,27 +33,24 @@ class Adresse
     #[ORM\Column(length: 255)]
     private ?string $pays = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $type_adresse = null;
-
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'adresses')]
-    #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id_utilisateur', nullable: false)]
-    private ?Utilisateur $id_client = null;
-
-    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'id_adresse')]
-    #[ORM\JoinTable(name: 'commande_adresse')]
-    #[ORM\JoinColumn(name: 'id_adresse', referencedColumnName: 'id_adresse')]
-    #[ORM\InverseJoinColumn(name: 'id_commande', referencedColumnName: 'id_commande')]
+    #[ORM\OneToMany(mappedBy: 'id_adresse_facturation', targetEntity: Commande::class)]
     private Collection $commandes;
+
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'adresses_facturation')]
+    #[ORM\JoinTable(name: 'asso_adresse_facturation_utilisateur')]
+    #[ORM\JoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation')]
+    #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
+    private Collection $utilisateurs;
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
-    public function getIdAdresse(): ?int
+    public function getIdAdresseFacturation(): ?int
     {
-        return $this->id_adresse;
+        return $this->id_adresse_facturation;
     }
 
     public function getRue(): ?string
@@ -128,30 +125,6 @@ class Adresse
         return $this;
     }
 
-    public function getTypeAdresse(): ?string
-    {
-        return $this->type_adresse;
-    }
-
-    public function setTypeAdresse(string $type_adresse): self
-    {
-        $this->type_adresse = $type_adresse;
-
-        return $this;
-    }
-
-    public function getIdClient(): ?Utilisateur
-    {
-        return $this->id_client;
-    }
-
-    public function setIdClient(?Utilisateur $id_client): self
-    {
-        $this->id_client = $id_client;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Commande>
      */
@@ -164,7 +137,7 @@ class Adresse
     {
         if (!$this->commandes->contains($commande)) {
             $this->commandes->add($commande);
-            $commande->addIdAdresse($this);
+            $commande->setIdAdresseFacturation($this);
         }
 
         return $this;
@@ -173,7 +146,37 @@ class Adresse
     public function removeCommande(Commande $commande): self
     {
         if ($this->commandes->removeElement($commande)) {
-            $commande->removeIdAdresse($this);
+            // set the owning side to null (unless already changed)
+            if ($commande->getIdAdresseFacturation() === $this) {
+                $commande->setIdAdresseFacturation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Utilisateur>
+     */
+    public function getUtilisateurs(): Collection
+    {
+        return $this->utilisateurs;
+    }
+
+    public function addUtilisateur(Utilisateur $utilisateur): self
+    {
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->addAdressesFacturation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUtilisateur(Utilisateur $utilisateur): self
+    {
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            $utilisateur->removeAdressesFacturation($this);
         }
 
         return $this;

@@ -26,10 +26,10 @@ class AssoCommandeProduit
     #[ORM\Column]
     private ?int $quantite = null;
 
-    public function getId(): ?int
+   /* public function getId(): ?int
     {
         return $this->id;
-    }
+    }*/
 
     public function getQuantite(): ?int
     {
