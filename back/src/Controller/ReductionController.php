@@ -28,6 +28,10 @@ class ReductionController extends AbstractController
     {
         $reduction = $reductionRepository->getOne($id);
 
+        if (!$reduction) {
+            return new JsonResponse(['message' => 'Reduction not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $jsonReduction = $reduction->serialize();
 
         return new JsonResponse($jsonReduction, Response::HTTP_OK, []);
@@ -38,13 +42,17 @@ class ReductionController extends AbstractController
     {
         $reduction = $reductionRepository->findByCode($code);
 
+        if (!$reduction) {
+            return new JsonResponse(['message' => 'Reduction code not found'], Response::HTTP_NOT_FOUND);
+        }
+
         $jsonReduction = $reduction->serialize();
 
         return new JsonResponse($jsonReduction, Response::HTTP_OK, []);
     }
 
     #[Route('/api/reduction', name: 'addReduction', methods: ['POST'])]
-    public function addReduction(Request $request, ReductionRepository $reductionRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function addReduction(Request $request, ReductionRepository $reductionRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
