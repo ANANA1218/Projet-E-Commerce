@@ -13,26 +13,35 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Utilisateur;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 
 class AdresseFacturationController extends AbstractController
 {
  
-#[Route('/api/adresses_facturation', name: 'getAdressesFacturation', methods: ['GET'])]
-public function getAdressesFacturation(AdresseFacturationRepository $adresseFacturationRepository, SerializerInterface $serializer): JsonResponse
-{
-    $adressesFacturation = $adresseFacturationRepository->findAll();
-    $jsonAdressesFacturation = $serializer->serialize($adressesFacturation, 'json');
-    return new JsonResponse($jsonAdressesFacturation, Response::HTTP_OK, [], true);
-}
+    #[Route('/api/adresses_facturation', name: 'getAdressesFacturation', methods: ['GET'])]
+    public function getAdressesFacturation(AdresseFacturationRepository $adresseFacturationRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $adressesFacturation = $adresseFacturationRepository->findAll();
+        $jsonAdressesFacturation = $serializer->serialize($adressesFacturation, 'json', [
+            AbstractNormalizer::GROUPS => ['exclude']
+        ]);
+        return new JsonResponse($jsonAdressesFacturation, Response::HTTP_OK, [], true);
+    }
+
+    #[Route('/api/adresses_facturation/{id}', name: 'getAdresseFacturationById', methods: ['GET'])]
+    public function getAdresseFacturationById(AdresseFacturation $adresseFacturation, SerializerInterface $serializer): JsonResponse
+    {
+        $jsonAdresseFacturation = $serializer->serialize($adresseFacturation, 'json', [
+            AbstractNormalizer::GROUPS => ['exclude']
+        ]);
+        return new JsonResponse($jsonAdresseFacturation, Response::HTTP_OK, ['accept' => 'json'], true);
+    }
 
 
-#[Route('/api/adresses_facturation/{id}', name: 'getAdresseFacturationById', methods: ['GET'])]
-public function getAdresseFacturationById(AdresseFacturation $adresseFacturation, SerializerInterface $serializer): JsonResponse
-{
-    $jsonAdresseFacturation = $serializer->serialize($adresseFacturation, 'json');
-    return new JsonResponse($jsonAdresseFacturation, Response::HTTP_OK, ['accept' => 'json'], true);
-}
+    
+
+
 
 #[Route('/api/adresses_facturation', name: 'createAdresseFacturation', methods: ['POST'])]
 public function createAdresseFacturation(Request $request, EntityManagerInterface $entityManager): JsonResponse
