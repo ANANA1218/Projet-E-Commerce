@@ -27,7 +27,7 @@ class UtilisateurController extends AbstractController
 
         $jsonUser = $user->serialize();
 
-        return new JsonResponse($jsonUser, Response::HTTP_OK, []);
+        return $this->json($jsonUser, Response::HTTP_OK);
     }
 
     #[Route('/api/utilisateur/add', name: 'addUtilisateur', methods: ['POST'])]
@@ -73,12 +73,12 @@ class UtilisateurController extends AbstractController
         //Ajouter la vérif de la validité des champs côté serveur, en plus de la vérif en front ?
         $user = $utilisateurRepository->find($id);
         if (!$user) {
-            return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
 
         $utilisateurRepository->update($user, $data);
 
-        return new JsonResponse(['message' => 'Utilisateur modifié avec succès'], Response::HTTP_OK);
+        return $this->json(['message' => 'Utilisateur modifié avec succès'], Response::HTTP_OK);
     }
 
     // #[Route('/api/utilisateur/delete/{id}', name: 'deleteUtilisateur', methods: ['DELETE'])]

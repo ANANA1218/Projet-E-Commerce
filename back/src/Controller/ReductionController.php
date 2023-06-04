@@ -29,12 +29,12 @@ class ReductionController extends AbstractController
         $reduction = $reductionRepository->getOne($id);
 
         if (!$reduction) {
-            return new JsonResponse(['message' => 'Reduction not found'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Reduction not found'], Response::HTTP_NOT_FOUND);
         }
 
         $jsonReduction = $reduction->serialize();
 
-        return new JsonResponse($jsonReduction, Response::HTTP_OK, []);
+        return $this->json($jsonReduction, Response::HTTP_OK, []);
     }
 
     #[Route('/api/reduction/code/{code}', name: 'getByCode', methods: ['GET'])]
@@ -43,12 +43,12 @@ class ReductionController extends AbstractController
         $reduction = $reductionRepository->findByCode($code);
 
         if (!$reduction) {
-            return new JsonResponse(['message' => 'Reduction code not found'], Response::HTTP_NOT_FOUND);
+            return $this->json(['message' => 'Reduction code not found'], Response::HTTP_NOT_FOUND);
         }
 
         $jsonReduction = $reduction->serialize();
 
-        return new JsonResponse($jsonReduction, Response::HTTP_OK, []);
+        return $this->json($jsonReduction, Response::HTTP_OK, []);
     }
 
     #[Route('/api/reduction', name: 'addReduction', methods: ['POST'])]
@@ -58,7 +58,7 @@ class ReductionController extends AbstractController
 
         $reductionRepository->add($data);
 
-        return new JsonResponse(['message' => 'Réduction ajoutée avec succès'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'Reduction ajoutée avec succès'], Response::HTTP_CREATED);
     }
 
     #[Route('/api/reduction/{id}', name: 'updateReduction', methods: ['PUT'])]
@@ -66,9 +66,13 @@ class ReductionController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $reductionRepository->update($id, $data);
+        $reduction = $reductionRepository->find($id);
+        if (!$reduction) {
+            return $this->json(['message' => 'Reduction don\'t exist'], Response::HTTP_NOT_FOUND);
+        }
+        $reductionRepository->update($reduction, $data);
 
-        return new JsonResponse(['message' => 'Réduction modifiée avec succès'], Response::HTTP_OK);
+        return $this->json(['message' => 'Reduction modifiée avec succès'], Response::HTTP_OK);
     }
 
     #[Route('/api/reduction/{id}', name: 'deleteReduction', methods: ['DELETE'])]
@@ -77,7 +81,7 @@ class ReductionController extends AbstractController
         try {
             $reductionRepository->delete($id);
 
-            return $this->json(['message' => 'Réduction supprimée'], Response::HTTP_OK);
+            return $this->json(['message' => 'Reduction supprimée'], Response::HTTP_OK);
         } catch (\Exception $e) {
             return $this->json(['message' => 'Echec de la suppression'], Response::HTTP_BAD_REQUEST);
         }

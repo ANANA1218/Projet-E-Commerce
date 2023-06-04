@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Contact;
 use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,9 +18,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ContactRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Contact::class);
+        $this->entityManager = $entityManager;
     }
 
     public function save(Contact $entity, bool $flush = false): void
@@ -51,10 +53,7 @@ class ContactRepository extends ServiceEntityRepository
 
     public function getOne($id): ?Contact
     {
-        $entityManager = $this->getEntityManager();
-        $contact = $entityManager->getRepository(Contact::class)->find($id);
-
-        return $contact;
+        return $this->entityManager->getRepository(Contact::class)->find($id);;
     }
 
     public function create(array $data, Utilisateur $utilisateur): Contact
@@ -65,9 +64,8 @@ class ContactRepository extends ServiceEntityRepository
         $contact->setSujet($data['sujet']);
         $contact->setTexte($data['texte']);
 
-        $entityManager = $this->getEntityManager();
-        $entityManager->persist($contact);
-        $entityManager->flush();
+        $this->entityManager->persist($contact);
+        $this->entityManager->flush();
 
         return $contact;
     }

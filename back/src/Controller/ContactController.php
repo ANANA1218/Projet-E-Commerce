@@ -33,10 +33,10 @@ class ContactController extends AbstractController
 
         $jsonContact = $contact->serialize();
 
-        return new JsonResponse($jsonContact, Response::HTTP_OK, []);
+        return $this->json($jsonContact, Response::HTTP_OK);
     }
 
-    #[Route('/api/contact', name: 'createContact', methods: ['POST'])]
+    #[Route('/api/contact/create', name: 'createContact', methods: ['POST'])]
     public function createContact(Request $request, ContactRepository $contactRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -44,6 +44,6 @@ class ContactController extends AbstractController
 
         $contactRepository->create($data, $utilisateur);
 
-        return new JsonResponse(['message' => 'Catégorie ajoutée avec succès'], Response::HTTP_CREATED);
+        return $this->json(['message' => 'Contact Form crée avec succès'], Response::HTTP_CREATED);
     }
 }

@@ -74,14 +74,8 @@ class ReductionRepository extends ServiceEntityRepository
         return $reduction;
     }
 
-    public function update(int $id, array $data): void
+    public function update(Reduction $reduction, array $data): void
     {
-        $reduction = $this->find($id);
-
-        if (!$reduction) {
-            throw new \RuntimeException('No reduction found for ID ' . $id);
-        }
-
         foreach ($data as $key => $value) {
             switch ($key) {
                 case 'code_promo':
