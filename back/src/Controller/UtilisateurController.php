@@ -5,35 +5,92 @@ namespace App\Controller;
 use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 
 class UtilisateurController extends AbstractController
 {
-    #[Route('/api/utilisateur', name: 'getAllUtilisateur', methods: ['GET'])]
-
-    public function index(UtilisateurRepository $utilisateurRepository, SerializerInterface $serializer): JsonResponse
+    #[Route('/api/utilisateur', name: 'index', methods: ['GET'])]
+    public function index(UtilisateurRepository $utilisateurRepository): JsonResponse
     {
-        $utilisateurs = $utilisateurRepository->findAll();
-        $jsonUtilisateurs = $serializer->serialize($utilisateurs, 'json');
-        return new JsonResponse($jsonUtilisateurs, Response::HTTP_OK, [], true);
+        $query = $utilisateurRepository->getAll();
+
+        return new JsonResponse($query, Response::HTTP_OK, []);
     }
 
-
-    #[Route('/api/utilisateur/{id}', name: 'getOneUtilisateur', methods: ['GET'])]
-
-    public function getOneUtilisateur(Utilisateur $utilisateur, SerializerInterface $serializer): JsonResponse
+    #[Route('/api/utilisateur/{id}', name: 'getOne', methods: ['GET'])]
+    public function getOne(int $id, UtilisateurRepository $utilisateurRepository): JsonResponse
     {
-        $jsonUtilisateur = $serializer->serialize($utilisateur, 'json');
-        return new JsonResponse($jsonUtilisateur, Response::HTTP_OK, ['accept' => 'json'], true);
+        $user = $utilisateurRepository->getOne($id);
+
+        $jsonUser = $user->serialize();
+
+        return new JsonResponse($jsonUser, Response::HTTP_OK, []);
     }
 
+    #[Route('/api/utilisateur/add', name: 'addUtilisateur', methods: ['POST'])]
+    public function addUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
 
-   
+        if ($utilisateurRepository->findOneBy(['email' => $data['email']])) {
+            return $this->json(['message' => 'Email existe déjà dans la base'], Response::HTTP_CONFLICT);
+        }
 
+        $utilisateurRepository->add($data);
 
+        return $this->json(['message' => 'Utilisateur inscrit'], Response::HTTP_OK);
+    }
+
+    #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+    public function login(Request $request, UtilisateurRepository $utilisateurRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+
+        if (!$email || !$password) {
+            return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $utilisateurRepository->login($email, $password);
+
+        if (!$user) {
+            return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->json(['message' => 'Identifiants corrects'], Response::HTTP_OK);
+    }
+
+    #[Route('/api/utilisateur/update/{id}', name: 'updateUtilisateur', methods: ['PUT'])]
+    public function updateUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        //Ajouter la vérif de la validité des champs côté serveur, en plus de la vérif en front ?
+        $user = $utilisateurRepository->find($id);
+        if (!$user) {
+            return new JsonResponse(['message' => 'User not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $utilisateurRepository->update($user, $data);
+
+        return new JsonResponse(['message' => 'Utilisateur modifié avec succès'], Response::HTTP_OK);
+    }
+
+    // #[Route('/api/utilisateur/delete/{id}', name: 'deleteUtilisateur', methods: ['DELETE'])]
+    // public function deleteUtilisateur(UtilisateurRepository $utilisateurRepository, int $id): Response
+    // {
+    //     $user = $utilisateurRepository->find($id);
+
+    //     if ($user) {
+    //         $utilisateurRepository->delete($user);
+    //         return $this->json(['message' => 'User supprimé'], Response::HTTP_OK);
+    //     } else {
+    //         throw $this->createNotFoundException('User not found');
+    //     }
+    // }
 }
