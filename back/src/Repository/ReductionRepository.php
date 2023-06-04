@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Reduction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,9 +17,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ReductionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
         parent::__construct($registry, Reduction::class);
+        $this->entityManager = $entityManager;
     }
 
     public function save(Reduction $entity, bool $flush = false): void
@@ -49,16 +51,14 @@ class ReductionRepository extends ServiceEntityRepository
 
     public function getOne($id): ?Reduction
     {
-        $entityManager = $this->getEntityManager();
-        $contact = $entityManager->getRepository(Reduction::class)->find($id);
+        $contact = $this->entityManager->getRepository(Reduction::class)->find($id);
 
         return $contact;
     }
 
     public function findByCode(string $code): ?Reduction
     {
-        $entityManager = $this->getEntityManager();
-        $code = $entityManager->getRepository(Reduction::class)->findOneBy(['code_promo' => $code]);
+        $code = $this->entityManager->getRepository(Reduction::class)->findOneBy(['code_promo' => $code]);
 
         return $code;
     }
@@ -72,9 +72,8 @@ class ReductionRepository extends ServiceEntityRepository
         $reduction->setDateDebut(new \DateTime($data['date_debut']));
         $reduction->setDateFin(new \DateTime($data['date_fin']));
 
-        $entityManager = $this->getEntityManager();
-        $entityManager->persist($reduction);
-        $entityManager->flush();
+        $this->entityManager->persist($reduction);
+        $this->entityManager->flush();
 
         return $reduction;
     }
@@ -106,7 +105,7 @@ class ReductionRepository extends ServiceEntityRepository
                     break;
             }
         }
-        $this->getEntityManager()->flush();
+        $this->entityManager->flush();
     }
 
     public function delete(int $id): void
@@ -114,8 +113,8 @@ class ReductionRepository extends ServiceEntityRepository
         $reduction = $this->find($id);
 
         if ($reduction) {
-            $this->getEntityManager()->remove($reduction);
-            $this->getEntityManager()->flush();
+            $this->entityManager->remove($reduction);
+            $this->entityManager->flush();
         }
     }
 
