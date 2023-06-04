@@ -51,16 +51,12 @@ class ReductionRepository extends ServiceEntityRepository
 
     public function getOne($id): ?Reduction
     {
-        $contact = $this->entityManager->getRepository(Reduction::class)->find($id);
-
-        return $contact;
+        return $this->entityManager->getRepository(Reduction::class)->find($id);
     }
 
     public function findByCode(string $code): ?Reduction
     {
-        $code = $this->entityManager->getRepository(Reduction::class)->findOneBy(['code_promo' => $code]);
-
-        return $code;
+        return $this->entityManager->getRepository(Reduction::class)->findOneBy(['code_promo' => $code]);
     }
 
     public function add(array $data): Reduction
