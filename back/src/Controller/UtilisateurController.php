@@ -30,7 +30,7 @@ class UtilisateurController extends AbstractController
         return $this->json($jsonUser, Response::HTTP_OK);
     }
 
-    #[Route('/api/utilisateur/add', name: 'addUtilisateur', methods: ['POST'])]
+    #[Route('/api/utilisateur', name: 'addUtilisateur', methods: ['POST'])]
     public function addUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -65,7 +65,7 @@ class UtilisateurController extends AbstractController
         return $this->json(['message' => 'Identifiants corrects'], Response::HTTP_OK);
     }
 
-    #[Route('/api/utilisateur/update/{id}', name: 'updateUtilisateur', methods: ['PUT'])]
+    #[Route('/api/utilisateur/{id}', name: 'updateUtilisateur', methods: ['PUT'])]
     public function updateUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -81,16 +81,16 @@ class UtilisateurController extends AbstractController
         return $this->json(['message' => 'Utilisateur modifié avec succès'], Response::HTTP_OK);
     }
 
-    // #[Route('/api/utilisateur/delete/{id}', name: 'deleteUtilisateur', methods: ['DELETE'])]
-    // public function deleteUtilisateur(UtilisateurRepository $utilisateurRepository, int $id): Response
-    // {
-    //     $user = $utilisateurRepository->find($id);
+    #[Route('/api/utilisateur/{id}', name: 'deleteUtilisateur', methods: ['DELETE'])]
+    public function deleteUtilisateur(UtilisateurRepository $utilisateurRepository, int $id): Response
+    {
+        $user = $utilisateurRepository->find($id);
 
-    //     if ($user) {
-    //         $utilisateurRepository->delete($user);
-    //         return $this->json(['message' => 'User supprimé'], Response::HTTP_OK);
-    //     } else {
-    //         throw $this->createNotFoundException('User not found');
-    //     }
-    // }
+        if ($user) {
+            $utilisateurRepository->delete($user);
+            return $this->json(['message' => 'User supprimé'], Response::HTTP_OK);
+        } else {
+            throw $this->createNotFoundException('User not found');
+        }
+    }
 }
