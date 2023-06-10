@@ -17,20 +17,49 @@ use App\Entity\Utilisateur;
 class AdresseLivraisonController extends AbstractController
 {
     #[Route('/api/adresses_livraison', name: 'getAdressesLivraison', methods: ['GET'])]
-    public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
+    /*public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
     {
         $adressesLivraison = $adresseLivraisonRepository->findAll();
         $jsonAdressesLivraison = $serializer->serialize($adressesLivraison, 'json');
         return new JsonResponse($jsonAdressesLivraison, Response::HTTP_OK, [], true);
+    }*/
+
+
+    public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $query = $adresseLivraisonRepository->createQueryBuilder('a')
+            ->select('a.id_adresse_livraison ', 'a.rue', 'a.complement_adresse' , 'a.region', 'a.ville' , 'a.code_postal','a.pays');
+
+        $adressesLivraison = $query->getQuery()->getResult();
+
+        $json = $serializer->serialize($adressesLivraison, 'json');
+
+        return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
 
+
+
     #[Route('/api/adresses_livraison/{id}', name: 'getAdresseLivraisonById', methods: ['GET'])]
-    public function getAdresseLivraisonById(AdresseLivraison $adresseLivraison, SerializerInterface $serializer): JsonResponse
+   /* public function getAdresseLivraisonById(AdresseLivraison $adresseLivraison, SerializerInterface $serializer): JsonResponse
     {
         $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
         return new JsonResponse($jsonAdresseLivraison, Response::HTTP_OK, ['accept' => 'json'], true);
     }
+*/
 
+public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
+{
+    $queryBuilder = $adresseLivraisonRepository->createQueryBuilder('a')
+        ->select('a.id_adresse_livraison', 'a.rue', 'a.complement_adresse', 'a.region', 'a.ville', 'a.code_postal', 'a.pays')
+        ->andWhere('a.id_adresse_livraison = :id')
+        ->setParameter('id', $id)
+        ->getQuery();
+
+    $adresseLivraison = $queryBuilder->getOneOrNullResult();
+    $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
+    
+    return new JsonResponse($jsonAdresseLivraison, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
+}
 
 
 
