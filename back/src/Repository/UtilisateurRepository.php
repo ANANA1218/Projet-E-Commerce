@@ -53,7 +53,7 @@ class UtilisateurRepository extends ServiceEntityRepository
 
     public function getOne(int $id): ?Utilisateur
     {
-        return $this->entityManager->getRepository(Utilisateur::class)->find($id);
+        return $this->find($id);
     }
 
     public function add(array $data): void
