@@ -35,7 +35,7 @@ class Commande
     private ?Utilisateur $id_utilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'statut')]
-    #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut')]
+    #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut', nullable: false)]
     private ?Statut $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
