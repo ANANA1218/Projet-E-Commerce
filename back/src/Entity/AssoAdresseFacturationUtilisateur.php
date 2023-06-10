@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AssoAdresseFacturationUtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass: AssoAdresseFacturationUtilisateurRepository::class)]
 /**
  * @ORM\Entity(repositoryClass=AssoAdresseFacturationUtilisateurRepository::class)
  * @ORM\Table(name="asso_adresse_facturation_utilisateur")
@@ -16,6 +17,9 @@ class AssoAdresseFacturationUtilisateur
      * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="assoAdressesFacturationUtilisateur")
      * @ORM\JoinColumn(name="id_utilisateur", referencedColumnName="id_utilisateur", nullable=false)
      */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: 'Utilisateur', inversedBy: 'assoAdresseFacturationUtilisateur')]
+    #[ORM\JoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur', nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     /**
@@ -23,6 +27,9 @@ class AssoAdresseFacturationUtilisateur
      * @ORM\ManyToOne(targetEntity=AdresseFacturation::class)
      * @ORM\JoinColumn(name="id_adresse_facturation", referencedColumnName="id_adresse_facturation", nullable=false)
      */
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: 'AdresseFacturation', inversedBy: 'assoAdresseFacturationUtilisateur')]
+    #[ORM\JoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation', nullable: false)]
     private ?AdresseFacturation $adresseFacturation = null;
 
     // Getters and Setters
