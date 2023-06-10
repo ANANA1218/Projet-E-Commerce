@@ -27,6 +27,8 @@ class Contact
     #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id_utilisateur', nullable: false)]
     private ?Utilisateur $id_client = null;
 
+
+
     public function getIdContact(): ?int
     {
         return $this->id_contact;
@@ -78,5 +80,16 @@ class Contact
         $this->id_client = $id_utilisateur;
 
         return $this;
+    }
+
+    public function serialize()
+    {
+        return [
+            'id_contact' => $this->getIdContact(),
+            'email' => $this->getEmail(),
+            'sujet' => $this->getSujet(),
+            'texte' => $this->getTexte(),
+            'id_client' => $this->getIdClient()->getIdUtilisateur(),
+        ];
     }
 }

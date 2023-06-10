@@ -24,9 +24,13 @@ class ModePaiement
     #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
     private Collection $id_utilisateur;
 
+    #[ORM\OneToMany(mappedBy: 'id_mode_paiement', targetEntity: Commande::class)]
+    private Collection $commandes;
+
     public function __construct()
     {
         $this->id_utilisateur = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getIdModePaiement(): ?int
@@ -66,6 +70,36 @@ class ModePaiement
     public function removeIdUtilisateur(Utilisateur $idUtilisateur): self
     {
         $this->id_utilisateur->removeElement($idUtilisateur);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): self
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setIdModePaiement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): self
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getIdModePaiement() === $this) {
+                $commande->setIdModePaiement(null);
+            }
+        }
 
         return $this;
     }
