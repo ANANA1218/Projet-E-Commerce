@@ -1,16 +1,13 @@
 import * as React from 'react';
-
-import { View, StatusBar, StyleSheet, Text } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import ProfileScreen from './screens/ProfileScreen';
-import SettingsScreen from './screens/SettingsRefer';
-import ReferScreen from './screens/ReferScreen';
+import ProfileScreen from './screens/Profile';
+import SettingsScreen from './screens/Settings';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
+import ReferScreen from './screens/Refer';
 import DrawerItems from './constants/DrawerItems';
-import {DrawerContent} from '@react-navigation/drawer';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 const Drawer = createDrawerNavigator()
@@ -67,11 +64,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
