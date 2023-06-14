@@ -2,13 +2,14 @@ import * as React from 'react';
 
 import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingsRefer';
-import ReferScreen from './screens/ReferScreen';
+import HomeScreen from './screens/HomeScreen';
 import DrawerItems from './constants/DrawerItems';
 
 import {  StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
 import { DrawerContent, createDrawerNavigator } from '@react-navigation/drawer';
+
 
 
 
@@ -19,7 +20,7 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator 
         drawerType="front"
-        initialRouteName="Profile"
+        initialRouteName="Home"
         screenOptions={{
           activeTintColor:'#e91e63',
           itemStyle:{ marginVertical: 10}
@@ -53,7 +54,7 @@ export default function App() {
             component={
               drawer.name==='Profile' ? ProfileScreen
                 : drawer.name==='Settings' ? SettingsScreen
-                  : ReferScreen
+                  : HomeScreen
             }
           />)
         }

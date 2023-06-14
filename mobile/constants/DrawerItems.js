@@ -1,8 +1,13 @@
 export default [
     {
+        name:'Home',
+        iconType:'Entypo',
+        iconName:'home'
+    },
+    {
         name:'Profile',
-        iconType:'Material',
-        iconName:'Persion2Icon'
+        iconType:'AntDesign',
+        iconName:'user'
     },
     {
         name:'Settings',
@@ -13,10 +18,5 @@ export default [
         name:'Saved Items',
         iconType:'Material',
         iconName:'bookmark-check-outline'
-    },
-    {
-        name:'Refer a Friend!',
-        iconType:'FontAwesome5',
-        iconName:'user-friends'
     }
  ]
