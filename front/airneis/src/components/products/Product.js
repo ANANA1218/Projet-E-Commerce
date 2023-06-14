@@ -5,22 +5,30 @@ import axios from "axios";
 
 function Product(props) {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/produits");
         setProducts(response.data);
+        setLoading(false);
       } catch (error) {
-        console.error(error);
+        setError(error.message);
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  if (products.length === 0) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -32,7 +40,7 @@ function Product(props) {
               className="card-img-top bg-dark cover"
               height="200"
               alt=""
-              src={product.image} 
+              src={product.image}
             />
           </Link>
           <div className="card-body">
