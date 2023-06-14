@@ -6,7 +6,6 @@ import axios from "axios";
 function Product(props) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,8 +14,7 @@ function Product(props) {
         setProducts(response.data);
         setLoading(false);
       } catch (error) {
-        setError(error.message);
-        setLoading(false);
+        console.error(error);
       }
     };
 
@@ -27,35 +25,35 @@ function Product(props) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
     <div className="col">
-      {products.map((product) => (
-        <div className="card shadow-sm" key={product.id_produit}>
-          <Link to={`/products/${product.id_produit}`} href="!#" replace>
-            <img
-              className="card-img-top bg-dark cover"
-              height="200"
-              alt=""
-              src={product.image}
-            />
-          </Link>
-          <div className="card-body">
-            <h5 className="card-title text-center text-dark text-truncate">
-              {product.nom_produit}
-            </h5>
-            <p className="card-text text-center text-muted mb-0">{product.prix}Ks</p>
-            <div className="d-grid d-block">
-              <button className="btn btn-outline-dark mt-3">
-                <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
-              </button>
+      {products.length === 0 ? (
+        <div>No products found.</div>
+      ) : (
+        products.map((product) => (
+          <div className="card shadow-sm" key={product.id_produit}>
+            <Link to={`/products/${product.id_produit}`} href="!#" replace>
+              <img
+                className="card-img-top bg-dark cover"
+                height="200"
+                alt=""
+                src={product.image} 
+              />
+            </Link>
+            <div className="card-body">
+              <h5 className="card-title text-center text-dark text-truncate">
+                {product.nom_produit}
+              </h5>
+              <p className="card-text text-center text-muted mb-0">{product.prix}Ks</p>
+              <div className="d-grid d-block">
+                <button className="btn btn-outline-dark mt-3">
+                  <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
