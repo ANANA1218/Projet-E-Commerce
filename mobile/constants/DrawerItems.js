@@ -2,7 +2,7 @@ export default [
     {
         name:'Profile',
         iconType:'Material',
-        iconName:'face-profile'
+        iconName:'Persion2Icon'
     },
     {
         name:'Settings',

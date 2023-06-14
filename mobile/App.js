@@ -1,16 +1,15 @@
 import * as React from 'react';
 
-import { View, StatusBar, StyleSheet, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingsRefer';
 import ReferScreen from './screens/ReferScreen';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
 import DrawerItems from './constants/DrawerItems';
-import {DrawerContent} from '@react-navigation/drawer';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+
+import {  StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { MaterialCommunityIcons, FontAwesome5, Feather } from '@expo/vector-icons';
+import { DrawerContent, createDrawerNavigator } from '@react-navigation/drawer';
+
 
 
 const Drawer = createDrawerNavigator()
@@ -18,10 +17,10 @@ const Drawer = createDrawerNavigator()
 export default function App() {
   return (
     <NavigationContainer>
-      <DrawerContent.Navigator 
+      <Drawer.Navigator 
         drawerType="front"
         initialRouteName="Profile"
-        drawerContentOptions={{
+        screenOptions={{
           activeTintColor:'#e91e63',
           itemStyle:{ marginVertical: 10}
         }}
@@ -58,7 +57,7 @@ export default function App() {
             }
           />)
         }
-      </DrawerContent.Navigator>
+      </Drawer.Navigator>
     </NavigationContainer>
     // <View style={styles.container}>
     //   <Text>Open up App.js to start working on your app!</Text>
