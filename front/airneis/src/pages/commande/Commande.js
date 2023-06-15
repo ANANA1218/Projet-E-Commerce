@@ -17,7 +17,7 @@ const Cart = () => {
     {
       id: 1,
       name: 'Product 1',
-      price: 10.99,
+      price: 49.99,
       quantity: 2,
     },
     {
