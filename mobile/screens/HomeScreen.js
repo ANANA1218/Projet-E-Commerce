@@ -4,7 +4,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios'
 
 
-const [produits, setProduits] = React.useState({})
 
 let ScreenHeight = Dimensions.get("window").height;
 
@@ -20,10 +19,34 @@ const logo = {
 
 
 export default function HomeScreen() {
-  axios({method:"get", url:"https://console.firebase.google.com/u/2/project/projet-e-commerce-temp/database/projet-e-commerce-temp-default-rtdb/data/~2F/produit"})
-  .then((response) =>{
-    setProduits(response.data)}
-  )
+
+  const [produits, setProduits] = React.useState([])
+  const [a, seta] = React.useState("nan")
+
+  React.useEffect(() => {
+    // fetch('https://projet-e-commerce-temp-default-rtdb.europe-west1.firebasedatabase.app/Produit.json') // Remplacez l'URL par l'URL réelle de votre API
+    //   // .then(response => response.json())
+    //   .then(Response => {
+    //     setProduits(Response.data); // Mettre à jour l'état avec les articles récupérés depuis l'API
+    //     seta("LALALALALALAL")
+    //     var b = "B"
+    //   })
+    //   .catch(error => {
+    //     console.error('Erreur lors de la récupération des articles depuis l\'API:', error);
+    //   });
+
+
+        axios({method:"get", url:"https://projet-e-commerce-temp-default-rtdb.europe-west1.firebasedatabase.app/Produit.json"})
+        .then(({data}) => {
+          const resultat = []
+          for(const key in data) {
+              (data[key]) && resultat.push({...data[key], id : key})
+          }
+          setProduits(resultat)
+      }
+        )
+  }, []);
+
    return (
     <ScrollView >
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -39,6 +62,14 @@ export default function HomeScreen() {
         <Image source={logo} /><Image source={logo} /><Image source={logo} /><Image source={logo} /><Image source={logo} />
         <Image source={logo} /><Image source={logo} /><Image source={logo} /><Image source={logo} /><Image source={logo} />
         </View>
+        <View>
+      <Text>Liste des produit{a}{typeof(produits)}</Text>
+
+        {produits.map((produit) => {
+          return   <Text key={produit.nom_produit}>{produit.nom_produit}</Text>
+        })}
+
+    </View>
     </ScrollView>
    );
  }
