@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CommandeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
@@ -36,7 +35,7 @@ class Commande
     private ?Utilisateur $id_utilisateur = null;
 
     #[ORM\ManyToOne(inversedBy: 'statut')]
-    #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut')]
+    #[ORM\JoinColumn(name: 'id_statut', referencedColumnName: 'id_statut', nullable: false)]
     private ?Statut $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
@@ -46,6 +45,10 @@ class Commande
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(name: 'id_adresse_livraison', referencedColumnName: 'id_adresse_livraison', nullable: false)]
     private ?AdresseLivraison $id_adresse_livraison = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(name: 'id_mode_paiement', referencedColumnName: 'id_mode_paiement', nullable: false)]
+    private ?ModePaiement $id_mode_paiement = null;
 
     public function getIdCommande(): ?int
     {
@@ -132,6 +135,18 @@ class Commande
     public function setIdAdresseLivraison(?AdresseLivraison $id_adresse_livraison): self
     {
         $this->id_adresse_livraison = $id_adresse_livraison;
+
+        return $this;
+    }
+
+    public function getIdModePaiement(): ?ModePaiement
+    {
+        return $this->id_mode_paiement;
+    }
+
+    public function setIdModePaiement(?ModePaiement $id_mode_paiement): self
+    {
+        $this->id_mode_paiement = $id_mode_paiement;
 
         return $this;
     }
