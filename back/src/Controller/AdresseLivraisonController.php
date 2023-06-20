@@ -28,7 +28,7 @@ class AdresseLivraisonController extends AbstractController
     public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
     {
         $query = $adresseLivraisonRepository->createQueryBuilder('a')
-            ->select('a.id_adresse_livraison ', 'a.rue', 'a.complement_adresse' , 'a.region', 'a.ville' , 'a.code_postal','a.pays');
+            ->select('a.id_adresse_livraison ', 'a.rue', 'a.complement_adresse', 'a.region', 'a.ville', 'a.code_postal', 'a.pays');
 
         $adressesLivraison = $query->getQuery()->getResult();
 
@@ -40,30 +40,30 @@ class AdresseLivraisonController extends AbstractController
 
 
     #[Route('/api/adresses_livraison/{id}', name: 'getAdresseLivraisonById', methods: ['GET'])]
-   /* public function getAdresseLivraisonById(AdresseLivraison $adresseLivraison, SerializerInterface $serializer): JsonResponse
+    /* public function getAdresseLivraisonById(AdresseLivraison $adresseLivraison, SerializerInterface $serializer): JsonResponse
     {
         $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
         return new JsonResponse($jsonAdresseLivraison, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 */
 
-public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
-{
-    $queryBuilder = $adresseLivraisonRepository->createQueryBuilder('a')
-        ->select('a.id_adresse_livraison', 'a.rue', 'a.complement_adresse', 'a.region', 'a.ville', 'a.code_postal', 'a.pays')
-        ->andWhere('a.id_adresse_livraison = :id')
-        ->setParameter('id', $id)
-        ->getQuery();
+    public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $queryBuilder = $adresseLivraisonRepository->createQueryBuilder('a')
+            ->select('a.id_adresse_livraison', 'a.rue', 'a.complement_adresse', 'a.region', 'a.ville', 'a.code_postal', 'a.pays')
+            ->andWhere('a.id_adresse_livraison = :id')
+            ->setParameter('id', $id)
+            ->getQuery();
 
-    $adresseLivraison = $queryBuilder->getOneOrNullResult();
-    $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
-    
-    return new JsonResponse($jsonAdresseLivraison, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
-}
+        $adresseLivraison = $queryBuilder->getOneOrNullResult();
+        $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
+
+        return new JsonResponse($jsonAdresseLivraison, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
+    }
 
 
 
-    
+
     #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
     public function createAdresseLivraison(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -76,16 +76,13 @@ public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adr
         $adresseLivraison->setVille($data['ville']);
         $adresseLivraison->setCodePostal($data['code_postal']);
         $adresseLivraison->setPays($data['pays']);
+        $adresseLivraison->setCarnetAdresse($data['carnet_adresse']);
 
         $entityManager->persist($adresseLivraison);
         $entityManager->flush();
 
-        $assoAdresseUtilisateur = new AssoAdresseLivraisonUtilisateur();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-        $assoAdresseUtilisateur->setUtilisateur($utilisateur);
-        $assoAdresseUtilisateur->setAdresseLivraison($adresseLivraison);
-
-        $entityManager->persist($assoAdresseUtilisateur);
+        $utilisateur->addAdressesLivraison($adresseLivraison);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Adresse de livraison ajoutée avec succès'], Response::HTTP_CREATED);
@@ -102,6 +99,7 @@ public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adr
         $adresseLivraison->setVille($data['ville']);
         $adresseLivraison->setCodePostal($data['code_postal']);
         $adresseLivraison->setPays($data['pays']);
+        $adresseLivraison->setCarnetAdresse($data['carnet_adresse']);
 
         $entityManager->flush();
 
