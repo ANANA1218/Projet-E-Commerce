@@ -42,6 +42,9 @@ class AdresseFacturation
     #[ORM\InverseJoinColumn(name: 'id_utilisateur', referencedColumnName: 'id_utilisateur')]
     private Collection $utilisateurs;
 
+    #[ORM\Column]
+    private ?bool $carnet_adresse = null;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -178,6 +181,18 @@ class AdresseFacturation
         if ($this->utilisateurs->removeElement($utilisateur)) {
             $utilisateur->removeAdressesFacturation($this);
         }
+
+        return $this;
+    }
+
+    public function isCarnetAdresse(): ?bool
+    {
+        return $this->carnet_adresse;
+    }
+
+    public function setCarnetAdresse(bool $carnet_adresse): self
+    {
+        $this->carnet_adresse = $carnet_adresse;
 
         return $this;
     }
