@@ -25,6 +25,28 @@ function Product(props) {
     return <div>Loading...</div>;
   }
 
+  const addToCart = (product) => {
+    
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    
+    const existingItem = cartItems.find((item) => item.id === product.id_produit);
+
+    if (existingItem) {
+    
+      existingItem.quantity += 1;
+    } else {
+      cartItems.push({
+        id: product.id_produit,
+        name: product.nom_produit,
+        price: product.prix,
+        quantity: 1,
+      });
+    }
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  };
+
+
   return (
     <>
       {products.length === 0 ? (
@@ -47,9 +69,9 @@ function Product(props) {
                 </h5>
                 <p className="card-text text-center text-muted mb-0">{product.prix}Ks</p>
                 <div className="d-grid d-block">
-                  <button className="btn btn-outline-dark mt-3">
-                    <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
-                  </button>
+                <button className="btn btn-outline-dark mt-3" onClick={() => addToCart(product)}>
+        <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
+      </button>
                   <Link
                     to={`/products/${product.id_produit}`}
                     className="btn btn-outline-primary mt-2"
