@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 function Footer() {
+
   const [footerPosition, setFooterPosition] = useState("fixed");
 
   useEffect(() => {
@@ -35,6 +36,7 @@ function Footer() {
       </div>
     </footer>
   );
+
 }
 
 export default Footer;
