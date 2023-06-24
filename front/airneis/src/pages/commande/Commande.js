@@ -49,11 +49,7 @@ function Cart() {
 
   return (
     <div className="container">
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
+   
 
       <h2>Cart</h2>
       <div className="row">

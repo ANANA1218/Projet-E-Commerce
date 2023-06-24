@@ -54,7 +54,7 @@ const OrderHistoryPage = () => {
 
   return (
     <Container maxWidth="sm">
-      <br></br>
+   
       <Box mt={4}>
         <Typography variant="h4" align="center" gutterBottom>
           Historique des commandes

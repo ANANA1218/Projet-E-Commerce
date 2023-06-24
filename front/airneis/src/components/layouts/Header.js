@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function Header() {
-
-  const [openedDrawer, setOpenedDrawer] = useState(false)
+  const [openedDrawer, setOpenedDrawer] = useState(false);
 
   function toggleDrawer() {
     setOpenedDrawer(!openedDrawer);
@@ -12,7 +11,7 @@ function Header() {
 
   function changeNav(event) {
     if (openedDrawer) {
-      setOpenedDrawer(false)
+      setOpenedDrawer(false);
     }
   }
 
@@ -29,7 +28,7 @@ function Header() {
             <span className="ms-2 h5">ÀIRNEIS</span>
           </Link>
 
-          <div className={"navbar-collapse offcanvas-collapse " + (openedDrawer ? 'open' : '')}>
+          <div className={"navbar-collapse offcanvas-collapse " + (openedDrawer ? "open" : "")}>
             <ul className="navbar-nav me-auto mb-lg-0">
               <li className="nav-item">
                 <Link to="/products" className="nav-link" replace onClick={changeNav}>
@@ -38,15 +37,15 @@ function Header() {
               </li>
             </ul>
             <button type="button" className="btn btn-outline-dark me-3 d-none d-lg-inline">
-            <a href="/#/panier">
-            <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
-            </a>
+              <a href="/#/panier">
+                <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
+              </a>
               <span className="ms-3 badge rounded-pill bg-dark">0</span>
             </button>
             <ul className="navbar-nav mb-2 mb-lg-0">
               <li className="nav-item dropdown">
                 <a
-                  href="/"// chaner pour envoyer à la page commande
+                  href="/" // changer pour envoyer à la page commande
                   className="nav-link dropdown-toggle"
                   data-toggle="dropdown"
                   id="userDropdown"
@@ -86,6 +85,9 @@ function Header() {
           </div>
         </div>
       </nav>
+
+      <div className="mt-16" /> 
+
     </header>
   );
 }
