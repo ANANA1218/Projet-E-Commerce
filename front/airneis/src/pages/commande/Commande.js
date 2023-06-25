@@ -129,7 +129,7 @@ function Cart() {
                       <Card.Text>Price: {item.price.toFixed(2)}</Card.Text>
                       <div className="d-flex justify-content-between align-items-center">
                         <div>
-                          Quantity: {item.quantity}
+                          Quantity: {item.quantity} <br/>
                           <Button variant="outline-primary" size="sm" onClick={() => decreaseQuantity(item)}>
                             -
                           </Button>{" "}
