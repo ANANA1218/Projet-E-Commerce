@@ -12,6 +12,7 @@ const iconPath =
     function ProductDetail() {
         const params = useParams();
         const [product, setProduct] = useState(null);
+        const [loading, setLoading] = useState(true);
       
         useEffect(() => {
           axios
@@ -28,6 +29,31 @@ const iconPath =
       
         function changeRating(newRating) {}
       
+
+
+        const addToCart = (product) => {
+    
+          const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      
+          
+          const existingItem = cartItems.find((item) => item.id === product.id_produit);
+      
+          if (existingItem) {
+          
+            existingItem.quantity += 1;
+          } else {
+            cartItems.push({
+              id: product.id_produit,
+              name: product.nom_produit,
+              price: product.prix,
+              quantity: 1,
+            });
+          }
+          localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        };
+
+
+
         return (
           <div className="container mt-5 py-4 px-xl-5">
             <ScrollToTopOnMount />
@@ -100,11 +126,12 @@ const iconPath =
                       <h4 className="text-muted mb-4">{product.prix} €</h4>
                       <div className="row g-3 mb-4">
                         <div className="col">
-                          <button className="btn btn-outline-dark py-2 w-100">Add to cart</button>
+                        <button className="btn btn-outline-dark py-2 w-100" onClick={() => addToCart(product)}>
+                          Add to cart
+                        </button>
+
                         </div>
-                        <div className="col">
-                          <button className="btn btn-dark py-2 w-100">Buy now</button>
-                        </div>
+                        
                       </div>
                       <h4 className="mb-0">Details</h4>
                       <hr />

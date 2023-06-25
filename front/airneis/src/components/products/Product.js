@@ -67,7 +67,7 @@ function Product(props) {
                 <h5 className="card-title text-center text-dark text-truncate">
                   {product.nom_produit}
                 </h5>
-                <p className="card-text text-center text-muted mb-0">{product.prix}Ks</p>
+                <p className="card-text text-center text-muted mb-0">{product.prix}€</p>
                 <div className="d-grid d-block">
                 <button className="btn btn-outline-dark mt-3" onClick={() => addToCart(product)}>
         <FontAwesomeIcon icon={["fas", "cart-plus"]} /> Add to cart
