@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Dimensions, View, Text, Image, StyleSheet } from "react-native";
+import { Dimensions, View, Text, Image, StyleSheet, Button } from "react-native";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios'
 
 import ProduitCard from './ProduitCard';
+import Footer from './Footer';
 
 
 
@@ -11,7 +12,8 @@ let ScreenHeight = Dimensions.get("window").height;
 
 var Styles = StyleSheet.create({
   height:{height : ScreenHeight }, 
-  card:{ flexDirection:'column', flex:3, backgroundColor: 'white', borderWidth: 1, margin:10, borderRadius:7 }
+  card:{ flexDirection:'column', flex:3, backgroundColor: 'white', borderWidth: 1,borderColor:'grey', margin:10, borderRadius:7 },
+  cardImage:{ flex:1, borderTopLeftRadius:7, borderTopRightRadius:7 }
 })
 
 const logo = {
@@ -72,24 +74,38 @@ export default function HomeScreen() {
       <View>
         {produits.map((produit) => {
           return(
-            <View>
-            {/* //Home made Card */}
+            // {/* //Home made Card */}
             <View key={produit.nom_produit} style={Styles.card}>
-              <Image style={[Styles.card, {height: 300, flex: 1, width: null}]} source={{uri:produit.img}}/>
+              <Image style={[Styles.cardImage, {height: 300, flex: 1, width: null}]} source={{uri:produit.img}}/>
               <View style={{alignItems: 'center', justifyContent: 'center', padding:5}}>
                 <Text style={{fontSize:30,fontWeight:'700', margin:10}}>{produit.nom_produit}</Text>
                 <Text style={{fontSize:15,fontWeight:'300', color:'black'}}>{produit.description}</Text>
               </View>
-              <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
-                <Text style={{fontSize:20,fontWeight:'500', margin:15, padding:6,borderRadius:6, backgroundColor:'#f5f5f5'}}>{produit.prix} €</Text>
+              <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                <View style={{ margin:10, }}>
+                  <Text style={{fontSize:20,fontWeight:'400',  padding:6,borderRadius:6, backgroundColor:'#f5f5f5'}}>{produit.prix} €</Text>
+                </View>
+
+                <View style={{ margin:10, flexDirection:'row'}}>
+                  <Button
+                    onPress={() => {return}}
+                    title="Ajouter au panier"
+                    // color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                    // style={{backgroundColor:'#654321'}}
+                    color={'#2a2626'}
+                  />
+                </View>
               </View>
             </View>
 
-            <ProduitCard key={produit.id} produit={produit} />
-</View>
+            // {/* <ProduitCard key={produit.id} produit={produit} /> */}
+
           )          
         })}
       </View>
+
+      <Footer/>
 
     </ScrollView>
    );
