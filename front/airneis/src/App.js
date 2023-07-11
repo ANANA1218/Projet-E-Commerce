@@ -21,6 +21,8 @@ function App() {
                 <Route exact path="/inscription" element={<RegisterForm />} />
             </Routes>
         </Template>
+
+        
     );
 }
 
