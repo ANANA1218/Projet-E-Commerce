@@ -8,7 +8,7 @@ const ImageWithCategory = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(process.env.REACT_APP_BACKEND_URL + '/categories');
+                const response = await axios.get(process.env.REACT_APP_PUBLIC_BACKEND_URL +'/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error(error);
