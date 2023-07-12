@@ -1,5 +1,5 @@
 import Banner from "../components/home/Banner";
-import FeatureProduct from "../components/home/FeatureProduct";
+import ImageWithCategory from "../components/home/Category";
 import ScrollToTopOnMount from "../lib/ScrollToTopOnMount";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
@@ -20,12 +20,10 @@ function Home() {
                     </Link>
                 </div>
             </div>
-            <h2 className="text-muted text-center mt-4 mb-3">New Arrival</h2>
+            <h2 className="text-muted text-center mt-4 mb-3">Catégories</h2>
             <div className="container pb-5 px-lg-5">
                 <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 px-md-5">
-                    {Array.from({ length: 6 }, (_, i) => {
-                        return <FeatureProduct key={i} />;
-                    })}
+                    <ImageWithCategory/>
                 </div>
             </div>
             <div className="d-flex flex-column bg-white py-4">
