@@ -119,6 +119,17 @@ class UtilisateurRepository extends ServiceEntityRepository
         $this->entityManager->flush();
     }
 
+
+
+public function getLoggedInUser(int $id_utilisateur): ?Utilisateur
+{
+    return $this->getLoggedInUserById($id_utilisateur);
+}
+
+
+
+
+
     //    /**
     //     * @return Utilisateur[] Returns an array of Utilisateur objects
     //     */
