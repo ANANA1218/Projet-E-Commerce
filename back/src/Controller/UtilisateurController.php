@@ -93,30 +93,4 @@ class UtilisateurController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
     }
-
-  
-
-
-    #[Route('/api/utilisateur/logged-in', name: 'loggedInUser', methods: ['GET'])]
-    public function getLoggedInUser(Request $request, UtilisateurRepository $utilisateurRepository): JsonResponse
-    {
-       
-        $id_utilisateur = (int)$request->get('id_utilisateur');
-    
-        
-        $user = $utilisateurRepository->getLoggedInUser($id_utilisateur);
-    
-       
-        if (!$user) {
-            return $this->json(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-        }
-    
-       
-        return $this->json($user, Response::HTTP_OK);
-    }
-    
-
-
-
-
 }
