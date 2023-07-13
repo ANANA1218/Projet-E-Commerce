@@ -7,22 +7,20 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import ListCommande from "./pages/commande/ListCommande";
+import Index from "./pages/backoffice/Index";
 
 function App() {
     return (
-        <Template>
-            <Routes>
-                <Route exact path="/" element={<Home />} />
-                <Route exact path="/products" element={<ProductList />} />
-                <Route exact path="/products/:id" element={<ProductDetail />} />
-                <Route exact path="/panier" element={<Commande />} />
-                <Route exact path="/commandes" element={<ListCommande />} />
-                <Route exact path="/login" element={<LoginForm />} />
-                <Route exact path="/inscription" element={<RegisterForm />} />
-            </Routes>
-        </Template>
-
-        
+        <Routes>
+            <Route path="/" element={<Template><Home /></Template>} />
+            <Route path="/products" element={<Template><ProductList /></Template>} />
+            <Route path="/products/:id" element={<Template><ProductDetail /></Template>} />
+            <Route path="/panier" element={<Template><Commande /></Template>} />
+            <Route path="/commandes" element={<Template><ListCommande /></Template>} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/inscription" element={<RegisterForm />} />
+            <Route path="/backoffice" element={<Index />} />
+        </Routes>
     );
 }
 
