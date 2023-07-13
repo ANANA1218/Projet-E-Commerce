@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230603170940 extends AbstractMigration
+final class Version20230625164030 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,6 +26,7 @@ final class Version20230603170940 extends AbstractMigration
         $this->addSql('ALTER TABLE asso_adresse_livraison_utilisateur ADD CONSTRAINT FK_2E46F115FA3C61DE FOREIGN KEY (id_adresse_livraison) REFERENCES adresse_livraison (id_adresse_livraison)');
         $this->addSql('ALTER TABLE asso_adresse_facturation_utilisateur ADD CONSTRAINT FK_55D9AD6950EAE44 FOREIGN KEY (id_utilisateur) REFERENCES utilisateur (id_utilisateur)');
         $this->addSql('ALTER TABLE asso_adresse_facturation_utilisateur ADD CONSTRAINT FK_55D9AD699F0F341E FOREIGN KEY (id_adresse_facturation) REFERENCES adresse_facturation (id_adresse_facturation)');
+        $this->addSql('ALTER TABLE produit CHANGE date_ajout date_ajout DATETIME NOT NULL');
     }
 
     public function down(Schema $schema): void
@@ -37,5 +38,6 @@ final class Version20230603170940 extends AbstractMigration
         $this->addSql('ALTER TABLE asso_adresse_facturation_utilisateur DROP FOREIGN KEY FK_55D9AD699F0F341E');
         $this->addSql('DROP TABLE asso_adresse_livraison_utilisateur');
         $this->addSql('DROP TABLE asso_adresse_facturation_utilisateur');
+        $this->addSql('ALTER TABLE produit CHANGE date_ajout date_ajout DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL');
     }
 }

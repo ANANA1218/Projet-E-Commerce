@@ -40,7 +40,7 @@ class AdresseFacturationController extends AbstractController
 
         $adresseFacturation = $queryBuilder->getOneOrNullResult();
         $jsonAdresseFacturation = $serializer->serialize($adresseFacturation, 'json');
-    
+
         return new JsonResponse($jsonAdresseFacturation, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
     }
 
@@ -56,16 +56,13 @@ class AdresseFacturationController extends AbstractController
         $adresseFacturation->setVille($data['ville']);
         $adresseFacturation->setCodePostal($data['code_postal']);
         $adresseFacturation->setPays($data['pays']);
+        $adresseFacturation->setCarnetAdresse($data['carnet_adresse']);
 
         $entityManager->persist($adresseFacturation);
         $entityManager->flush();
 
-        $assoAdresseUtilisateur = new AssoAdresseFacturationUtilisateur();
         $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-        $assoAdresseUtilisateur->setUtilisateur($utilisateur);
-        $assoAdresseUtilisateur->setAdresseFacturation($adresseFacturation);
-
-        $entityManager->persist($assoAdresseUtilisateur);
+        $utilisateur->addAdressesFacturation($adresseFacturation);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Adresse de facturation ajoutée avec succès'], Response::HTTP_CREATED);
@@ -82,6 +79,7 @@ class AdresseFacturationController extends AbstractController
         $adresseFacturation->setVille($data['ville']);
         $adresseFacturation->setCodePostal($data['code_postal']);
         $adresseFacturation->setPays($data['pays']);
+        $adresseFacturation->setCarnetAdresse($data['carnet_adresse']);
 
         $entityManager->flush();
 

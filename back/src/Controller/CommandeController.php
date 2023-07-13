@@ -49,7 +49,7 @@ class CommandeController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
-    #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
+  
  
     /*public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
    
@@ -99,7 +99,7 @@ class CommandeController extends AbstractController
     }
 */
 
-
+ #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
 public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
 {
     $data = json_decode($request->getContent(), true);
