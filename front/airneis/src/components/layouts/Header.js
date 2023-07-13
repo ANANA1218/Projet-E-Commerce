@@ -37,7 +37,7 @@ function Header() {
               </li>
             </ul>
             <button type="button" className="btn btn-outline-dark me-3 d-none d-lg-inline">
-              <a href="/#/panier">
+              <a href="/panier">
                 <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
               </a>
               <span className="ms-3 badge rounded-pill bg-dark">0</span>

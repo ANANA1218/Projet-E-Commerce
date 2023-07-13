@@ -61,6 +61,26 @@ class Utilisateur
     #[ORM\InverseJoinColumn(name: 'id_adresse_facturation', referencedColumnName: 'id_adresse_facturation')]
     private Collection $adresses_facturation;
 
+
+// Ajoutez ces lignes à la classe Utilisateur
+
+#[ORM\Column(length: 255, nullable: true)]
+private ?string $token = null;
+
+public function getToken(): ?string
+{
+    return $this->token;
+}
+
+public function setToken(?string $token): self
+{
+    $this->token = $token;
+    return $this;
+}
+
+
+
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
