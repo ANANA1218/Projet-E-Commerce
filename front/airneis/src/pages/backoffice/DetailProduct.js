@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Template from '../../components/layouts/backoffice/Template';
+import DropdownCategory from '../../components/backoffice/DrodownCategory';
 
 function DetailProduct() {
 
@@ -70,12 +71,10 @@ function DetailProduct() {
     }
 
     return (
-        <Template>
+        <Template title={"Détail Produit"}>
             <div className="container">
                 <div className="row justify-content-center align-items-center">
                     <div className="col-md-6">
-                        <h2 className="mb-4 text-center">Détail Produit</h2>
-
                         {successMessage && <div className="alert alert-success">{successMessage}</div>}
                         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
@@ -95,17 +94,7 @@ function DetailProduct() {
                                     <label>Nom</label>
                                     <input type="text" name="nom_produit" value={editedProduct.nom_produit} className="form-control" onChange={handleChange} />
                                 </div>
-                                <div className="form-group">
-                                    <label>Catégorie</label>
-                                    <select name="id_categorie" value={editedProduct.categorie.id_categorie || ""} className="form-control" onChange={handleChange}>
-                                        <option value="">Select a category</option>
-                                        {categories.map(category => (
-                                            <option key={category.id_categorie} value={category.id_categorie}>
-                                                {category.nom_categorie}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <DropdownCategory categories={categories} selectedCategoryId={editedProduct.categorie.id_categorie || ""} onChange={handleChange} />
                                 <div className="form-group">
                                     <label>Description</label>
                                     <textarea name="description" value={editedProduct.description} className="form-control" onChange={handleChange} />
@@ -120,7 +109,7 @@ function DetailProduct() {
                                         <input type="text" name="stock" value={editedProduct.stock} className="form-control" onChange={handleChange} />
                                     </div>
                                 </div>
-                                <button className="btn btn-success mt-3" type="submit" onClick={handleSave}>
+                                <button className="btn btn-success m-3" type="submit" onClick={handleSave}>
                                     Sauvegarder
                                 </button>
                             </div>

@@ -40,12 +40,10 @@ function DetailCategory() {
     };
 
     return (
-        <Template>
+        <Template title={"Détail Catégorie"}>
             <div className="container">
                 <div className="row justify-content-center align-items-center">
                     <div className="col-md-6">
-                        <h2 className="mb-4 text-center">Détail Catégorie</h2>
-
                         {successMessage && <div className="alert alert-success">{successMessage}</div>}
                         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
