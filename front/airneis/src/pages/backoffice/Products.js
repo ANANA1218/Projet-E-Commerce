@@ -16,6 +16,13 @@ function Products() {
     return (
         <Template title={"Produits"}>
             <div className="MainDiv">
+                <div className="row">
+                    <div className="text-center mb-4">
+                        <a href="/backoffice/product/add" className="btn btn-info btn-icon-split" style={{ width: '260px' }}>
+                            <span className="text">Ajouter un nouveau produit</span>
+                        </a>
+                    </div>
+                </div>
                 <Table data={products} columns={columns} path="/backoffice/product" paramKey="id_produit" />
             </div>
         </Template>

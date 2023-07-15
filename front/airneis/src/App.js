@@ -12,6 +12,7 @@ import Products from "./pages/backoffice/Products";
 import Categories from "./pages/backoffice/Categories";
 import DetailProduct from "./pages/backoffice/DetailProduct";
 import DetailCategory from "./pages/backoffice/DetailCategory";
+import AddProduct from "./pages/backoffice/AddProduct";
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/backoffice" element={<Index />} />
             <Route path="/backoffice/products" element={<Products />} />
             <Route path="/backoffice/product/:id" element={<DetailProduct />} />
+            <Route path="/backoffice/product/add" element={<AddProduct />} />
             <Route path="/backoffice/categories" element={<Categories />} />
             <Route path="/backoffice/category/:id" element={<DetailCategory />} />
         </Routes>
