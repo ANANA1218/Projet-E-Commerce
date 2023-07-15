@@ -13,6 +13,7 @@ import Categories from "./pages/backoffice/Categories";
 import DetailProduct from "./pages/backoffice/DetailProduct";
 import DetailCategory from "./pages/backoffice/DetailCategory";
 import AddProduct from "./pages/backoffice/AddProduct";
+import AddCategory from "./pages/backoffice/AddCategory";
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/backoffice/product/add" element={<AddProduct />} />
             <Route path="/backoffice/categories" element={<Categories />} />
             <Route path="/backoffice/category/:id" element={<DetailCategory />} />
+            <Route path="/backoffice/category/add" element={<AddCategory />} />
         </Routes>
     );
 }

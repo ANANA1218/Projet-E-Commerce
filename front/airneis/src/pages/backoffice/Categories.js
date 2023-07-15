@@ -16,7 +16,17 @@ function Categories() {
 
     return (
         <Template title={"Catégories"}>
-            <Table data={categories} columns={columns} path="/backoffice/category" paramKey="id_categorie" />
+            <div className="MainDiv">
+                <div className="row">
+                    <div className="text-center mb-4">
+                        <a href="/backoffice/category/add" className="btn btn-info btn-icon-split" style={{ width: '260px' }}>
+                            <span className="text">Ajouter une nouvelle catégorie</span>
+                        </a>
+                    </div>
+                </div>
+
+                <Table data={categories} columns={columns} path="/backoffice/category" paramKey="id_categorie" />
+            </div>
         </Template>
     )
 }
