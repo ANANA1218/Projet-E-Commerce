@@ -4,7 +4,6 @@ import Products from "./Products";
 function Index() {
     return (
         <Template>
-            <Products />
         </Template>
     );
 }
