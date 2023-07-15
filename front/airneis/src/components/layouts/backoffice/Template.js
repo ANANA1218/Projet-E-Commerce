@@ -16,7 +16,7 @@ function Template({ title, children }) {
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="text-center">
-                                    <h2 className="m-5 text-center fw-bold text-dark">{title}</h2>
+                                    <h2 className="m-4 text-center fw-bold text-dark">{title}</h2>
                                 </div>
                                 {children}
                             </div>
