@@ -93,7 +93,7 @@ class UtilisateurController extends AbstractController
    */
 
 
-    /*
+    
     #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
@@ -125,7 +125,32 @@ class UtilisateurController extends AbstractController
         return $this->json(['token' => $token], Response::HTTP_OK);
     }
 
- */
+ 
+    #[Route('/api/utilisateur/info', name: 'getUserInfo', methods: ['GET'])]
+public function getUserInfo(Request $request): JsonResponse
+{
+    // Récupérez le token d'authentification depuis l'en-tête de la requête
+    $token = $request->headers->get('Authorization');
+
+    // Vérifiez que le token existe et commence par "Bearer "
+    if (!$token || !str_starts_with($token, 'Bearer ')) {
+        return $this->json(['message' => 'Token d\'authentification manquant'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    // Extraitz le token du préfixe "Bearer "
+    $jwtToken = substr($token, 7);
+
+    try {
+        // Décodage du token pour obtenir les informations de l'utilisateur
+        $jwtSecretKey = 'your-secret-key'; // Utilisez la même clé secrète que dans la méthode de login
+        $tokenPayload = JWT::decode($jwtToken, $jwtSecretKey);
+
+        // Renvoyez les informations de l'utilisateur en tant que réponse
+        return $this->json($tokenPayload, Response::HTTP_OK);
+    } catch (Exception $e) {
+        return $this->json(['message' => 'Token invalide'], Response::HTTP_UNAUTHORIZED);
+    }
+}
 
     #[Route('/api/utilisateur/{id}', name: 'updateUtilisateur', methods: ['PUT'])]
     public function updateUtilisateur(Request $request, int $id): JsonResponse
