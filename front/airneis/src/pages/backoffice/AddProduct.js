@@ -65,16 +65,24 @@ function AddProduct() {
             return;
         }
 
-        const updatedProduct = {
+        const newProduct = {
             ...editedProduct,
             id_categorie: editedProduct.categorie.id_categorie
         };
 
         axios
-            .post(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits`, updatedProduct)
+            .post(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits`, newProduct)
             .then(() => {
                 setSuccessMessage('Produit ajouté avec succès');
                 setErrorMessage('');
+                setEditedProduct({
+                    nom_produit: '',
+                    id_categorie: '',
+                    description: '',
+                    prix: '',
+                    stock: ''
+                });
+
             })
             .catch(() => {
                 setErrorMessage('Une erreur est survenue lors de l\'ajout du produit');
@@ -110,7 +118,7 @@ function AddProduct() {
                             </div>
                         </div>
                         <button className="btn btn-success m-3" type="submit" onClick={handleSave}>
-                            Sauvegarder
+                            Ajouter
                         </button>
                     </div>
                 </div>
