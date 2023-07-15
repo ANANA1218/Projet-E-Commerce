@@ -30,11 +30,11 @@ function DetailCategory() {
     const handleUpdate = () => {
         axios.put(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories/${id}`, updatedCategory)
             .then(() => {
-                setSuccessMessage('Produit modifié avec succès');
+                setSuccessMessage('Catégorie modifiée avec succès');
                 setErrorMessage('');
             })
             .catch(() => {
-                setErrorMessage('Une erreur est survenue lors de la mise à jour du produit');
+                setErrorMessage('Une erreur est survenue lors de la mise à jour de la catégorie');
                 setSuccessMessage('');
             });
     };
