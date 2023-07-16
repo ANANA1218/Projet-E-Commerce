@@ -38,7 +38,7 @@ const Table = ({ columns, data, path, paramKey }) => {
                         {columns.map((column, index) => (
                             <th key={index}>{column}</th>
                         ))}
-                        <th></th>
+                        {path && paramKey ? <th></th> : ""}
                     </tr>
                 </thead>
                 <tbody>
@@ -47,9 +47,12 @@ const Table = ({ columns, data, path, paramKey }) => {
                             {columns.map((column, columnIndex) => (
                                 <td key={columnIndex}>{result[column]}</td>
                             ))}
-                            <td>
-                                <Link to={`${path}/${result[paramKey]}`}>Modifier</Link>
-                            </td>
+                            {path && paramKey ?
+                                (
+                                    <td><Link to={`${path}/${result[paramKey]}`}>Modifier</Link></td>
+                                )
+                                : ''
+                            }
                         </tr>
                     ))}
                 </tbody>
