@@ -14,6 +14,7 @@ import DetailProduct from "./pages/backoffice/DetailProduct";
 import DetailCategory from "./pages/backoffice/DetailCategory";
 import AddProduct from "./pages/backoffice/AddProduct";
 import AddCategory from "./pages/backoffice/AddCategory";
+import ListMessages from "./pages/backoffice/ListMessages";
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/backoffice/categories" element={<Categories />} />
             <Route path="/backoffice/category/:id" element={<DetailCategory />} />
             <Route path="/backoffice/category/add" element={<AddCategory />} />
+            <Route path="/backoffice/messages" element={<ListMessages />} />
         </Routes>
     );
 }
