@@ -95,6 +95,13 @@ public function setToken(?string $token): self
         return $this->id_utilisateur;
     }
 
+    public function setIdUtilisateur(int $id_utilisateur): self
+    {
+        $this->id_utilisateur = $id_utilisateur;
+
+        return $this;
+    }
+
     public function getNom(): ?string
     {
         return $this->nom;
