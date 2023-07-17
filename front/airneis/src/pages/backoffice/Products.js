@@ -15,7 +15,7 @@ function Products() {
 
     return (
         <Template title={"Produits"}>
-            <div className="MainDiv">
+            <div className="MainDiv mb-4">
                 <div className="row">
                     <div className="text-center mb-4">
                         <a href="/backoffice/product/add" className="btn btn-info btn-icon-split" style={{ width: '260px' }}>
