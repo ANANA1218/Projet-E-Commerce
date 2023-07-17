@@ -93,7 +93,7 @@ class UtilisateurController extends AbstractController
    */
 
 
-    
+    /*
     #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
@@ -151,6 +151,8 @@ public function getUserInfo(Request $request): JsonResponse
         return $this->json(['message' => 'Token invalide'], Response::HTTP_UNAUTHORIZED);
     }
 }
+
+*/
 
     #[Route('/api/utilisateur/{id}', name: 'updateUtilisateur', methods: ['PUT'])]
     public function updateUtilisateur(Request $request, int $id): JsonResponse
