@@ -25,6 +25,7 @@ class AuthController extends AbstractController
         $this->tokenStorage = $tokenStorage;
     } 
 
+    /*
     #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
@@ -56,7 +57,7 @@ class AuthController extends AbstractController
 
         return $this->json($userData, Response::HTTP_OK);
     }
-
+*/
 /*
     public function login(string $email, string $password): ?Utilisateur
     {
@@ -78,4 +79,78 @@ class AuthController extends AbstractController
     }
 
     */
+
+
+    #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+    public function login(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $email = $data['email'] ?? '';
+        $password = $data['password'] ?? '';
+
+        if (!$email || !$password) {
+            return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->utilisateurRepository->login($email, $password);
+
+        if (!$user) {
+            return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        // Return the necessary user information with addresses.
+        $userData = [
+            'id_utilisateur' => $user->getIdUtilisateur(),
+            'nom' => $user->getNom(),
+            'prenom' => $user->getPrenom(),
+            'email' => $user->getEmail(),
+            'id_adresse_facturation' => null,
+            'id_adresse_livraison' => null,
+            'adresses_facturation' => [],
+            'adresses_livraison' => [],
+        ];
+
+        // Get the first address for billing (if exists).
+        $adressesFacturation = $user->getAdressesFacturation();
+        if (!$adressesFacturation->isEmpty()) {
+            $userData['id_adresse_facturation'] = $adressesFacturation->first()->getIdAdresseFacturation();
+        }
+
+        // Get the first address for delivery (if exists).
+        $adressesLivraison = $user->getAdressesLivraison();
+        if (!$adressesLivraison->isEmpty()) {
+            $userData['id_adresse_livraison'] = $adressesLivraison->first()->getIdAdresseLivraison();
+        }
+
+        // Add billing addresses information to userData.
+        foreach ($adressesFacturation as $adresseFacturation) {
+            $userData['adresses_facturation'][] = [
+                'rue' => $adresseFacturation->getRue(),
+                'complement_adresse' => $adresseFacturation->getComplementAdresse(),
+                'region' => $adresseFacturation->getRegion(),
+                'ville' => $adresseFacturation->getVille(),
+                'code_postal' => $adresseFacturation->getCodePostal(),
+                'pays' => $adresseFacturation->getPays(),
+               // 'carnet_adresse' => $adresseFacturation->getCarnetAdresse(),
+            ];
+        }
+
+        // Add delivery addresses information to userData.
+        foreach ($adressesLivraison as $adresseLivraison) {
+            $userData['adresses_livraison'][] = [
+                'rue' => $adresseLivraison->getRue(),
+                'complement_adresse' => $adresseLivraison->getComplementAdresse(),
+                'region' => $adresseLivraison->getRegion(),
+                'ville' => $adresseLivraison->getVille(),
+                'code_postal' => $adresseLivraison->getCodePostal(),
+                'pays' => $adresseLivraison->getPays(),
+               // 'carnet_adresse' => $adresseLivraison->getCarnetAdresse(),
+            ];
+        }
+
+        return $this->json($userData, Response::HTTP_OK);
+    }
+
+
 }
