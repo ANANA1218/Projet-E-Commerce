@@ -56,4 +56,26 @@ class AuthController extends AbstractController
 
         return $this->json($userData, Response::HTTP_OK);
     }
+
+/*
+    public function login(string $email, string $password): ?Utilisateur
+    {
+        $user = $this->createQueryBuilder('u')
+            ->andWhere('u.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$user) {
+            return null;
+        }
+
+        if (!password_verify($password, $user->getMotDePasse())) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    */
 }
