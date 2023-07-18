@@ -70,4 +70,23 @@ class CategorieController extends AbstractController
 
         return new JsonResponse(['message' => 'Catégorie supprimée avec succès'], Response::HTTP_OK);
     }
+
+    #[Route('/api/categories/multiple/{ids}', name: 'deleteCategories', methods: ['DELETE'])]
+    public function deleteCategories(EntityManagerInterface $entityManager, string $ids): JsonResponse
+    {
+        $categorieIds = explode(',', $ids);
+
+        $deletedCategories = [];
+        foreach ($categorieIds as $categorieId) {
+            $categorie = $entityManager->getRepository(Categorie::class)->find($categorieId);
+            if ($categorie) {
+                $entityManager->remove($categorie);
+                $deletedCategories[] = $categorie->getIdCategorie();
+            }
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Catégories supprimées avec succès', 'deletedIds' => $deletedCategories], Response::HTTP_OK);
+    }
 }

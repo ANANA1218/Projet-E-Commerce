@@ -123,4 +123,24 @@ class ProduitController extends AbstractController
 
         return new JsonResponse(['message' => 'Produit supprimé avec succès'], Response::HTTP_OK);
     }
+
+
+    #[Route('/api/produits/multiple/{ids}', name: 'deleteProduits', methods: ['DELETE'])]
+    public function deleteProduits(EntityManagerInterface $entityManager, string $ids): JsonResponse
+    {
+        $productIds = explode(',', $ids);
+
+        $deletedProducts = [];
+        foreach ($productIds as $productId) {
+            $produit = $entityManager->getRepository(Produit::class)->find($productId);
+            if ($produit) {
+                $entityManager->remove($produit);
+                $deletedProducts[] = $produit->getIdProduit();
+            }
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Produits supprimés avec succès', 'deletedIds' => $deletedProducts], Response::HTTP_OK);
+    }
 }
