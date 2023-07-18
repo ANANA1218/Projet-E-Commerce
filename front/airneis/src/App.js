@@ -5,6 +5,9 @@ import Commande from "./pages/commande/Commande";
 import ProductDetail from "./pages/ProductDetail";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import CGU from "./pages/CGU";
+import AboutUs from "./pages/AboutUs";
+import MentionsLegales from "./pages/MentionsLegales";
 import ProductList from "./pages/ProductList";
 import ListCommande from "./pages/commande/ListCommande";
 import UserProfile from './pages/users/UserProfile';
@@ -27,6 +30,9 @@ function App() {
             <Route path="/panier" element={WithTemplate(Commande)} />
             <Route path="/commandes" element={WithTemplate(ListCommande)} />
             <Route path="/profile" element={WithTemplate(UserProfile)}/>
+            <Route path="/cgu" element={WithTemplate(CGU)}/>
+            <Route path="/mentions-legales" element={WithTemplate(MentionsLegales)}/>
+            <Route path="/about" element={WithTemplate(AboutUs)}/>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/inscription" element={<RegisterForm />} />
             <Route path="/backoffice" element={<Index />} />
