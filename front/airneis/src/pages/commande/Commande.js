@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Card, Row, Col, Container, Form, Modal  } from "react-bootstrap";
 import OrderSteps from "./OrderSteps";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -11,6 +12,9 @@ function Cart() {
   const [savedBillingAddresses, setSavedBillingAddresses] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+
+
 
   const getTotal = () => {
     let total = 0;
@@ -79,7 +83,7 @@ function Cart() {
   };
 
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchSavedAddresses = async () => {
       if (addressOption === "savedAddress") {
         try {
@@ -99,7 +103,39 @@ function Cart() {
     fetchSavedAddresses();
   }, [addressOption]);
   
+*/
 
+useEffect(() => {
+  // Vérifier si l'utilisateur est connecté
+  const token = localStorage.getItem("token");
+  const isLogged = !!token;
+  setIsLogged(isLogged);
+
+  // Si l'utilisateur est connecté, récupérer les adresses de livraison et de facturation
+  if (isLogged) {
+    const config = {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    };
+
+    const fetchSavedAddresses = async () => {
+      try {
+        const deliveryResponse = await axios.get("http://127.0.0.1:8000/api/adresses_livraison", config);
+        const deliveryData = deliveryResponse.data;
+        setSavedDeliveryAddresses(deliveryData);
+
+        const billingResponse = await axios.get("http://127.0.0.1:8000/api/adresses_facturation", config);
+        const billingData = billingResponse.data;
+        setSavedBillingAddresses(billingData);
+      } catch (error) {
+        console.log("Error fetching saved addresses:", error);
+      }
+    };
+
+    fetchSavedAddresses();
+  }
+}, [isLogged]);
 
 
   const handlePaymentMethodChange = (event) => {
