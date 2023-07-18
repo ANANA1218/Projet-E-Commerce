@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import ListCommande from "./pages/commande/ListCommande";
+import UserProfile from './pages/users/UserProfile';
 import Index from "./pages/backoffice/Index";
 import Products from "./pages/backoffice/Products";
 import Categories from "./pages/backoffice/Categories";
@@ -16,6 +17,7 @@ import AddProduct from "./pages/backoffice/AddProduct";
 import AddCategory from "./pages/backoffice/AddCategory";
 import ListMessages from "./pages/backoffice/ListMessages";
 
+
 function App() {
     return (
         <Routes>
@@ -24,6 +26,7 @@ function App() {
             <Route path="/products/:id" element={WithTemplate(ProductDetail)} />
             <Route path="/panier" element={WithTemplate(Commande)} />
             <Route path="/commandes" element={WithTemplate(ListCommande)} />
+            <Route path="/profile" element={WithTemplate(UserProfile)}/>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/inscription" element={<RegisterForm />} />
             <Route path="/backoffice" element={<Index />} />
