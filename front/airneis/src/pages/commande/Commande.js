@@ -46,11 +46,17 @@ function Cart() {
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(storedCartItems);
     
+    const storedCurrentStep = localStorage.getItem("currentStep");
+    if (storedCurrentStep) {
+      setCurrentStep(Number(storedCurrentStep));
+    }
+
   }, []);
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+    localStorage.setItem("currentStep", currentStep);
+  }, [cartItems, currentStep]);
 
   const handleProceedToDelivery = () => {
     setCurrentStep(2);
