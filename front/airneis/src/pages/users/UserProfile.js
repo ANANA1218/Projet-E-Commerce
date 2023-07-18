@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 
-const AccountSettings = () => {
-  const [user, setUser] = useState({
-    id_utilisateur: null,
-    nom: '',
-    prenom: '',
-    email: '',
-    id_adresse_facturation: null,
-    id_adresse_livraison: null,
-    adresses_facturation: [],
-    adresses_livraison: [],
-  });
+const ParametresPage = () => {
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Fetch user data from API upon component mount
+    // Faites une requête HTTP GET pour récupérer les informations de l'utilisateur connecté
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/utilisateur/profile', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Récupérez le token du local storage après le login
+          },
+        });
+        setUser(response.data.user);
+      } catch (error) {
+        console.error('Une erreur s\'est produite lors de la récupération des informations de l\'utilisateur :', error);
+      }
+    };
+
     fetchUserData();
   }, []);
 
-  const fetchUserData = async () => {
-    try {
-      // Replace 'YOUR_API_URL' with the actual endpoint for user data retrieval
-      const response = await axios.get('http://127.0.0.1:8000/api/utilisateur/login');
-      setUser(response.data);
-      console.log(response.data)
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-    }
-  };
+  if (!user) {
+    return <div>Chargement...</div>;
+  }
 
+
+  
   const handlePasswordChange = () => {
     // Implement password change logic and API call here
     // You may need to add form inputs for old password and new password
@@ -103,4 +102,4 @@ const AccountSettings = () => {
   );
 };
 
-export default AccountSettings;
+export default ParametresPage;
