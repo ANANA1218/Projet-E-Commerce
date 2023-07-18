@@ -11,18 +11,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface; 
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+
 
 class AuthController extends AbstractController
 {
     private UtilisateurRepository $utilisateurRepository;
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(UtilisateurRepository $utilisateurRepository, TokenStorageInterface $tokenStorage)
+  
+    public function __construct(UtilisateurRepository $utilisateurRepository)
     {
         $this->utilisateurRepository = $utilisateurRepository;
-        $this->tokenStorage = $tokenStorage;
+        
     } 
 
     /*
@@ -99,7 +97,7 @@ class AuthController extends AbstractController
             return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Return the necessary user information with addresses.
+       
         $userData = [
             'id_utilisateur' => $user->getIdUtilisateur(),
             'nom' => $user->getNom(),
@@ -111,19 +109,19 @@ class AuthController extends AbstractController
             'adresses_livraison' => [],
         ];
 
-        // Get the first address for billing (if exists).
+        
         $adressesFacturation = $user->getAdressesFacturation();
         if (!$adressesFacturation->isEmpty()) {
             $userData['id_adresse_facturation'] = $adressesFacturation->first()->getIdAdresseFacturation();
         }
 
-        // Get the first address for delivery (if exists).
+     
         $adressesLivraison = $user->getAdressesLivraison();
         if (!$adressesLivraison->isEmpty()) {
             $userData['id_adresse_livraison'] = $adressesLivraison->first()->getIdAdresseLivraison();
         }
 
-        // Add billing addresses information to userData.
+        
         foreach ($adressesFacturation as $adresseFacturation) {
             $userData['adresses_facturation'][] = [
                 'rue' => $adresseFacturation->getRue(),
@@ -136,7 +134,7 @@ class AuthController extends AbstractController
             ];
         }
 
-        // Add delivery addresses information to userData.
+      
         foreach ($adressesLivraison as $adresseLivraison) {
             $userData['adresses_livraison'][] = [
                 'rue' => $adresseLivraison->getRue(),
