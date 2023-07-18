@@ -25,6 +25,11 @@ const Header = () => {
     return !!token; // Renvoie true si le token existe, sinon false
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    window.location.href = "/"; // Redirect to the home page after logout
+  };
+
   const isLogged = isUserLoggedIn(); // Vérifie si l'utilisateur est connecté
 
   return (
@@ -63,7 +68,8 @@ const Header = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/logout" className="nav-link" onClick={changeNav}>
+                    {/* Add the logout functionality */}
+                    <Link to="/" className="nav-link" onClick={handleLogout}>
                       Logout <FontAwesomeIcon icon={["fas", "sign-out-alt"]} />
                     </Link>
                   </li>
