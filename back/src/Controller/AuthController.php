@@ -1,5 +1,4 @@
 <?php
-// src/Controller/AuthController.php
 
 namespace App\Controller;
 
@@ -10,21 +9,39 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-
+use Psr\Log\LoggerInterface;
 
 class AuthController extends AbstractController
 {
     private UtilisateurRepository $utilisateurRepository;
-  
+
     public function __construct(UtilisateurRepository $utilisateurRepository)
     {
         $this->utilisateurRepository = $utilisateurRepository;
-        
-    } 
+    }
 
-    /*
-    #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+    #[Route('/api/utilisateur', name: 'addUtilisateur', methods: ['POST'])]
+    public function addUtilisateur(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if ($this->utilisateurRepository->findOneBy(['email' => $data['email']])) {
+            return $this->json(['message' => 'Email existe déjà dans la base'], Response::HTTP_CONFLICT);
+        }
+
+        // Generate a random token for the new user
+        $token = bin2hex(random_bytes(32));
+        $data['token'] = $token;
+
+        // Encode the password before saving
+        $data['mdp'] = password_hash($data['mdp'], PASSWORD_BCRYPT);
+
+        $this->utilisateurRepository->add($data);
+
+        return $this->json(['message' => 'Utilisateur inscrit', 'token' => $token], Response::HTTP_OK);
+    }
+
+   /* #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -36,119 +53,84 @@ class AuthController extends AbstractController
             return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
         }
 
-        $user = $this->utilisateurRepository->login($email, $password);
+        $user = $this->utilisateurRepository->findOneBy(['email' => $email]);
 
-        if (!$user) {
+        if (!$user || !password_verify($password, $user->getMotDePasse())) {
             return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Perform any other necessary operations with the authenticated user if needed.
+        $token = $user->getToken();
 
-        // Return only the necessary user information.
-        $userData = [
-            'id_utilisateur' => $user->getIdUtilisateur(),
-            'nom' => $user->getNom(),
-            'prenom' => $user->getPrenom(),
-            'email' => $user->getEmail(),
-            // You can add more necessary properties here if needed.
-        ];
-
-        return $this->json($userData, Response::HTTP_OK);
+        return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
     }
 */
+
+#[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+public function login(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if (!$email || !$password) {
+        return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $user = $this->utilisateurRepository->login($email, $password);
+
+    if (!$user) {
+        return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    $token = $user->getToken();
+
+    return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
+}
+
 /*
-    public function login(string $email, string $password): ?Utilisateur
-    {
-        $user = $this->createQueryBuilder('u')
-            ->andWhere('u.email = :email')
-            ->setParameter('email', $email)
-            ->getQuery()
-            ->getOneOrNullResult();
+#[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+public function login(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
 
-        if (!$user) {
-            return null;
-        }
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
 
-        if (!password_verify($password, $user->getMotDePasse())) {
-            return null;
-        }
-
-        return $user;
+    if (!$email || !$password) {
+        return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
     }
 
-    */
+    $user = $this->utilisateurRepository->findOneBy(['email' => $email]);
 
-
-    #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
-    public function login(Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $email = $data['email'] ?? '';
-        $password = $data['password'] ?? '';
-
-        if (!$email || !$password) {
-            return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $user = $this->utilisateurRepository->login($email, $password);
-
-        if (!$user) {
-            return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
-        }
-
-       
-        $userData = [
-            'id_utilisateur' => $user->getIdUtilisateur(),
-            'nom' => $user->getNom(),
-            'prenom' => $user->getPrenom(),
-            'email' => $user->getEmail(),
-            'id_adresse_facturation' => null,
-            'id_adresse_livraison' => null,
-            'adresses_facturation' => [],
-            'adresses_livraison' => [],
-        ];
-
-        
-        $adressesFacturation = $user->getAdressesFacturation();
-        if (!$adressesFacturation->isEmpty()) {
-            $userData['id_adresse_facturation'] = $adressesFacturation->first()->getIdAdresseFacturation();
-        }
-
-     
-        $adressesLivraison = $user->getAdressesLivraison();
-        if (!$adressesLivraison->isEmpty()) {
-            $userData['id_adresse_livraison'] = $adressesLivraison->first()->getIdAdresseLivraison();
-        }
-
-        
-        foreach ($adressesFacturation as $adresseFacturation) {
-            $userData['adresses_facturation'][] = [
-                'rue' => $adresseFacturation->getRue(),
-                'complement_adresse' => $adresseFacturation->getComplementAdresse(),
-                'region' => $adresseFacturation->getRegion(),
-                'ville' => $adresseFacturation->getVille(),
-                'code_postal' => $adresseFacturation->getCodePostal(),
-                'pays' => $adresseFacturation->getPays(),
-               // 'carnet_adresse' => $adresseFacturation->getCarnetAdresse(),
-            ];
-        }
-
-      
-        foreach ($adressesLivraison as $adresseLivraison) {
-            $userData['adresses_livraison'][] = [
-                'rue' => $adresseLivraison->getRue(),
-                'complement_adresse' => $adresseLivraison->getComplementAdresse(),
-                'region' => $adresseLivraison->getRegion(),
-                'ville' => $adresseLivraison->getVille(),
-                'code_postal' => $adresseLivraison->getCodePostal(),
-                'pays' => $adresseLivraison->getPays(),
-               // 'carnet_adresse' => $adresseLivraison->getCarnetAdresse(),
-            ];
-        }
-
-        return $this->json($userData, Response::HTTP_OK);
+    if (!$user || !password_verify($password, $user->getMotDePasse())) {
+        return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
     }
 
+    $token = $user->getToken();
 
+    return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
+}*/
+
+
+
+    #[Route('/api/utilisateur/profile', name: 'profile', methods: ['GET'])]
+    public function profile(Request $request): JsonResponse
+    {
+        // Retrieve the authenticated user based on the token passed in the request header
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+
+        if (!$token) {
+            return $this->json(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
+
+        if (!$user) {
+            return $this->json(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Return the user's information
+        return $this->json(['user' => $user->serialize()], Response::HTTP_OK);
+    }
 }
