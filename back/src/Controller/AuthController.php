@@ -4,20 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
 class AuthController extends AbstractController
 {
     private UtilisateurRepository $utilisateurRepository;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(UtilisateurRepository $utilisateurRepository)
+    public function __construct(UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager)
     {
         $this->utilisateurRepository = $utilisateurRepository;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/api/utilisateur', name: 'addUtilisateur', methods: ['POST'])]
@@ -65,6 +69,9 @@ class AuthController extends AbstractController
     }
 */
 
+
+
+
 #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
 public function login(Request $request): JsonResponse
 {
@@ -88,29 +95,7 @@ public function login(Request $request): JsonResponse
     return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
 }
 
-/*
-#[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
-public function login(Request $request): JsonResponse
-{
-    $data = json_decode($request->getContent(), true);
 
-    $email = $data['email'] ?? '';
-    $password = $data['password'] ?? '';
-
-    if (!$email || !$password) {
-        return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
-    }
-
-    $user = $this->utilisateurRepository->findOneBy(['email' => $email]);
-
-    if (!$user || !password_verify($password, $user->getMotDePasse())) {
-        return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
-    }
-
-    $token = $user->getToken();
-
-    return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
-}*/
 
 
 
@@ -133,4 +118,8 @@ public function login(Request $request): JsonResponse
         // Return the user's information
         return $this->json(['user' => $user->serialize()], Response::HTTP_OK);
     }
+
+   
 }
+
+
