@@ -64,6 +64,7 @@ class UtilisateurRepository extends ServiceEntityRepository
         $user->setEmail($data['email']);
         $user->setMotDePasse(password_hash($data['mdp'], PASSWORD_DEFAULT));
         $user->setTelephone("");
+        $user->setToken($data['token']);
         $user->setIdRole($this->entityManager->find(Role::class, 2));
 
         $this->entityManager->persist($user);

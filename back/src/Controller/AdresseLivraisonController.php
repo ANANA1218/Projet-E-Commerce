@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AdresseLivraison;
 use App\Entity\AssoAdresseLivraisonUtilisateur;
 use App\Repository\AdresseLivraisonRepository;
+use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,6 +37,38 @@ class AdresseLivraisonController extends AbstractController
 
         return new JsonResponse($json, Response::HTTP_OK, [], true);
     }
+
+
+    #[Route('/api/adresses_livraisonUser', name: 'getAdressesLivraisonUser', methods: ['GET'])]
+    public function getAdressesLivraisonUser(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer, UtilisateurRepository $userRepository, Request $request): JsonResponse
+    {
+        // Retrieve the authenticated user based on the token passed in the request header
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+    
+        if (!$token) {
+            return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
+        }
+    
+        $user = $userRepository->findOneBy(['token' => $token]);
+    
+        if (!$user) {
+            return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_UNAUTHORIZED);
+        }
+    
+        $query = $adresseLivraisonRepository->createQueryBuilder('al')
+            ->select('al.id_adresse_livraison', 'al.rue', 'al.complement_adresse', 'al.region', 'al.ville', 'al.code_postal', 'al.pays')
+            ->leftJoin('al.utilisateurs', 'u')
+            ->where('u.id_utilisateur = :userId')
+            ->setParameter('userId', $user->getIdUtilisateur());
+    
+        $adressesLivraison = $query->getQuery()->getResult();
+    
+        $json = $serializer->serialize(['user' => $user->serialize(), 'adressesLivraison' => $adressesLivraison], 'json');
+    
+        return new JsonResponse($json, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
+    }
+    
+
 
 
 
