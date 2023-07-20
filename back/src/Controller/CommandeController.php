@@ -342,7 +342,7 @@ public function getCommandes(CommandeRepository $commandeRepository, SerializerI
     return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
 }
 
-
+/*
 #[Route('/api/commande-details', name: 'getCommandeDetails', methods: ['GET'])]
 public function getCommandeDetails(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
 {
@@ -362,6 +362,40 @@ public function getCommandeDetails(CommandeRepository $commandeRepository, Seria
     // Retrieve the commands and associated elements for the authenticated user
     $query = $commandeRepository->createQueryBuilder('c')
         ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction', 'acp.quantite', 'p.id_produit')
+        ->leftJoin('c.id_reduction', 'reduc')
+        ->join('c.id_utilisateur', 'u')
+        ->leftJoin('App\Entity\AssoCommandeProduit', 'acp', 'WITH', 'c.id_commande = acp.id_commande')
+        ->leftJoin('acp.id_produit', 'p')
+        ->where('u = :user')
+        ->setParameter('user', $user);
+
+    $commandeDetails = $query->getQuery()->getResult();
+
+    // Serialize the command details data to JSON
+    $jsonCommandeDetails = $serializer->serialize($commandeDetails, 'json');
+
+    return new JsonResponse($jsonCommandeDetails, Response::HTTP_OK, [], true);
+}*/
+
+#[Route('/api/commande-details', name: 'getCommandeDetails', methods: ['GET'])]
+public function getCommandeDetails(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
+{
+    // Retrieve the authenticated user based on the token passed in the request header
+    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+
+    if (!$token) {
+        return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
+
+    if (!$user) {
+        return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
+    }
+
+    // Retrieve the commands and associated elements for the authenticated user
+    $query = $commandeRepository->createQueryBuilder('c')
+        ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction', 'acp.quantite', 'p.id_produit', 'p.nom_produit','p.description', 'p.prix')
         ->leftJoin('c.id_reduction', 'reduc')
         ->join('c.id_utilisateur', 'u')
         ->leftJoin('App\Entity\AssoCommandeProduit', 'acp', 'WITH', 'c.id_commande = acp.id_commande')
