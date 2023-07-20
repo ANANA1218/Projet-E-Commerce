@@ -97,7 +97,7 @@ class CommandeController extends AbstractController
     
         return new Response('Commande ajoutée avec succès', 200);
     }
-*/
+
 
  #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
 public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
@@ -147,7 +147,67 @@ public function createCommande(Request $request, EntityManagerInterface $entityM
 
     return new Response('Commande ajoutée avec succès', 200);
 }
+*/
 
+
+#[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
+public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $data = json_decode($request->getContent(), true);
+
+    // Vérifie les données manquantes
+    if (!isset($data['id_utilisateur']) || !isset($data['produits']) || !isset($data['id_adresse_facturation']) || !isset($data['id_adresse_livraison'])) {
+        return new Response('Données manquantes', 400);
+    }
+
+    // Initialise les valeurs par défaut
+    $status = isset($data['status']) ? $data['status'] : 1;
+    $reduction = isset($data['reduction']) ? $data['reduction'] : 1;
+    $modePaiement = isset($data['mode_paiement']) ? $data['mode_paiement'] : 1;
+
+    $commande = new Commande();
+    $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
+    $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($data['id_adresse_facturation']);
+    $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($data['id_adresse_livraison']);
+
+    $commande->setIdUtilisateur($utilisateur);
+    $commande->setIdAdresseFacturation($adresseFacturation);
+    $commande->setIdAdresseLivraison($adresseLivraison);
+    $commande->setDateCommande(new \DateTime());
+    $commande->setPrixTotal(0);
+    $commande->setStatut($status); // Nouveau champ status
+    $commande->setIdReduction($reduction); // Nouveau champ reduction
+    $commande->setIdModePaiement($modePaiement); // Nouveau champ mode de paiement
+
+    $entityManager->persist($commande);
+
+    $prixTotal = 0;
+
+    foreach ($data['produits'] as $produitData) {
+        if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
+            return new Response('Données de produit manquantes', 400);
+        }
+
+        $assoCommandeProduit = new AssoCommandeProduit();
+        $assoCommandeProduit->setIdCommande($commande);
+        $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
+        $assoCommandeProduit->setIdProduit($produit);
+        $assoCommandeProduit->setQuantite($produitData['quantite']);
+
+        $entityManager->persist($assoCommandeProduit);
+
+        $produit->setStock($produit->getStock() - $produitData['quantite']);
+
+        $prixPartiel = $produit->getPrix() * $produitData['quantite'];
+        $prixTotal += $prixPartiel;
+    }
+
+    $commande->setPrixTotal($prixTotal);
+
+    $entityManager->flush();
+
+    return new Response('Commande ajoutée avec succès', 200);
+}
 
 
 

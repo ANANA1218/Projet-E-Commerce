@@ -50,6 +50,15 @@ class Commande
     #[ORM\JoinColumn(name: 'id_mode_paiement', referencedColumnName: 'id_mode_paiement', nullable: false)]
     private ?ModePaiement $id_mode_paiement = null;
 
+
+ 
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(name: 'id_reduction ', referencedColumnName: 'id_reduction ', nullable: false)]
+    private ?Reduction $reduction = null;
+
+
+
+
     public function getIdCommande(): ?int
     {
         return $this->id_commande;
@@ -126,6 +135,21 @@ class Commande
 
         return $this;
     }
+
+
+    public function getReduction(): ?int
+    {
+        return $this->reduction;
+    }
+
+    public function setReduction(?int $reduction): self
+    {
+        $this->reduction = $reduction;
+
+        return $this;
+    }
+
+
 
     public function getIdAdresseLivraison(): ?AdresseLivraison
     {
