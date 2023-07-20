@@ -155,22 +155,27 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produits/multiple/{ids}', name: 'deleteProduits', methods: ['DELETE'])]
-    public function deleteProduits(EntityManagerInterface $entityManager, string $ids): JsonResponse
+    #[Route('/api/produits/multiple', name: 'deleteProduits', methods: ['DELETE'])]
+    public function deleteMultipleProduits(Request $request, EntityManagerInterface $entityManager)
     {
-        $productIds = explode(',', $ids);
+        $requestData = json_decode($request->getContent(), true);
 
-        $deletedProducts = [];
-        foreach ($productIds as $productId) {
-            $produit = $entityManager->getRepository(Produit::class)->find($productId);
-            if ($produit) {
-                $entityManager->remove($produit);
-                $deletedProducts[] = $produit->getIdProduit();
-            }
+        if (!isset($requestData['ids']) || !is_array($requestData['ids'])) {
+            return new JsonResponse(['error' => 'Invalid request data'], 400);
         }
 
+        $productIds = $requestData['ids'];
+        $products = $entityManager->getRepository(Produit::class)->findBy(['id_produit' => $productIds]);
+
+        if (count($products) !== count($productIds)) {
+            return new JsonResponse(['error' => 'Some products not found'], 404);
+        }
+
+        foreach ($products as $product) {
+            $entityManager->remove($product);
+        }
         $entityManager->flush();
 
-        return new JsonResponse(['message' => 'Produits supprimés avec succès', 'deletedIds' => $deletedProducts], Response::HTTP_OK);
+        return new JsonResponse(['message' => 'Produits supprimés avec succès'], 200);
     }
 }

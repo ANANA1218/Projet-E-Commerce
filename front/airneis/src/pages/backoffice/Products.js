@@ -64,7 +64,9 @@ const Products = () => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ces produits ?')) {
 
             axios
-                .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/multiple/${selectedProductIds}`)
+                .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/multiple`, {
+                    data: { ids: selectedProductIds },
+                })
                 .then(() => {
                     setProducts((prevProducts) => prevProducts.filter((product) => !checkedRows.includes(product.id_produit)));
                     setSuccessMessage('Produits supprimés avec succès !');
