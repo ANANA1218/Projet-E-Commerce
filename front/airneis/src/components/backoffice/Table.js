@@ -4,7 +4,7 @@ import $ from 'jquery';
 import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
 
-const Table = ({ columns, data, path, paramKey, onDelete, checkedRows, onCheckboxChange }) => {
+const Table = ({ columns, data, path, paramKey, onDelete = null, checkedRows = null, onCheckboxChange = null }) => {
     const tableRef = useRef(null);
 
     useEffect(() => {
@@ -41,7 +41,11 @@ const Table = ({ columns, data, path, paramKey, onDelete, checkedRows, onCheckbo
             <table ref={tableRef} id="example" className="table table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th>Sélectionner</th>
+                        {checkedRows !== null && handleCheckboxChange !== null ? (
+                            <th>Sélectionner</th>
+                        ) : (
+                            ''
+                        )}
                         {columns.map((column, index) => (
                             <th key={index}>{column}</th>
                         ))}
@@ -51,14 +55,18 @@ const Table = ({ columns, data, path, paramKey, onDelete, checkedRows, onCheckbo
                 <tbody>
                     {data.map((result, index) => (
                         <tr key={index}>
-                            <td style={{ textAlign: 'center' }}>
-                                <input
-                                    type="checkbox"
-                                    id={`checkbox-${index}`}
-                                    checked={checkedRows.includes(result[paramKey])}
-                                    onChange={(event) => handleCheckboxChange(event, result[paramKey])}
-                                />
-                            </td>
+                            {checkedRows !== null && handleCheckboxChange !== null ? (
+                                <td style={{ textAlign: 'center' }}>
+                                    <input
+                                        type="checkbox"
+                                        id={`checkbox-${index}`}
+                                        checked={checkedRows.includes(result[paramKey])}
+                                        onChange={(event) => handleCheckboxChange(event, result[paramKey])}
+                                    />
+                                </td>
+                            ) : (
+                                ''
+                            )}
                             {columns.map((column, columnIndex) => (
                                 <td key={columnIndex}>
                                     <div>
@@ -84,7 +92,7 @@ const Table = ({ columns, data, path, paramKey, onDelete, checkedRows, onCheckbo
                     ))}
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 };
 
