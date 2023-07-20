@@ -261,7 +261,7 @@ public function setToken(?string $token): self
         return $this;
     }
 
-    public function serialize()
+   /* public function serialize()
     {
         $serializedContacts = [];
 
@@ -279,6 +279,75 @@ public function setToken(?string $token): self
             'contacts' => $serializedContacts,
         ];
     }
+*/
+
+public function serialize()
+{
+    $serializedContacts = [];
+
+    foreach ($this->contacts as $contact) {
+        $serializedContacts[] = $contact->serialize();
+    }
+
+    // Retrieve the associated addresses
+    $adressesLivraison = $this->getAdressesLivraison();
+    $adressesFacturation = $this->getAdressesFacturation();
+
+    // Retrieve the associated commands
+    $commands = $this->getCommandes();
+
+    // Include the relevant address information in the serialization
+    $serializedData = [
+        'id_utilisateur' => $this->getIdUtilisateur(),
+        'nom' => $this->getNom(),
+        'prenom' => $this->getPrenom(),
+        'email' => $this->getEmail(),
+        'mot_de_passe' => $this->getMotDePasse(),
+        'telephone' => $this->getTelephone(),
+        'contacts' => $serializedContacts,
+        'adresses_livraison' => [],
+        'adresses_facturation' => [],
+        'commandes' => [],
+    ];
+
+    // Include adresses_livraison if available
+    foreach ($adressesLivraison as $adresseLivraison) {
+        $serializedData['adresses_livraison'][] = [
+            'rue' => $adresseLivraison->getRue(),
+            'complement_adresse' => $adresseLivraison->getComplementAdresse(),
+            'region' => $adresseLivraison->getRegion(),
+            'ville' => $adresseLivraison->getVille(),
+            'code_postal' => $adresseLivraison->getCodePostal(),
+            'pays' => $adresseLivraison->getPays(),
+        ];
+    }
+
+    // Include adresses_facturation if available
+    foreach ($adressesFacturation as $adresseFacturation) {
+        $serializedData['adresses_facturation'][] = [
+            'rue' => $adresseFacturation->getRue(),
+            'complement_adresse' => $adresseFacturation->getComplementAdresse(),
+            'region' => $adresseFacturation->getRegion(),
+            'ville' => $adresseFacturation->getVille(),
+            'code_postal' => $adresseFacturation->getCodePostal(),
+            'pays' => $adresseFacturation->getPays(),
+        ];
+    }
+
+    // Include commands if available
+    foreach ($commands as $command) {
+        $serializedData['commandes'][] = [
+            'id_commande' => $command->getIdCommande(),
+            // Include other relevant information from the Commande entity
+        ];
+    }
+
+    return $serializedData;
+}
+
+
+
+
 
     /**
      * @return Collection<int, AdresseLivraison>

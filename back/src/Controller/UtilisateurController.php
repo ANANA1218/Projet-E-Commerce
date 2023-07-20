@@ -41,6 +41,7 @@ class UtilisateurController extends AbstractController
         return new JsonResponse($query, Response::HTTP_OK, []);
     }
 
+    /*
     #[Route('/api/utilisateur', name: 'addUtilisateur', methods: ['POST'])]
     public function addUtilisateur(Request $request): JsonResponse
     {
@@ -54,6 +55,7 @@ class UtilisateurController extends AbstractController
 
         return $this->json(['message' => 'Utilisateur inscrit'], Response::HTTP_OK);
     }
+    */
 
     /*
     #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]

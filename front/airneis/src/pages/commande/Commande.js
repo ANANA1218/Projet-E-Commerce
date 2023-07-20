@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Row, Col, Container, Form, Modal  } from "react-bootstrap";
+import { Button, Card, Row, Col, Container, Form, Modal } from "react-bootstrap";
 import OrderSteps from "./OrderSteps";
 import { Link } from "react-router-dom";
+import axios from "axios"; // Importez axios pour effectuer des appels API
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
   const [addressOption, setAddressOption] = useState("");
   const [savedDeliveryAddresses, setSavedDeliveryAddresses] = useState([]);
-  const [savedBillingAddresses, setSavedBillingAddresses] = useState([]);
+  const [savedFacturationAddresses, setSavedFacturationAddresses] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  const [newAddressLivraison, setNewAddressLivraison] = useState({
+    rue: "",
+   // complement_adresse: "",
+    region: "",
+    ville: "",
+    code_postal: "",
+    pays: "",
+   
+  });
+
+
 
   const getTotal = () => {
     let total = 0;
@@ -46,11 +61,16 @@ function Cart() {
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(storedCartItems);
     
+    const storedCurrentStep = localStorage.getItem("currentStep");
+    if (storedCurrentStep) {
+      setCurrentStep(Number(storedCurrentStep));
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+    localStorage.setItem("currentStep", currentStep);
+  }, [cartItems, currentStep]);
 
   const handleProceedToDelivery = () => {
     setCurrentStep(2);
@@ -64,37 +84,76 @@ function Cart() {
     setCurrentStep(4);
   };
 
-  const handleProceedToConfirmation = () => {
-    setCurrentStep(4);
-  };
-
   const handleAddressOptionChange = (e) => {
     setAddressOption(e.target.value);
   };
 
-
   useEffect(() => {
-    const fetchSavedAddresses = async () => {
-      if (addressOption === "savedAddress") {
-        try {
-          const deliveryResponse = await fetch("http://127.0.0.1:8000/api/adresses_livraison");
-          const deliveryData = await deliveryResponse.json();
-          setSavedDeliveryAddresses(deliveryData);
+    // Vérifier si l'utilisateur est connecté
+    const token = localStorage.getItem("token");
+    const isLogged = !!token;
+    setIsLogged(isLogged);
   
-          const billingResponse = await fetch("http://127.0.0.1:8000/api/adresses_facturation");
-          const billingData = await billingResponse.json();
-          setSavedBillingAddresses(billingData);
+    // Si l'utilisateur est connecté, récupérer les adresses de livraison et de facturation
+    if (isLogged) {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+  
+      const fetchSavedAddresses = async () => {
+        try {
+          const deliveryResponse = await axios.get("http://127.0.0.1:8000/api/adresses_livraisonUser", config);
+          const deliveryData = deliveryResponse.data;
+          setSavedDeliveryAddresses(deliveryData.adressesLivraison);
+  
+          const facturationResponse = await axios.get("http://127.0.0.1:8000/api/adresses_facturationUser", config);
+          const facturationData = facturationResponse.data;
+          setSavedFacturationAddresses(facturationData.adressesFacturation);
         } catch (error) {
           console.log("Error fetching saved addresses:", error);
         }
-      }
-    };
+      };
   
-    fetchSavedAddresses();
-  }, [addressOption]);
+      fetchSavedAddresses();
+    }
+  }, [isLogged]);
   
+  /*
+  useEffect(() => {
+    // Vérifier si l'utilisateur est connecté
+    const token = localStorage.getItem("token");
+    const isLogged = !!token;
+    setIsLogged(isLogged);
 
+    // Si l'utilisateur est connecté, récupérer les adresses de livraison et de facturation
+    if (isLogged) {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
 
+      const fetchSavedAddresses = async () => {
+        try {
+          const deliveryResponse = await axios.get("http://127.0.0.1:8000/api/adresses_livraison", config);
+          const deliveryData = deliveryResponse.data;
+          setSavedDeliveryAddresses(deliveryData);
+
+          const facturationResponse = await axios.get("http://127.0.0.1:8000/api/adresses_facturationUser", config);
+          const facturationData = facturationResponse.data;
+          setSavedFacturationAddresses(facturationData.adressesFacturation);
+        } catch (error) {
+          console.log("Error fetching saved addresses:", error);
+        }
+      };
+
+      fetchSavedAddresses();
+    }
+  }, [isLogged]);
+
+*/
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
@@ -108,6 +167,56 @@ function Cart() {
     setIsModalOpen(false);
   };
 
+  const handleBack = () => {
+    setCurrentStep((prevStep) => prevStep - 1);
+  };
+
+ /* const handleAddNewAddress = async () => {
+    // Create an API call to add the new address to the backend
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      await axios.post("http://127.0.0.1:8000/api/adresses_livraison", newAddressLivraison, config);
+      console.log("Error adding new address:", newAddressLivraison);
+
+
+    } catch (error) {
+      // Handle errors if needed
+      console.log("Error adding new address:", error);
+    }
+  };
+  */
+
+  const handleAddNewAddress = () => {
+    // Créez un objet JSON pour envoyer les données au backend
+    const data = {
+      rue: newAddressLivraison.rue,
+    // complement_adresse: newAddressLivraison.complement_adresse,
+      region: newAddressLivraison.region,
+      ville: newAddressLivraison.ville,
+      code_postal: newAddressLivraison.code_postal,
+      pays: newAddressLivraison.pays,
+      id_utilisateur: localStorage.getItem('id_utilisateur'), // Récupérer l'id de l'utilisateur connecté depuis le token en local
+    };
+  
+    // Faites une requête POST à l'API pour ajouter l'adresse
+    axios.post("http://127.0.0.1:8000/api/adresses_livraison", data)
+      .then((response) => {
+        console.log("Adresse ajoutée avec succès :", response.data);
+        // Vous pouvez ajouter ici une logique pour mettre à jour la liste des adresses de livraison si nécessaire
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'ajout de l'adresse :", error);
+      });
+  };
+  
+  
+  
+  
 
 
   return (
@@ -140,6 +249,7 @@ function Cart() {
                         <Button variant="outline-danger" size="sm" onClick={() => removeFromCart(item)}>
                           Remove
                         </Button>
+                        
                       </div>
                       <Card.Text>Total: {(item.quantity * item.price).toFixed(2)}</Card.Text>
                     </Card.Body>
@@ -193,55 +303,77 @@ function Cart() {
                     </Form.Group>
 
                     {addressOption === "newAddress" && (
-                      <>
-                        <Form.Group controlId="rue">
-                          <Form.Label>Rue</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="complement_adresse">
-                          <Form.Label>Complement d'adresse</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="region">
-                          <Form.Label>Region</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="ville">
-                          <Form.Label>Ville</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="code_postal">
-                          <Form.Label>Code postal</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="country">
-                          <Form.Label>Pays</Form.Label>
-                          <Form.Select>
-                            <option value="France">France</option>
-                            <option value="Belgium">Belgium</option>
-                            <option value="Switzerland">Switzerland</option>
-                          </Form.Select>
-                        </Form.Group>
-                      </>
-                    )}
+                    <>
+                      <Form.Group controlId="rue">
+                        <Form.Label>Rue</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={newAddressLivraison.rue}
+                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, rue: e.target.value })}
+                        />
+                      </Form.Group>
+                      <br />
+                      
+                  
+                      <Form.Group controlId="region">
+                        <Form.Label>Region</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={newAddressLivraison.region}
+                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, region: e.target.value })}
+                        />
+                      </Form.Group>
+                      <br />
+                      <Form.Group controlId="ville">
+                        <Form.Label>Ville</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={newAddressLivraison.ville}
+                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, ville: e.target.value })}
+                        />
+                      </Form.Group>
+                      <br />
+                      <Form.Group controlId="code_postal">
+                        <Form.Label>Code postal</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={newAddressLivraison.code_postal}
+                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, code_postal: e.target.value })}
+                        />
+                      </Form.Group>
+                      <br />
+                      <Form.Group controlId="country">
+                        <Form.Label>Pays</Form.Label>
+                        <Form.Control
+                        type="text"
+                        value={newAddressLivraison.pays}
+                        onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, pays: e.target.value })}
+                        >
+                          
+                        </Form.Control>
+                      </Form.Group>
+                      <br />
+                     
+                    <br />
+                      <Button variant="outline-primary" onClick={handleAddNewAddress}>
+                        Add New Address
+                      </Button>
+                      <br />
+                    </>
+                  )}
+
 
                     {addressOption === "savedAddress" && (
                       <Form.Group controlId="savedAddress">
-                      
                         <Form.Label>List of Saved Addresses</Form.Label>
                         {savedDeliveryAddresses.map((address) => (
                           <Form.Check
-                            key={address.id_adresse_facturation}
+                            key={address.id_adresse_livraison}
                             type="radio"
                             name="savedDeliveryAddress"
-                            id={`savedDeliveryAddress-${address.id_adresse_facturation}`}
+                            id={`savedDeliveryAddress-${address.id_adresse_livraison}`}
                             label={address.rue}
-                            value={address.id_adresse_facturation}
+                            value={address.id_adresse_livraison}
                           />
                         ))}
                       </Form.Group>
@@ -249,8 +381,11 @@ function Cart() {
 
                     <br />
                     <Button variant="outline-primary" onClick={handleProceedToDeliveryFacturation}>
-                      Delivery 
+                      Proceed to Facturation
                     </Button>
+                    <Button variant="outline-secondary" onClick={handleBack}>
+                     Retour
+                   </Button>
                   </Form>
                 </Col>
               </Row>
@@ -259,7 +394,7 @@ function Cart() {
         </Row>
       )}
 
-{currentStep === 3 && (
+      {currentStep === 3 && (
         <Row>
           <Col lg={20}>
             <br />
@@ -330,12 +465,12 @@ function Cart() {
                     {addressOption === "savedAddress" && (
                       <Form.Group controlId="savedAddress">                    
                         <Form.Label>List of Saved Addresses</Form.Label>
-                        {savedBillingAddresses.map((address) => (
+                        {savedFacturationAddresses.map((address) => (
                           <Form.Check
                             key={address.id_adresse_facturation}
                             type="radio"
-                            name="savedDeliveryAddress"
-                            id={`savedDeliveryAddress-${address.id_adresse_facturation}`}
+                            name="savedFacturationAddress"
+                            id={`savedFacturationAddress-${address.id_adresse_facturation}`}
                             label={address.rue}
                             value={address.id_adresse_facturation}
                           />
@@ -347,6 +482,9 @@ function Cart() {
                     <Button variant="outline-primary" onClick={handleProceedToPayment}>
                       Proceed to Payment
                     </Button>
+                    <Button variant="outline-secondary" onClick={handleBack}>
+                     Retour
+                   </Button>
                   </Form>
                 </Col>
               </Row>
@@ -354,7 +492,6 @@ function Cart() {
           </Col>
         </Row>
       )}
-
 
       {currentStep === 4 && (
         <Row>
@@ -367,22 +504,22 @@ function Cart() {
         </h6>
         <Modal show={isModalOpen} onHide={handleModalClose} centered backdrop="static">
           <Modal.Header closeButton>
-            <Modal.Title>Votre paiement a été effectué avec succès.</Modal.Title>
+            <Modal.Title>Your payment has been successful.</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p>
-              Merci de votre achat !
+              Thank you for your purchase!
               <br />
-              Votre commande a bien été enregistrée sous le numéro XXXXXXX.
-              Vous pouvez suivre son état depuis votre espace client.
+              Your order has been successfully recorded under the number XXXXXXX.
+              You can track its status from your customer account.
             </p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-primary" onClick={handleModalClose} as={Link} to="/products">
-              Continuer les achats
+              Continue Shopping
             </Button>
-            <Button variant="outline-primary" onClick={handleModalClose} as={Link} to="/commandes">
-              Voir mes commandes
+            <Button variant="outline-primary" onClick={handleModalClose} as={Link} to="/orders">
+              View My Orders
             </Button>
           </Modal.Footer>
         </Modal>
@@ -419,8 +556,11 @@ function Cart() {
                   </Form.Group>
                   <div className="mt-2">
                     <Button variant="outline-primary" onClick={handlePaymentSubmit}>
-                      Payer
+                      Pay
                     </Button>
+                    <Button variant="outline-secondary" onClick={handleBack}>
+                     Retour
+                   </Button>
                   </div>
                 </div>
               </div>
@@ -430,8 +570,11 @@ function Cart() {
               <div className="mt-2">
                 <div className="mt-2">
                   <Button variant="outline-primary" as={Link} to="https://www.paypal.com/fr/signin">
-                    Payer
+                    Pay
                   </Button>
+                  <Button variant="outline-secondary" onClick={handleBack}>
+                     Retour
+                   </Button>
                 </div>
               </div>
             )}
@@ -441,11 +584,8 @@ function Cart() {
     </Container>
 
           </Col>
-          
         </Row>
       )}
-
-     
     </div>
   );
 }
