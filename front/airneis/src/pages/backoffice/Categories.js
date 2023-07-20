@@ -99,7 +99,7 @@ function Categories() {
                         {errorMessage && <div className="alert alert-danger" ref={messageRef}>{errorMessage}</div>}
                     </div>
                 </div>
-                <div style={{ margin: '50px 450px' }}>
+                <div style={{ margin: '50px 250px' }}>
                     <Table
                         data={categories}
                         columns={columns}
