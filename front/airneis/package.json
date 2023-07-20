@@ -37,6 +37,7 @@
     "gulp-uglify": "^3.0.2",
     "jquery": "^3.7.0",
     "jquery.easing": "^1.4.1",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "merge-stream": "^2.0.0",
     "react": "^18.2.0",
