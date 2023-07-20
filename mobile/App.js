@@ -3,6 +3,8 @@ import * as React from 'react';
 import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingsRefer';
 import HomeScreen from './screens/HomeScreen';
+import SingleScreen from './screens/SingleScreen';
+import LoginScreen from './screens/LoginScreen'
 import DrawerItems from './constants/DrawerItems';
 
 import {  StyleSheet } from 'react-native';
@@ -54,10 +56,13 @@ export default function App() {
             component={
               drawer.name==='Profile' ? ProfileScreen
                 : drawer.name==='Settings' ? SettingsScreen
-                  : HomeScreen
+                  : drawer.name==='Login' ? LoginScreen
+                    : HomeScreen
             }
           />)
         }
+                <Drawer.Screen name="SingleScreen" component={SingleScreen} options={{ drawerLabel: '' }} />
+
       </Drawer.Navigator>
     </NavigationContainer>
     // <View style={styles.container}>

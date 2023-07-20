@@ -18,5 +18,8 @@ export default [
         name:'Saved Items',
         iconType:'Material',
         iconName:'bookmark-check-outline'
+    },
+    {
+        name:"Login"
     }
  ]
