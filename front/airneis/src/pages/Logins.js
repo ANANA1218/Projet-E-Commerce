@@ -43,7 +43,6 @@ const Login = () => {
   };
 */
 
-// ...
 const handleLogin = async (event) => {
   event.preventDefault();
   try {
@@ -62,7 +61,7 @@ const handleLogin = async (event) => {
       const token = result.data.token;
       const id_utilisateur = result.data.id_utilisateur; // Retrieve id_utilisateur from the response
       console.log('token', token);
-      console.log('token', id_utilisateur);
+      console.log('id_utilisateur', id_utilisateur);
 
       // Stocker le token et id_utilisateur dans le local storage
       localStorage.setItem('token', token);
@@ -79,7 +78,7 @@ const handleLogin = async (event) => {
     setErrorMessage("Erreur : Impossible de se connecter");
   }
 };
-// ...
+
 
   return (
     <form onSubmit={handleLogin}>

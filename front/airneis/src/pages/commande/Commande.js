@@ -195,7 +195,7 @@ function Cart() {
     // Créez un objet JSON pour envoyer les données au backend
     const data = {
       rue: newAddressLivraison.rue,
-      //complement_adresse: newAddressLivraison.complement_adresse,
+    // complement_adresse: newAddressLivraison.complement_adresse,
       region: newAddressLivraison.region,
       ville: newAddressLivraison.ville,
       code_postal: newAddressLivraison.code_postal,
@@ -314,6 +314,7 @@ function Cart() {
                       </Form.Group>
                       <br />
                       
+                  
                       <Form.Group controlId="region">
                         <Form.Label>Region</Form.Label>
                         <Form.Control
