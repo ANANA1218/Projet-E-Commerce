@@ -69,9 +69,33 @@ class AuthController extends AbstractController
     }
 */
 
+#[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
+public function login(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if (!$email || !$password) {
+        return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $user = $this->utilisateurRepository->login($email, $password);
+
+    if (!$user) {
+        return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    $id = $user->getIdUtilisateur(); // Assuming the method to get the ID is named 'getId'.
+
+    $token = $user->getToken();
+
+    return $this->json(['message' => 'Login successful', 'id_utilisateur' => $id, 'token' => $token], Response::HTTP_OK);
+}
 
 
-
+/*
 #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
 public function login(Request $request): JsonResponse
 {
@@ -95,7 +119,7 @@ public function login(Request $request): JsonResponse
     return $this->json(['message' => 'Login successful', 'token' => $token], Response::HTTP_OK);
 }
 
-
+*/
 
 
 
