@@ -64,8 +64,8 @@ final class Version202307202149030 extends AbstractMigration
             (5, 'Tables et bureaux'),
             (6, 'Chaises'),
             (7, 'Lits'),
-            (8, 'Armoires, penderies et dressings'),
-            (9, 'Commodes et caissons à tiroirs'),
+            (8, 'Armoires'),
+            (9, 'Commodes et caissons'),
             (10, 'Mobiliers de jardin'),
             (11, 'Décoration');
         ");
