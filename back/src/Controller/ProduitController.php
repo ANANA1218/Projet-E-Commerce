@@ -90,7 +90,7 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produits/{id}', name: 'updateProduit', methods: ['PUT'])]
+    #[Route('/api/produits/{id}', name: 'updateProduit', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function updateProduit(Request $request, EntityManagerInterface $entityManager, Produit $produit): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -115,7 +115,37 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produits/{id}', name: 'deleteProduit', methods: ['DELETE'])]
+    #[Route('/api/produits', name: 'updateMultipleProduits', methods: ['PUT'])]
+    public function updateMultipleProduits(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $productIds = $data['ids'];
+        $idCategorie = !empty($data['categorie']) ? $entityManager->getRepository(Categorie::class)->find($data['categorie']) : null;
+        $newPrice = !empty($data['prix']) ? floatval($data['prix']) : null;
+        $newStock = !empty($data['stock']) ? intval($data['stock']) : null;
+
+        $products = $entityManager->getRepository(Produit::class)->findBy(['id_produit' => $productIds]);
+
+        foreach ($products as $product) {
+            if (!is_null($newPrice)) {
+                $product->setPrix($newPrice);
+            }
+            if (!is_null($newStock)) {
+                $product->setStock($newStock);
+            }
+            if (!is_null($idCategorie)) {
+                $product->setIdCategorie($idCategorie);
+            }
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Produits mis à jour avec succès', 'productIds' => $productIds], Response::HTTP_OK);
+    }
+
+
+    #[Route('/api/produits/{id}', name: 'deleteProduit', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function deleteProduit(EntityManagerInterface $entityManager, Produit $produit): JsonResponse
     {
         $entityManager->remove($produit);
