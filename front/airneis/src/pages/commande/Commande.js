@@ -272,7 +272,7 @@ function Cart() {
         </Row>
       )}
 
-      {currentStep === 2 && (
+{currentStep === 2 && (
         <Row>
           <Col lg={20}>
             <br />
@@ -285,15 +285,6 @@ function Cart() {
                       <Form.Check
                         type="radio"
                         name="addressOption"
-                        id="newAddressOption"
-                        label="Add New Address"
-                        value="newAddress"
-                        checked={addressOption === "newAddress"}
-                        onChange={handleAddressOptionChange}
-                      />
-                      <Form.Check
-                        type="radio"
-                        name="addressOption"
                         id="savedAddressOption"
                         label="Use Saved Address"
                         value="savedAddress"
@@ -301,67 +292,6 @@ function Cart() {
                         onChange={handleAddressOptionChange}
                       />
                     </Form.Group>
-
-                    {addressOption === "newAddress" && (
-                    <>
-                      <Form.Group controlId="rue">
-                        <Form.Label>Rue</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={newAddressLivraison.rue}
-                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, rue: e.target.value })}
-                        />
-                      </Form.Group>
-                      <br />
-                      
-                  
-                      <Form.Group controlId="region">
-                        <Form.Label>Region</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={newAddressLivraison.region}
-                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, region: e.target.value })}
-                        />
-                      </Form.Group>
-                      <br />
-                      <Form.Group controlId="ville">
-                        <Form.Label>Ville</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={newAddressLivraison.ville}
-                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, ville: e.target.value })}
-                        />
-                      </Form.Group>
-                      <br />
-                      <Form.Group controlId="code_postal">
-                        <Form.Label>Code postal</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={newAddressLivraison.code_postal}
-                          onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, code_postal: e.target.value })}
-                        />
-                      </Form.Group>
-                      <br />
-                      <Form.Group controlId="country">
-                        <Form.Label>Pays</Form.Label>
-                        <Form.Control
-                        type="text"
-                        value={newAddressLivraison.pays}
-                        onChange={(e) => setNewAddressLivraison({ ...newAddressLivraison, pays: e.target.value })}
-                        >
-                          
-                        </Form.Control>
-                      </Form.Group>
-                      <br />
-                     
-                    <br />
-                      <Button variant="outline-primary" onClick={handleAddNewAddress}>
-                        Add New Address
-                      </Button>
-                      <br />
-                    </>
-                  )}
-
 
                     {addressOption === "savedAddress" && (
                       <Form.Group controlId="savedAddress">
@@ -384,8 +314,8 @@ function Cart() {
                       Proceed to Facturation
                     </Button>
                     <Button variant="outline-secondary" onClick={handleBack}>
-                     Retour
-                   </Button>
+                      Retour
+                    </Button>
                   </Form>
                 </Col>
               </Row>
@@ -407,15 +337,6 @@ function Cart() {
                       <Form.Check
                         type="radio"
                         name="addressOption"
-                        id="newAddressOption"
-                        label="Add New Address"
-                        value="newAddress"
-                        checked={addressOption === "newAddress"}
-                        onChange={handleAddressOptionChange}
-                      />
-                      <Form.Check
-                        type="radio"
-                        name="addressOption"
                         id="savedAddressOption"
                         label="Use Saved Address"
                         value="savedAddress"
@@ -424,43 +345,7 @@ function Cart() {
                       />
                     </Form.Group>
 
-                    {addressOption === "newAddress" && (
-                      <>
-                        <Form.Group controlId="rue">
-                          <Form.Label>Rue</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="complement_adresse">
-                          <Form.Label>Complement d'adresse</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="region">
-                          <Form.Label>Region</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="ville">
-                          <Form.Label>Ville</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="code_postal">
-                          <Form.Label>Code postal</Form.Label>
-                          <Form.Control type="text" />
-                        </Form.Group>
-                        <br />
-                        <Form.Group controlId="country">
-                          <Form.Label>Pays</Form.Label>
-                          <Form.Select>
-                            <option value="France">France</option>
-                            <option value="Belgium">Belgium</option>
-                            <option value="Switzerland">Switzerland</option>
-                          </Form.Select>
-                        </Form.Group>
-                      </>
-                    )}
+                   
 
                     {addressOption === "savedAddress" && (
                       <Form.Group controlId="savedAddress">                    
