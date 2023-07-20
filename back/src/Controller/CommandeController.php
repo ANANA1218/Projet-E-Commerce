@@ -161,9 +161,9 @@ public function createCommande(Request $request, EntityManagerInterface $entityM
     }
 
     // Initialise les valeurs par défaut
-    $status = isset($data['status']) ? $data['status'] : 1;
-    $reduction = isset($data['reduction']) ? $data['reduction'] : 1;
-    $modePaiement = isset($data['mode_paiement']) ? $data['mode_paiement'] : 1;
+   // $status = isset($data['status']) ? $data['status'] : 1;
+    //$reduction = isset($data['reduction']) ? $data['reduction'] : 1;
+    //$modePaiement = isset($data['mode_paiement']) ? $data['mode_paiement'] : 1;
 
     $commande = new Commande();
     $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
@@ -175,9 +175,9 @@ public function createCommande(Request $request, EntityManagerInterface $entityM
     $commande->setIdAdresseLivraison($adresseLivraison);
     $commande->setDateCommande(new \DateTime());
     $commande->setPrixTotal(0);
-    $commande->setStatut($status); // Nouveau champ status
-    $commande->setIdReduction($reduction); // Nouveau champ reduction
-    $commande->setIdModePaiement($modePaiement); // Nouveau champ mode de paiement
+   // $commande->setStatut($status); // Nouveau champ status
+    //$commande->setIdReduction($reduction); // Nouveau champ reduction
+   // $commande->setIdModePaiement($modePaiement); // Nouveau champ mode de paiement
 
     $entityManager->persist($commande);
 

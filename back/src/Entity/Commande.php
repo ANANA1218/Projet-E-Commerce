@@ -51,12 +51,12 @@ class Commande
     private ?ModePaiement $id_mode_paiement = null;
 
 
- 
+ /*
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(name: 'id_reduction ', referencedColumnName: 'id_reduction ', nullable: false)]
     private ?Reduction $reduction = null;
 
-
+*/
 
 
     public function getIdCommande(): ?int
@@ -88,7 +88,7 @@ class Commande
         return $this;
     }
 
-    public function getIdReduction(): ?Reduction
+  /*  public function getIdReduction(): ?Reduction
     {
         return $this->id_reduction;
     }
@@ -98,7 +98,8 @@ class Commande
         $this->id_reduction = $id_reduction;
 
         return $this;
-    }
+    }*/
+
 
     public function getIdUtilisateur(): ?Utilisateur
     {
@@ -137,7 +138,7 @@ class Commande
     }
 
 
-    public function getReduction(): ?int
+  /*  public function getReduction(): ?int
     {
         return $this->reduction;
     }
@@ -148,7 +149,7 @@ class Commande
 
         return $this;
     }
-
+*/
 
 
     public function getIdAdresseLivraison(): ?AdresseLivraison
