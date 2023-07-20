@@ -1,113 +1,47 @@
-import React from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  Divider,
-} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const OrderHistoryPage = () => {
-  // Exemple de fausses données de commandes
-  const orders = [
-    {
-      id: 1,
-      date: "2023-04-28",
-      items: [
-        {
-          id: 1,
-          name: "Produit 1",
-          image: "https://example.com/product1.jpg",
-          quantity: 2,
-          price: 10,
-        },
-        {
-          id: 2,
-          name: "Produit 2",
-          image: "https://example.com/product2.jpg",
-          quantity: 1,
-          price: 20,
-        },
-      ],
-      totalPrice: 40,
-    },
-    {
-      id: 2,
-      date: "2023-04-27",
-      items: [
-        {
-          id: 3,
-          name: "Produit 3",
-          image: "https://example.com/product3.jpg",
-          quantity: 3,
-          price: 15,
-        },
-      ],
-      totalPrice: 45,
-    },
-  ];
+const CommandesList = () => {
+  const [commands, setCommands] = useState([]);
+
+  useEffect(() => {
+    const fetchCommands = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/commandes', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setCommands(response.data);
+      } catch (error) {
+        console.error('An error occurred while fetching commands:', error);
+      }
+    };
+
+    fetchCommands();
+  }, []);
 
   return (
-    <Container maxWidth="sm">
-   
-      <Box mt={4}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Historique des commandes
-        </Typography>
-      </Box>
-      <Box mt={2}>
-        {orders.length === 0 ? (
-          <Typography variant="body1" align="center">
-            Aucune commande trouvée.
-          </Typography>
-        ) : (
-          <List>
-            {orders.map((order) => (
-              <Paper key={order.id} elevation={2} sx={{ mb: 2 }}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar alt="Order" src="https://example.com/order.png" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`Commande #${order.id}`}
-                    secondary={`Date: ${order.date}`}
-                  />
-                </ListItem>
-                <Divider />
-                <Box p={2}>
-                  <List disablePadding>
-                    {order.items.map((item) => (
-                      <ListItem key={item.id} disableGutters>
-                        <ListItemAvatar>
-                          <Avatar alt={item.name} src={item.image} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={item.name}
-                          secondary={`Quantité: ${item.quantity}`}
-                        />
-                        <Typography variant="body1">{`Prix: $${item.price}`}</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                  <Divider />
-                  <Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Total: ${order.totalPrice}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            ))}
-          </List>
-        )}
-      </Box>
-    </Container>
+    <div className="container mt-4">
+      <h2 className="mb-4">Liste des commandes</h2>
+      {commands.map((commande) => (
+        <div key={commande.id_commande} className="card mb-4">
+          <div className="card-body">
+            <h5 className="card-title">ID Commande: {commande.id_commande}</h5>
+            <p className="card-text">Date: {commande.date_commande}</p>
+            <p className="card-text">Prix Total: {commande.prix_total}</p>
+            <p className="card-text">Produit: {commande.nom_produit}</p>
+            <p className="card-text">Description: {commande.description}</p>
+            <p className="card-text">Prix du produit: {commande.prix}</p>
+            <Link to={`/detail-commande/${commande.id_commande}`} className="btn btn-primary">
+              Voir les détails
+            </Link>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 
-export default OrderHistoryPage;
+export default CommandesList;
