@@ -94,7 +94,7 @@ function Categories() {
                     </div>
                 </div>
                 <div className="row justify-content-center align-items-center">
-                    <div className="col-md-2">
+                    <div className="col-md-4">
                         {successMessage && <div className="alert alert-success" ref={messageRef}>{successMessage}</div>}
                         {errorMessage && <div className="alert alert-danger" ref={messageRef}>{errorMessage}</div>}
                     </div>
