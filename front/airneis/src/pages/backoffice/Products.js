@@ -91,6 +91,23 @@ const Products = () => {
             return;
         }
 
+        if (newPrice !== '' && isNaN(parseFloat(newPrice))) {
+            setErrorMessage('Le prix doit être un nombre valide.');
+            scrollToAlert();
+            return;
+        }
+        if (newStock !== '' && isNaN(parseInt(newStock))) {
+            setErrorMessage('Le stock doit être un nombre entier valide.');
+            scrollToAlert();
+            return;
+        }
+
+        if (newPrice === '' && newStock === '' && selectedCategoryId === '') {
+            setErrorMessage('Veuillez fournir au moins un champ à modifier.');
+            scrollToAlert();
+            return;
+        }
+
         const dataToUpdate = {};
         if (newPrice !== '') {
             dataToUpdate.prix = parseFloat(newPrice);
@@ -231,7 +248,7 @@ const Products = () => {
                         </div>
                     </div>
                     <div className="row justify-content-center align-items-center">
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                             {successMessage && (
                                 <div className="alert alert-success" ref={messageRef}>
                                     {successMessage}
