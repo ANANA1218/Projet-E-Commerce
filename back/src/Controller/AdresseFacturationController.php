@@ -165,6 +165,59 @@ public function createAdresseFacturation(Request $request, EntityManagerInterfac
 }
 
 
+#[Route('/api/adresses_facturation/{id}', name: 'editAdresseFacturation', methods: ['PUT'])]
+public function editAdresseFacturation(
+    int $id,
+    Request $request,
+    EntityManagerInterface $entityManager,
+    UtilisateurRepository $userRepository
+): JsonResponse {
+    $data = json_decode($request->getContent(), true);
+
+    // Get the token from the request headers
+    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+
+    if (!$token) {
+        return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
+    }
+
+    // Fetch the user associated with the token
+    $user = $userRepository->findOneBy(['token' => $token]);
+
+    if (!$user) {
+        return new JsonResponse('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+    }
+
+    // Find the existing facturation address by ID
+    $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($id);
+
+    if (!$adresseFacturation) {
+        return new JsonResponse('Adresse de facturation non trouvée', Response::HTTP_NOT_FOUND);
+    }
+
+    // Check if the facturation address belongs to the user
+    /* if ($adresseFacturation->getCarnetAdresse() !== $user) {
+        return new JsonResponse('Adresse de facturation non autorisée', Response::HTTP_FORBIDDEN);
+    } */
+
+    // Update the facturation address with the new data
+    $adresseFacturation->setRue($data['rue']);
+    $adresseFacturation->setComplementAdresse($data['complement_adresse']);
+    $adresseFacturation->setRegion($data['region']);
+    $adresseFacturation->setVille($data['ville']);
+    $adresseFacturation->setCodePostal($data['code_postal']);
+    $adresseFacturation->setPays($data['pays']);
+    // $adresseFacturation->setCarnetAdresse($data['carnet_adresse']); // Not updating this field, as it's already associated with the user
+
+    $entityManager->flush();
+
+    return new JsonResponse(['message' => 'Adresse de facturation mise à jour avec succès'], Response::HTTP_OK);
+}
+
+
+
+
+
     #[Route('/api/adresses_facturation/{id}', name: 'deleteAdresseFacturation', methods: ['DELETE'])]
     public function deleteAdresseFacturation(EntityManagerInterface $entityManager, AdresseFacturation $adresseFacturation): JsonResponse
     {
