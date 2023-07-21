@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import Product from "../components/products/Product";
-import ProductH from "../components/products/ProductH";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ScrollToTopOnMount from "../lib/ScrollToTopOnMount";
+import FilterMenuLeft from "../components/products/FilterMenuLeft";
+import ProductItem from "../components/products/ProductItem";
 
 const categories = [
     "All Products",
@@ -14,87 +14,6 @@ const categories = [
     "Power Banks",
 ];
 
-const brands = ["Apple", "Samsung", "Google", "HTC"];
-
-const manufacturers = ["HOCO", "Nillkin", "Remax", "Baseus"];
-
-function FilterMenuLeft() {
-    return (
-        <ul className="list-group list-group-flush rounded">
-            <li className="list-group-item d-none d-lg-block">
-                <h5 className="mt-1 mb-2">Browse</h5>
-                <div className="d-flex flex-wrap my-2">
-                    {categories.map((v, i) => {
-                        return (
-                            <Link
-                                key={i}
-                                to="/products"
-                                className="btn btn-sm btn-outline-dark rounded-pill me-2 mb-2"
-                                replace
-                            >
-                                {v}
-                            </Link>
-                        );
-                    })}
-                </div>
-            </li>
-            <li className="list-group-item">
-                <h5 className="mt-1 mb-1">Brands</h5>
-                <div className="d-flex flex-column">
-                    {brands.map((v, i) => {
-                        return (
-                            <div key={i} className="form-check">
-                                <input className="form-check-input" type="checkbox" />
-                                <label className="form-check-label" htmlFor="flexCheckDefault">
-                                    {v}
-                                </label>
-                            </div>
-                        );
-                    })}
-                </div>
-            </li>
-            <li className="list-group-item">
-                <h5 className="mt-1 mb-1">Manufacturers</h5>
-                <div className="d-flex flex-column">
-                    {manufacturers.map((v, i) => {
-                        return (
-                            <div key={i} className="form-check">
-                                <input className="form-check-input" type="checkbox" />
-                                <label className="form-check-label" htmlFor="flexCheckDefault">
-                                    {v}
-                                </label>
-                            </div>
-                        );
-                    })}
-                </div>
-            </li>
-            <li className="list-group-item">
-                <h5 className="mt-1 mb-2">Price Range</h5>
-                <div className="d-grid d-block mb-3">
-                    <div className="form-floating mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Min"
-                            defaultValue="100000"
-                        />
-                        <label htmlFor="floatingInput">Min Price</label>
-                    </div>
-                    <div className="form-floating mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Max"
-                            defaultValue="500000"
-                        />
-                        <label htmlFor="floatingInput">Max Price</label>
-                    </div>
-                    <button className="btn btn-dark">Apply</button>
-                </div>
-            </li>
-        </ul>
-    );
-}
 
 function ProductList() {
     const [viewType, setViewType] = useState({ grid: true });
@@ -116,11 +35,8 @@ function ProductList() {
                             to="/products"
                             replace
                         >
-                            All Prodcuts
+                            All products
                         </Link>
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                        Chairs &amp; Covers
                     </li>
                 </ol>
             </nav>
@@ -216,23 +132,7 @@ function ProductList() {
                                 </button>
                             </div>
                         </div>
-                        <div
-                            className={
-                                "row row-cols-1 row-cols-md-2 row-cols-lg-2 g-3 mb-4 flex-shrink-0 " +
-                                (viewType.grid ? "row-cols-xl-3" : "row-cols-xl-2")
-                            }
-                        >
-                            {Array.from({ length: 1 }, (_, i) => {
-                                if (viewType.grid) {
-                                    return (
-                                        <Product key={i} percentOff={i % 2 === 0 ? 15 : null} />
-                                    );
-                                }
-                                return (
-                                    <ProductH key={i} percentOff={i % 4 === 0 ? 15 : null} />
-                                );
-                            })}
-                        </div>
+                        <ProductItem viewType={viewType} />
                         <div className="d-flex align-items-center mt-auto">
                             <span className="text-muted small d-none d-md-inline">
                                 Showing 10 of 100

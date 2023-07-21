@@ -62,7 +62,7 @@ const iconPath =
                 <ol className="breadcrumb p-3">
                   <li className="breadcrumb-item">
                     <Link className="text-decoration-none link-secondary" to="/products">
-                      All Prodcuts
+                      All Products
                     </Link>
                   </li>
                   <li className="breadcrumb-item">
