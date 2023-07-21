@@ -149,7 +149,7 @@ class AdresseFacturation
     public function removeCommande(Commande $commande): self
     {
         if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
+         
             if ($commande->getIdAdresseFacturation() === $this) {
                 $commande->setIdAdresseFacturation(null);
             }

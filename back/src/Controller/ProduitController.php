@@ -42,10 +42,8 @@ class ProduitController extends AbstractController
 
         $produits = $query->getQuery()->getResult();
 
-        // Shuffle the array of products to randomize the order
         shuffle($produits);
 
-        // Take the first 6 elements from the shuffled array to get random products
         $randomProduits = array_slice($produits, 0, 6);
 
         $jsonProduits = $serializer->serialize($randomProduits, 'json', [AbstractNormalizer::GROUPS => 'product']);

@@ -149,7 +149,7 @@ class AdresseLivraison
     public function removeCommande(Commande $commande): self
     {
         if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
+           
             if ($commande->getIdAdresseLivraison() === $this) {
                 $commande->setIdAdresseLivraison(null);
             }

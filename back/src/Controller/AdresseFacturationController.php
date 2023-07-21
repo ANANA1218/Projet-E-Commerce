@@ -36,7 +36,7 @@ class AdresseFacturationController extends AbstractController
     #[Route('/api/adresses_facturationUser', name: 'getAdressesFacturationUser', methods: ['GET'])]
     public function getAdressesFacturationUser(AdresseFacturationRepository $adresseFacturationRepository, SerializerInterface $serializer, UtilisateurRepository $userRepository, Request $request): JsonResponse
 {
-    // Retrieve the authenticated user based on the token passed in the request header
+  
     $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
     if (!$token) {
@@ -81,64 +81,19 @@ class AdresseFacturationController extends AbstractController
         return new JsonResponse($jsonAdresseFacturation, JsonResponse::HTTP_OK, ['Content-Type' => 'application/json'], true);
     }
 
-  /* #[Route('/api/adresses_facturation', name: 'createAdresseFacturation', methods: ['POST'])]
-    public function createAdresseFacturation(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $adresseFacturation = new AdresseFacturation();
-        $adresseFacturation->setRue($data['rue']);
-        $adresseFacturation->setComplementAdresse($data['complement_adresse']);
-        $adresseFacturation->setRegion($data['region']);
-        $adresseFacturation->setVille($data['ville']);
-        $adresseFacturation->setCodePostal($data['code_postal']);
-        $adresseFacturation->setPays($data['pays']);
-        $adresseFacturation->setCarnetAdresse($data['carnet_adresse']);
-
-        $entityManager->persist($adresseFacturation);
-        $entityManager->flush();
-
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-        $utilisateur->addAdressesFacturation($adresseFacturation);
-        $entityManager->flush();
-
-        return new JsonResponse(['message' => 'Adresse de facturation ajoutée avec succès'], Response::HTTP_CREATED);
-    }
-
-    #[Route('/api/adresses_facturation/{id}', name: 'updateAdresseFacturation', methods: ['PUT'])]
-    public function updateAdresseFacturation(Request $request, EntityManagerInterface $entityManager, AdresseFacturation $adresseFacturation): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $adresseFacturation->setRue($data['rue']);
-        $adresseFacturation->setComplementAdresse($data['complement_adresse']);
-        $adresseFacturation->setRegion($data['region']);
-        $adresseFacturation->setVille($data['ville']);
-        $adresseFacturation->setCodePostal($data['code_postal']);
-        $adresseFacturation->setPays($data['pays']);
-        $adresseFacturation->setCarnetAdresse($data['carnet_adresse']);
-
-        $entityManager->flush();
-
-        return new JsonResponse(['message' => 'Adresse de facturation mise à jour avec succès'], Response::HTTP_OK);
-    }
-
-    */
-
-
     #[Route('/api/adresses_facturation', name: 'createAdresseFacturation', methods: ['POST'])]
 public function createAdresseFacturation(Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $userRepository): JsonResponse
 {
     $data = json_decode($request->getContent(), true);
 
-    // Get the token from the request headers
+   
     $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
     if (!$token) {
         return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
     }
 
-    // Fetch the user associated with the token
+
     $user = $userRepository->findOneBy(['token' => $token]);
 
     if (!$user) {
@@ -157,7 +112,7 @@ public function createAdresseFacturation(Request $request, EntityManagerInterfac
     $entityManager->persist($adresseFacturation);
     $entityManager->flush();
 
-    // Associate the adresseFacturation with the user
+   
     $user->addAdressesFacturation($adresseFacturation);
     $entityManager->flush();
 
@@ -174,41 +129,35 @@ public function editAdresseFacturation(
 ): JsonResponse {
     $data = json_decode($request->getContent(), true);
 
-    // Get the token from the request headers
+  
     $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
     if (!$token) {
         return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
     }
 
-    // Fetch the user associated with the token
+  
     $user = $userRepository->findOneBy(['token' => $token]);
 
     if (!$user) {
         return new JsonResponse('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
     }
 
-    // Find the existing facturation address by ID
+  
     $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($id);
 
     if (!$adresseFacturation) {
         return new JsonResponse('Adresse de facturation non trouvée', Response::HTTP_NOT_FOUND);
     }
 
-    // Check if the facturation address belongs to the user
-    /* if ($adresseFacturation->getCarnetAdresse() !== $user) {
-        return new JsonResponse('Adresse de facturation non autorisée', Response::HTTP_FORBIDDEN);
-    } */
-
-    // Update the facturation address with the new data
+  
     $adresseFacturation->setRue($data['rue']);
     $adresseFacturation->setComplementAdresse($data['complement_adresse']);
     $adresseFacturation->setRegion($data['region']);
     $adresseFacturation->setVille($data['ville']);
     $adresseFacturation->setCodePostal($data['code_postal']);
     $adresseFacturation->setPays($data['pays']);
-    // $adresseFacturation->setCarnetAdresse($data['carnet_adresse']); // Not updating this field, as it's already associated with the user
-
+    
     $entityManager->flush();
 
     return new JsonResponse(['message' => 'Adresse de facturation mise à jour avec succès'], Response::HTTP_OK);

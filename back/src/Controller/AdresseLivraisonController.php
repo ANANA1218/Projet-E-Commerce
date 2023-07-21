@@ -18,13 +18,6 @@ use App\Entity\Utilisateur;
 class AdresseLivraisonController extends AbstractController
 {
     #[Route('/api/adresses_livraison', name: 'getAdressesLivraison', methods: ['GET'])]
-    /*public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
-    {
-        $adressesLivraison = $adresseLivraisonRepository->findAll();
-        $jsonAdressesLivraison = $serializer->serialize($adressesLivraison, 'json');
-        return new JsonResponse($jsonAdressesLivraison, Response::HTTP_OK, [], true);
-    }*/
-
 
     public function getAdressesLivraison(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -42,7 +35,7 @@ class AdresseLivraisonController extends AbstractController
     #[Route('/api/adresses_livraisonUser', name: 'getAdressesLivraisonUser', methods: ['GET'])]
     public function getAdressesLivraisonUser(AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer, UtilisateurRepository $userRepository, Request $request): JsonResponse
     {
-        // Retrieve the authenticated user based on the token passed in the request header
+       
         $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
     
         if (!$token) {
@@ -73,12 +66,6 @@ class AdresseLivraisonController extends AbstractController
 
 
     #[Route('/api/adresses_livraison/{id}', name: 'getAdresseLivraisonById', methods: ['GET'])]
-    /* public function getAdresseLivraisonById(AdresseLivraison $adresseLivraison, SerializerInterface $serializer): JsonResponse
-    {
-        $jsonAdresseLivraison = $serializer->serialize($adresseLivraison, 'json');
-        return new JsonResponse($jsonAdresseLivraison, Response::HTTP_OK, ['accept' => 'json'], true);
-    }
-*/
 
     public function getAdresseLivraisonById(int $id, AdresseLivraisonRepository $adresseLivraisonRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -97,65 +84,19 @@ class AdresseLivraisonController extends AbstractController
 
 
 
-/*    #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
-    public function createAdresseLivraison(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $adresseLivraison = new AdresseLivraison();
-        $adresseLivraison->setRue($data['rue']);
-        $adresseLivraison->setComplementAdresse($data['complement_adresse']);
-        $adresseLivraison->setRegion($data['region']);
-        $adresseLivraison->setVille($data['ville']);
-        $adresseLivraison->setCodePostal($data['code_postal']);
-        $adresseLivraison->setPays($data['pays']);
-        $adresseLivraison->setCarnetAdresse($data['carnet_adresse']);
-
-        $entityManager->persist($adresseLivraison);
-        $entityManager->flush();
-
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-        $utilisateur->addAdressesLivraison($adresseLivraison);
-        $entityManager->flush();
-
-        return new JsonResponse(['message' => 'Adresse de livraison ajoutée avec succès'], Response::HTTP_CREATED);
-    }
-
-    #[Route('/api/adresses_livraison/{id}', name: 'updateAdresseLivraison', methods: ['PUT'])]
-    public function updateAdresseLivraison(Request $request, EntityManagerInterface $entityManager, AdresseLivraison $adresseLivraison): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $adresseLivraison->setRue($data['rue']);
-        $adresseLivraison->setComplementAdresse($data['complement_adresse']);
-        $adresseLivraison->setRegion($data['region']);
-        $adresseLivraison->setVille($data['ville']);
-        $adresseLivraison->setCodePostal($data['code_postal']);
-        $adresseLivraison->setPays($data['pays']);
-        $adresseLivraison->setCarnetAdresse($data['carnet_adresse']);
-
-        $entityManager->flush();
-
-        return new JsonResponse(['message' => 'Adresse de livraison mise à jour avec succès'], Response::HTTP_OK);
-    }
-
-
-    */
-
-
     #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
     public function createAdresseLivraison(Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $userRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
     
-        // Get the token from the request headers
+        
         $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
     
         if (!$token) {
             return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
         }
     
-        // Fetch the user associated with the token
+       
         $user = $userRepository->findOneBy(['token' => $token]);
     
         if (!$user) {
@@ -174,7 +115,7 @@ class AdresseLivraisonController extends AbstractController
         $entityManager->persist($adresseLivraison);
         $entityManager->flush();
     
-        // Associate the adresseLivraison with the user
+    
         $user->addAdressesLivraison($adresseLivraison);
         $entityManager->flush();
     
@@ -191,40 +132,35 @@ class AdresseLivraisonController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
     
-        // Get the token from the request headers
+        
         $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
     
         if (!$token) {
             return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
         }
     
-        // Fetch the user associated with the token
+       
         $user = $userRepository->findOneBy(['token' => $token]);
     
         if (!$user) {
             return new JsonResponse('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
         }
     
-        // Find the existing delivery address by ID
+     
         $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($id);
     
         if (!$adresseLivraison) {
             return new JsonResponse('Adresse de livraison non trouvée', Response::HTTP_NOT_FOUND);
         }
     
-        // Check if the delivery address belongs to the user
-       /* if ($adresseLivraison->getCarnetAdresse() !== $user) {
-            return new JsonResponse('Adresse de livraison non autorisée', Response::HTTP_FORBIDDEN);
-        }*/
-    
-        // Update the delivery address with the new data
+      
         $adresseLivraison->setRue($data['rue']);
         $adresseLivraison->setComplementAdresse($data['complement_adresse']);
         $adresseLivraison->setRegion($data['region']);
         $adresseLivraison->setVille($data['ville']);
         $adresseLivraison->setCodePostal($data['code_postal']);
         $adresseLivraison->setPays($data['pays']);
-        // $adresseLivraison->setCarnetAdresse($data['carnet_adresse']); // Not updating this field, as it's already associated with the user
+       
     
         $entityManager->flush();
     
