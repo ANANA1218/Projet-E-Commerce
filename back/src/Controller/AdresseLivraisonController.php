@@ -97,7 +97,7 @@ class AdresseLivraisonController extends AbstractController
 
 
 
-    #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
+/*    #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
     public function createAdresseLivraison(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -138,6 +138,51 @@ class AdresseLivraisonController extends AbstractController
 
         return new JsonResponse(['message' => 'Adresse de livraison mise à jour avec succès'], Response::HTTP_OK);
     }
+
+
+    */
+
+
+    #[Route('/api/adresses_livraison', name: 'createAdresseLivraison', methods: ['POST'])]
+    public function createAdresseLivraison(Request $request, EntityManagerInterface $entityManager, UtilisateurRepository $userRepository): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+    
+        // Get the token from the request headers
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+    
+        if (!$token) {
+            return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
+        }
+    
+        // Fetch the user associated with the token
+        $user = $userRepository->findOneBy(['token' => $token]);
+    
+        if (!$user) {
+            return new JsonResponse('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+        }
+    
+        $adresseLivraison = new AdresseLivraison();
+        $adresseLivraison->setRue($data['rue']);
+        $adresseLivraison->setComplementAdresse($data['complement_adresse']);
+        $adresseLivraison->setRegion($data['region']);
+        $adresseLivraison->setVille($data['ville']);
+        $adresseLivraison->setCodePostal($data['code_postal']);
+        $adresseLivraison->setPays($data['pays']);
+        $adresseLivraison->setCarnetAdresse($data['carnet_adresse']);
+    
+        $entityManager->persist($adresseLivraison);
+        $entityManager->flush();
+    
+        // Associate the adresseLivraison with the user
+        $user->addAdressesLivraison($adresseLivraison);
+        $entityManager->flush();
+    
+        return new JsonResponse(['message' => 'Adresse de livraison ajoutée avec succès'], Response::HTTP_CREATED);
+    }
+    
+
+
 
     #[Route('/api/adresses_livraison/{id}', name: 'deleteAdresseLivraison', methods: ['DELETE'])]
     public function deleteAdresseLivraison(EntityManagerInterface $entityManager, AdresseLivraison $adresseLivraison): JsonResponse
