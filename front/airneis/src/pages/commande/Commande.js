@@ -153,10 +153,11 @@ const handlePaymentSubmit = async () => {
     
     localStorage.removeItem("cartItems");
     setCartItems([]); 
-
+    setIsModalOpen(true);
+    
     setCurrentStep(1);
 
-    setIsModalOpen(true);
+    
   } catch (error) {
 
     console.error("Error creating the order:", error);

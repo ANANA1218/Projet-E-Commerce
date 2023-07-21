@@ -39,14 +39,13 @@ function Home() {
           </Link>
         </div>
       </div>
-
       <h2 className="text-muted text-center mt-4 mb-3">Catégories</h2>
+      <br />
       <div className="container pb-5 px-lg-5">
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 px-md-5">
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 px-md-5 justify-content-center"> 
           <ImageWithCategory />
         </div>
       </div>
-
       <h2 className="text-muted text-center mt-4 mb-3">Random Products</h2>
       <div className="container pb-5 px-lg-5">
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 px-md-5">
@@ -58,11 +57,7 @@ function Home() {
                 <h5 className="card-title">{product.nom_categorie}</h5>
                     <h5 className="card-title">{product.nom_produit}</h5>
                     <p className="card-text">{product.prix} €</p>
-                    <img
-                        src={product.image}
-                        alt="Image"
-                        style={{ width: '100%', borderRadius: '5px' }}
-                    />
+                   
 
                   <Link to={`/products/${product.id_produit}`} className="btn btn-primary">
                     View Product

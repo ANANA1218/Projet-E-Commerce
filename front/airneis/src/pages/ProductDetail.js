@@ -100,10 +100,7 @@ const iconPath =
                       <h4 className="mb-0">Details</h4>
                       <hr />
                       <dl className="row">
-                        <dt className="col-sm-4">Category</dt>
-                        <dd className="col-sm-8 mb-3">Cases & Covers</dd>
-                        <dt className="col-sm-4">Status</dt>
-                        <dd className="col-sm-8 mb-3">Instock</dd>
+                      
                         <dt className="col-sm-4">Rating</dt>
                         <dd className="col-sm-8 mb-3">
                           <Ratings
