@@ -10,6 +10,7 @@ import AboutUs from "./pages/AboutUs";
 import MentionsLegales from "./pages/MentionsLegales";
 import ProductList from "./pages/ProductList";
 import ListCommande from "./pages/commande/ListCommande";
+import CommandeDetails from "./pages/commande/CommandeDetails";
 import UserProfile from './pages/users/UserProfile';
 import Index from "./pages/backoffice/Index";
 import Products from "./pages/backoffice/Products";
@@ -30,6 +31,7 @@ function App() {
             <Route path="/products/:id" element={WithTemplate(ProductDetail)} />
             <Route path="/panier" element={WithTemplate(Commande)} />
             <Route path="/commandes" element={WithTemplate(ListCommande)} />
+            <Route path="/commandesDetails" element={WithTemplate(CommandeDetails)} />
             <Route path="/profile" element={WithTemplate(UserProfile)} />
             <Route path="/cgu" element={WithTemplate(CGU)} />
             <Route path="/mentions-legales" element={WithTemplate(MentionsLegales)} />

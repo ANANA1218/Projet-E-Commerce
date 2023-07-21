@@ -1,113 +1,71 @@
-import React from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  Divider,
-} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-const OrderHistoryPage = () => {
-  // Exemple de fausses données de commandes
-  const orders = [
-    {
-      id: 1,
-      date: "2023-04-28",
-      items: [
-        {
-          id: 1,
-          name: "Produit 1",
-          image: "https://example.com/product1.jpg",
-          quantity: 2,
-          price: 10,
-        },
-        {
-          id: 2,
-          name: "Produit 2",
-          image: "https://example.com/product2.jpg",
-          quantity: 1,
-          price: 20,
-        },
-      ],
-      totalPrice: 40,
-    },
-    {
-      id: 2,
-      date: "2023-04-27",
-      items: [
-        {
-          id: 3,
-          name: "Produit 3",
-          image: "https://example.com/product3.jpg",
-          quantity: 3,
-          price: 15,
-        },
-      ],
-      totalPrice: 45,
-    },
-  ];
+const CommandesList = () => {
+  const [commands, setCommands] = useState([]);
+  const [activeCommand, setActiveCommand] = useState(null);
+  const [commandsDetails, setCommandsDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchCommands = async () => {
+      try {
+        const [commandsResponse, commandsDetailsResponse] = await Promise.all([
+          axios.get('http://127.0.0.1:8000/api/commandes', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          axios.get('http://127.0.0.1:8000/api/commande-details', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+        ]);
+
+        setCommands(commandsResponse.data);
+        setCommandsDetails(commandsDetailsResponse.data);
+      } catch (error) {
+        console.error('An error occurred while fetching commands:', error);
+      }
+    };
+
+    fetchCommands();
+  }, []);
 
   return (
-    <Container maxWidth="sm">
-   
-      <Box mt={4}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Historique des commandes
-        </Typography>
-      </Box>
-      <Box mt={2}>
-        {orders.length === 0 ? (
-          <Typography variant="body1" align="center">
-            Aucune commande trouvée.
-          </Typography>
-        ) : (
-          <List>
-            {orders.map((order) => (
-              <Paper key={order.id} elevation={2} sx={{ mb: 2 }}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar alt="Order" src="https://example.com/order.png" />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={`Commande #${order.id}`}
-                    secondary={`Date: ${order.date}`}
-                  />
-                </ListItem>
-                <Divider />
-                <Box p={2}>
-                  <List disablePadding>
-                    {order.items.map((item) => (
-                      <ListItem key={item.id} disableGutters>
-                        <ListItemAvatar>
-                          <Avatar alt={item.name} src={item.image} />
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={item.name}
-                          secondary={`Quantité: ${item.quantity}`}
-                        />
-                        <Typography variant="body1">{`Prix: $${item.price}`}</Typography>
-                      </ListItem>
-                    ))}
-                  </List>
-                  <Divider />
-                  <Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>
-                    <Typography variant="body1" fontWeight="bold">
-                      Total: ${order.totalPrice}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Paper>
-            ))}
-          </List>
-        )}
-      </Box>
-    </Container>
+    <div className="container mt-4">
+      <h2 className="mb-4">Liste des commandes</h2>
+      {commands.map((commande) => (
+        <div key={commande.id_commande} className="card mb-4">
+          <div className="card-header" onClick={() => setActiveCommand(commande.id_commande)}>
+            <h5 className="mb-0">
+              ID Commande: {commande.id_commande}
+            </h5>
+          </div>
+          {activeCommand === commande.id_commande && (
+            <div className="card-body">
+              <p>Date: {commande.date_commande}</p>
+              <p>Prix Total: {commande.prix_total}</p>
+              {/* Additional details */}
+              {commandsDetails.map((commandeDetail) => {
+                if (commandeDetail.id_commande === commande.id_commande) {
+                  return (
+                    <div key={commandeDetail.id_produit}>
+                      <p>Produit: {commandeDetail.nom_produit}</p>
+                      <p>Description: {commandeDetail.description}</p>
+                      <p>Prix du produit: {commandeDetail.prix}</p>
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 };
 
-export default OrderHistoryPage;
+export default CommandesList;

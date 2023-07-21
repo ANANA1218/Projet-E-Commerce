@@ -10,6 +10,7 @@ import "datatables.net-buttons/js/buttons.colVis.js";
 import "datatables.net-buttons/js/buttons.flash.js";
 import "datatables.net-buttons/js/buttons.html5.js";
 import "datatables.net-buttons/js/buttons.print.js";
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import React from "react";
 import ReactDOM from "react-dom";
