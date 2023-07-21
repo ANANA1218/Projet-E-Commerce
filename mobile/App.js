@@ -24,9 +24,9 @@ const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="SingleScreen" options={{headerShown: false}} component={SingleScreen} />
+      <Stack.Screen name="SingleScreen"  component={SingleScreen} />
       {/* Ajoutez d'autres écrans du StackNavigator ici si nécessaire */}
     </Stack.Navigator>
   );

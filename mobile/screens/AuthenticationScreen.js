@@ -31,25 +31,25 @@ const AuthenticationScreen = () => {
     const handleSignup = () => {
         createUserWithEmailAndPassword(auth, email, password)
             .then(userCredential => {
-                navigation.replace("Home")
+                // navigation.replace("Home")
                 const user = userCredential.user;
                 console.log("Registered with : "+user.email)
 
-                // axios.post("https://airneis-api-default-rtdb.europe-west1.firebasedatabase.app/User.json",
-                //     {
-                //         uid : user.uid,
-                //         email: email,
-                //         password: password,
-                //         returnSecureToken: true,
-                //     }
-                //   )
-                //     .then(() => {alert("good")}
-                //     )
-                //     .catch((err) => {
-                //     alert(err.message);
-                //     })
+                axios.post("https://airneis-api-default-rtdb.europe-west1.firebasedatabase.app/User.json",
+                    {
+                        uid : user.uid,
+                        email: email,
+                        password: password,
+                        returnSecureToken: true,
+                    }
+                  )
+                    .then(() => {}
+                    )
+                    .catch((err) => {
+                    alert(err.message);
+                    })
             })
-            .catch(error => alert(error.message+'LA'))
+            .catch(error => alert(error.message))
     }
 
     const handleLogin = () => {
@@ -61,7 +61,7 @@ const AuthenticationScreen = () => {
             })
             .catch(error => {
                 error.code == AuthErrorCodes.INVALID_PASSWORD ? alert("Mot de passe incorrect.")
-                    : alert(error.message+'lo')})
+                    : alert(error.message)})
     }
 
 
