@@ -12,12 +12,9 @@ function Template({ title, children }) {
                 <Sidebar />
                 <div id="content-wrapper" className="d-flex flex-column">
                     <div id="content">
-                        <Topbar />
+                        <Topbar title={title} />
                         <div className="container-fluid">
                             <div className="row">
-                                <div className="text-center">
-                                    <h2 className="m-4 text-center fw-bold text-dark">{title}</h2>
-                                </div>
                                 {children}
                             </div>
                         </div>
