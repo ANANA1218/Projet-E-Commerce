@@ -95,6 +95,42 @@ public function login(Request $request): JsonResponse
 }
 
 
+#[Route('/api/utilisateur/loginAdmin', name: 'loginAdmin', methods: ['POST'])]
+public function loginAdmin(Request $request): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if (!$email || !$password) {
+        return $this->json(['message' => 'Email et/ou mot de passe manquant'], Response::HTTP_BAD_REQUEST);
+    }
+
+    $user = $this->utilisateurRepository->login($email, $password);
+
+    if (!$user) {
+        return $this->json(['message' => 'Identifiants incorrects'], Response::HTTP_UNAUTHORIZED);
+    }
+
+    $idRole = $user->getIdRole()->getId(); // Assuming 'getId' method on the Role entity to get the role ID.
+
+    // Check if the user has the desired role (id_role = 1) to proceed with the login
+    if ($idRole !== 1) {
+        return $this->json(['message' => 'Access denied.'], Response::HTTP_FORBIDDEN);
+    }
+
+    $id = $user->getIdUtilisateur(); // Assuming the method to get the ID is named 'getId'.
+
+    $token = $user->getToken();
+
+    return $this->json(['message' => 'Login successful', 'id_utilisateur' => $id, 'token' => $token], Response::HTTP_OK);
+}
+
+
+
+
+
 /*
 #[Route('/api/utilisateur/login', name: 'login', methods: ['POST'])]
 public function login(Request $request): JsonResponse
