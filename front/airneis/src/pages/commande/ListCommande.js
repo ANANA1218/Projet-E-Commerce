@@ -33,14 +33,22 @@ const CommandesList = () => {
     fetchCommands();
   }, []);
 
+  const handleAccordionClick = (commandId) => {
+    setActiveCommand(activeCommand === commandId ? null : commandId);
+  };
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Liste des commandes</h2>
       {commands.map((commande) => (
         <div key={commande.id_commande} className="card mb-4">
-          <div className="card-header" onClick={() => setActiveCommand(commande.id_commande)}>
+          <div
+            className="card-header"
+            onClick={() => handleAccordionClick(commande.id_commande)}
+            style={{ cursor: 'pointer' }}
+          >
             <h5 className="mb-0">
-              ID Commande: {commande.id_commande}
+              Commande N° {commande.id_commande}
             </h5>
           </div>
           {activeCommand === commande.id_commande && (
@@ -52,6 +60,7 @@ const CommandesList = () => {
                 if (commandeDetail.id_commande === commande.id_commande) {
                   return (
                     <div key={commandeDetail.id_produit}>
+                      <hr className="my-2" /> {/* Horizontal line */}
                       <p>Produit: {commandeDetail.nom_produit}</p>
                       <p>Description: {commandeDetail.description}</p>
                       <p>Prix du produit: {commandeDetail.prix}</p>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { faListUl } from '@fortawesome/free-solid-svg-icons';
 const Header = () => {
   const [openedDrawer, setOpenedDrawer] = useState(false);
 
@@ -49,7 +49,7 @@ const Header = () => {
             <ul className="navbar-nav me-auto mb-lg-0">
               <li className="nav-item">
                 <Link to="/products" className="nav-link" replace onClick={changeNav}>
-                  Explore
+                  Produits
                 </Link>
               </li>
             </ul>
@@ -65,6 +65,11 @@ const Header = () => {
                   <li className="nav-item">
                     <Link to="/profile" className="nav-link" onClick={changeNav}>
                       Profile <FontAwesomeIcon icon={["far", "smile"]} />
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link to="/commandes" className="nav-link" onClick={changeNav}>
+                      Commandes <FontAwesomeIcon icon={faListUl} />
                     </Link>
                   </li>
                   <li className="nav-item">
