@@ -26,6 +26,7 @@
     "datatables.net-bs4": "^1.13.5",
     "datatables.net-buttons": "^2.4.1",
     "datatables.net-dt": "^1.13.5",
+    "date-fns-tz": "^2.0.0",
     "del": "^7.0.0",
     "fontawesome-free": "^1.0.4",
     "gulp-autoprefixer": "^8.0.0",
