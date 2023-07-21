@@ -290,24 +290,6 @@ const ParametresPage = () => {
 
             <hr />
 
-            <h4>Mot de passe</h4>
-            <Form.Group controlId="formBasicOldPassword">
-              <Form.Label>Ancien mot de passe</Form.Label>
-              <Form.Control type="password" />
-            </Form.Group>
-
-            <Form.Group controlId="formBasicNewPassword">
-              <Form.Label>Nouveau mot de passe</Form.Label>
-              <Form.Control type="password" />
-            </Form.Group>
-            <br />
-            <Button variant="primary" onClick={handlePasswordChange}>
-              Modifier le mot de passe
-            </Button>
-
-            <br />
-            <hr />
-
             <h4>Adresses de livraison</h4>
       <Table striped bordered hover responsive>
         <thead>
