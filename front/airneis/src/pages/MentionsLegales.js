@@ -6,7 +6,7 @@ function MentionsLegales() {
       <h1>Mentions Légales</h1>
       <h2>1. Informations sur l'éditeur du site</h2>
       <p>
-        Raison sociale : Meubles & Co
+        Raison sociale : ÀIRNEIS
         <br />
         Adresse : 123 Rue des Meubles, 75001 Paris, France
         <br />
@@ -32,7 +32,7 @@ function MentionsLegales() {
 
       <h2>3. Propriété intellectuelle</h2>
       <p>
-        Tous les contenus présents sur ce site, y compris les images, les textes, les vidéos et les logos, sont la propriété exclusive de Meubles & Co ou de leurs détenteurs respectifs.
+        Tous les contenus présents sur ce site, y compris les images, les textes, les vidéos et les logos, sont la propriété exclusive de ÀIRNEIS ou de leurs détenteurs respectifs.
         Toute reproduction ou utilisation de ces contenus sans autorisation expresse est strictement interdite.
       </p>
 

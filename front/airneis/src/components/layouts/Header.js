@@ -22,15 +22,15 @@ const Header = () => {
 
   const isUserLoggedIn = () => {
     const token = localStorage.getItem('token');
-    return !!token; // Renvoie true si le token existe, sinon false
+    return !!token; 
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
-    window.location.href = "/"; // Redirect to the home page after logout
+    localStorage.removeItem('token'); 
+    window.location.href = "/"; 
   };
 
-  const isLogged = isUserLoggedIn(); // Vérifie si l'utilisateur est connecté
+  const isLogged = isUserLoggedIn(); 
 
   return (
     <header>
@@ -60,7 +60,7 @@ const Header = () => {
               <span className="ms-3 badge rounded-pill bg-dark">{getCartItemCount()}</span>
             </button>
             <ul className="navbar-nav mb-2 mb-lg-0">
-              {isLogged ? ( // Affiche le menu pour l'utilisateur connecté
+              {isLogged ? ( 
                 <>
                   <li className="nav-item">
                     <Link to="/profile" className="nav-link" onClick={changeNav}>
@@ -73,13 +73,13 @@ const Header = () => {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    {/* Add the logout functionality */}
+                  
                     <Link to="/" className="nav-link" onClick={handleLogout}>
                       Logout <FontAwesomeIcon icon={["fas", "sign-out-alt"]} />
                     </Link>
                   </li>
                 </>
-              ) : ( // Affiche le menu pour l'utilisateur non connecté
+              ) : ( 
                 <>
                   <li className="nav-item dropdown">
                     <a

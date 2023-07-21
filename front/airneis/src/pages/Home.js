@@ -12,10 +12,10 @@ function Home() {
     const fetchRandomProducts = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/produitsRandom" // Replace with your API endpoint to fetch random products
+          "http://127.0.0.1:8000/api/produitsRandom" 
         );
         const data = await response.json();
-        setRandomProducts(data); // Assuming data is an array of random products
+        setRandomProducts(data); 
       } catch (error) {
         console.error(error);
       }

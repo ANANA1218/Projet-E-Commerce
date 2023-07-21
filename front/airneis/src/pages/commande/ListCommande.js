@@ -64,12 +64,12 @@ const CommandesList = () => {
             <div className="card-body">
               <p>Date: {formatDate(commande.date_commande)}</p>
               <p>Prix Total: {commande.prix_total}</p>
-              {/* Additional details */}
+           
               {commandsDetails.map((commandeDetail) => {
                 if (commandeDetail.id_commande === commande.id_commande) {
                   return (
                     <div key={commandeDetail.id_produit}>
-                      <hr className="my-2" /> {/* Horizontal line */}
+                      <hr className="my-2" /> 
                       <p>Produit: {commandeDetail.nom_produit}</p>       
                       <p>Quantité: {commandeDetail.quantite}</p>
                       <p>Description: {commandeDetail.description}</p>

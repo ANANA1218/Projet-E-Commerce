@@ -76,10 +76,7 @@ const ParametresPage = () => {
     fetchAddresses();
   }, []);
 
-  const handlePasswordChange = () => {
-    // Implement password change logic and API call here
-    // You may need to add form inputs for old password and new password
-  };
+
 
 
  
@@ -383,7 +380,7 @@ const ParametresPage = () => {
                     </td>
                   </tr>
                 )}
-           {/* Display the "Add Address" form if showAddAddressForm is true */}
+           
            {showAddAddressForm && (
                   <tr>
                     <td>

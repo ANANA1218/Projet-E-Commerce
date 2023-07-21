@@ -133,44 +133,10 @@ function ProductList() {
                             </div>
                         </div>
                         <ProductItem viewType={viewType} />
-                        <div className="d-flex align-items-center mt-auto">
-                            <span className="text-muted small d-none d-md-inline">
-                                Showing 10 of 100
-                            </span>
-                            <nav aria-label="Page navigation example" className="ms-auto">
-                                <ul className="pagination my-0">
-                                    <li className="page-item">
-                                        <a className="page-link" href="!#">
-                                            Previous
-                                        </a>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="!#">
-                                            1
-                                        </a>
-                                    </li>
-                                    <li className="page-item active">
-                                        <a className="page-link" href="!#">
-                                            2
-                                        </a>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="!#">
-                                            3
-                                        </a>
-                                    </li>
-                                    <li className="page-item">
-                                        <a className="page-link" href="!#">
-                                            Next
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                 </div>
+            </div>      
+     </div>
+</div>
     );
 }
 

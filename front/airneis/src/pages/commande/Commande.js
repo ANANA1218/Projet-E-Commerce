@@ -88,19 +88,19 @@ function Cart() {
   };
 
   useEffect(() => {
-    // Check if the user is logged in
+
     const token = localStorage.getItem("token");
     const isLogged = !!token;
     setIsLogged(isLogged);
 
-    // If the user is logged in, fetch the saved addresses and set them in the state
+   
     if (isLogged) {
       const savedDeliveryAddresses = JSON.parse(localStorage.getItem("savedDeliveryAddresses")) || [];
       const savedBillingAddresses = JSON.parse(localStorage.getItem("savedBillingAddresses")) || [];
       setSavedDeliveryAddresses(savedDeliveryAddresses);
       setSavedBillingAddresses(savedBillingAddresses);
 
-      // Fetch the user's addresses using the token
+
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -126,48 +126,8 @@ function Cart() {
   }, [isLogged]);
 
 
-
- /* const handlePaymentSubmit = () => {
-    setIsModalOpen(true);
-  };*/
-/*
 const handlePaymentSubmit = async () => {
-    // Prepare data for the API request
-    const data = {
-      produits: cartItems.map((item) => ({ id_produit: item.id, quantite: item.quantity })),
-      id_adresse_facturation: selectedBillingAddressId,
-      id_adresse_livraison: selectedDeliveryAddressId,
-    };
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please log in to proceed with the payment.");
-        return;
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const response = await axios.post("http://127.0.0.1:8000/api/commande", data, config);
-      setOrderResponse(response.data); // Store the API response message
-
-      // Clear the cart and redirect the user to the success page or show a modal with the success message
-      // ... (implement the desired behavior)
-
-      setIsModalOpen(true);
-    } catch (error) {
-      // Handle the error appropriately (show an error message, redirect to an error page, etc.)
-      console.error("Error creating the order:", error);
-    }
-  };
-*/
-
-const handlePaymentSubmit = async () => {
-  // Prepare data for the API request
   const data = {
     produits: cartItems.map((item) => ({ id_produit: item.id, quantite: item.quantity })),
     id_adresse_facturation: selectedBillingAddressId,
@@ -188,17 +148,17 @@ const handlePaymentSubmit = async () => {
     };
 
     const response = await axios.post("http://127.0.0.1:8000/api/commande", data, config);
-    setOrderResponse(response.data); // Store the API response message
+    setOrderResponse(response.data); 
 
-    // Clear the cart and redirect the user to the success page or show a modal with the success message
+    
     localStorage.removeItem("cartItems");
-    setCartItems([]); // Clear the cart in the state as well
+    setCartItems([]); 
 
     setCurrentStep(1);
 
     setIsModalOpen(true);
   } catch (error) {
-    // Handle the error appropriately (show an error message, redirect to an error page, etc.)
+
     console.error("Error creating the order:", error);
   }
 };
