@@ -316,7 +316,7 @@ final class Version202307202149030 extends AbstractMigration
             (40, 'Aurelia', 'Keane', 'adipiscing.elit@protonmail.ca', '\$2y\$10\$.LdH2iNm7473HspXCoDMweI2Av08vt3PSZbfYrVBBN3E7qNab7iPO', '', 2),
             (41, 'Riley', 'Uriah', 'sed.pede@outlook.ca', '\$2y\$10\$MAlU9lobbuW//zuB1HHcxO9BtLFRW/Ko1aza1EKokyhBA0lmGhMhu', '', 2),
             (42, 'Ima', 'Hadley', 'posuere.vulputate.lacus@outlook.ca', '\$2y\$10\$YgsGutDaUmxJ.b7fHo4sWuADk5Usmrx.nxsFmdkpw9ZyMdCO.n7ku', '', 2),
-            (43, 'Jordan', 'August', 'dui.Cum@protonmail.com', '\$2y\$10\$HB0K3G1JEXAZV8BLA329Q.xfjU0VIvmWrSZLZCcZx/hG7KfxT8XB6', '', 2);
+            (43, 'Jordan', 'August', 'dui.Cum@protonmail.com', '\$2y\$10\$HB0K3G1JEXAZV8BLA329Q.xfjU0VIvmWrSZLZCcZx/hG7KfxT8XB6', '', 2),(45, 'Bosse', 'Annabelle', 'annabelle@gmail.com', '$2y$10\$PCJ.ZaNLZZcr8C8nGVFrPuWoduusEv.7N5Mz2xOpv95.XduDe7TIq', '', 1);
         ");
         $this->addSql("INSERT INTO `reduction` (`id_reduction`,`code_promo`, `pourcentage`, `actif`, `date_debut`, `date_fin`) VALUES
             (1, 'XMAS22', 20, 0, '2022-12-01', '2023-05-22'),
