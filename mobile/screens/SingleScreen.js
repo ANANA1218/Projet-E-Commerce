@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Image, Stylesheet } from "react-native";
+import { View, Text, Image, Stylesheet , Alert } from "react-native";
 import axios from 'axios';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +26,23 @@ export default function SingleScreen(props) {
     const handleAjoutPanier = () => {
       if (!user) {
         navigation.navigate("Authentification");
+      } else {
+        // alert("Produit ajouté au panier")
+        Alert.alert(
+          'Merci',
+          'Produit ajouté au panier !',
+          [
+            {
+              text: 'Ok',
+              
+              style: 'default',
+            },
+          ],
+          {
+            cancelable: true,
+            
+          },
+        );
       }
     }
 
@@ -33,13 +50,10 @@ export default function SingleScreen(props) {
     React.useEffect(() => {    1
     
         if (idProduit) {
-            axios({method:"get", url:`https://airneis-api-default-rtdb.europe-west1.firebasedatabase.app/Produit/${idProduit}.json`})
+            axios({method:"get", url:`https://projet-e-commerce-temp-default-rtdb.europe-west1.firebasedatabase.app/Produit/${idProduit}.json`})
             .then(({data}) => {
-              const resultat = []
-              for(const key in data) {
-                  (data[key]) && resultat.push({...data[key], id : key})
-              }
-              setProduits(resultat)
+                
+                setProduit(data)
             //   const resultat = []
             //   for(const key in data) {
             //       (data[key]) && resultat.push({...data[key], id : key})
@@ -55,7 +69,6 @@ export default function SingleScreen(props) {
       }, []);
       const { img, nom_produit, description, prix } = produit;
 
-
     return (
         // <View >
         //     <View style={{flexDirection:'column', backgroundColor:'#555555'}}>
@@ -69,7 +82,7 @@ export default function SingleScreen(props) {
         // </View>
       <View style={Styles.container}>
         <Text style={Styles.title}>{nom_produit}</Text>
-        <Image source={{ uri: img[0] }} style={Styles.image} />
+        <Image source={{ uri: img }} style={Styles.image} />
         
         <Text style={Styles.description}>{description}</Text>
         <Text style={Styles.price}>{prix} €</Text>
