@@ -31,7 +31,7 @@ class ProduitController extends AbstractController
         return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'])]
+    #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function getOneProduit(Produit $produit): JsonResponse
     {
         $produitData = [
@@ -56,6 +56,45 @@ class ProduitController extends AbstractController
         return new JsonResponse($jsonProduit, Response::HTTP_OK, ['Content-Type' => 'application/json'], true);
     }
 
+    #[Route('/api/produits/filters', name: 'getFilteredProduits', methods: ['GET'])]
+    public function getFilteredProduits(Request $request, ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $query = $produitRepository->createQueryBuilder('p')
+            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
+            ->join('p.id_categorie', 'c');
+
+        // Filter by category (if provided)
+        $categoryId = $request->query->get('categorie');
+        if ($categoryId) {
+            $query->andWhere('c.id_categorie = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        // Filter by material (if provided)
+        $materialId = $request->query->get('materiel');
+        if ($materialId) {
+            // Assuming there is a ManyToMany relationship between Produit and Materiel
+            $query->join('p.materiaux', 'm')
+                ->andWhere('m.id_materiel = :materialId')
+                ->setParameter('materialId', $materialId);
+        }
+
+        // Filter by price range (if provided)
+        $minPrice = $request->query->get('minPrice');
+        $maxPrice = $request->query->get('maxPrice');
+        if ($minPrice && $maxPrice) {
+            $query->andWhere('p.prix >= :minPrice AND p.prix <= :maxPrice')
+                ->setParameter('minPrice', $minPrice)
+                ->setParameter('maxPrice', $maxPrice);
+        }
+
+        // Execute the query and fetch the filtered results
+        $produits = $query->getQuery()->getResult();
+
+        $jsonProduits = $serializer->serialize($produits, 'json', [AbstractNormalizer::GROUPS => 'product']);
+
+        return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
+    }
 
     #[Route('/api/produits', name: 'addProduit', methods: ['POST'])]
     public function addProduit(Request $request, EntityManagerInterface $entityManager): JsonResponse
