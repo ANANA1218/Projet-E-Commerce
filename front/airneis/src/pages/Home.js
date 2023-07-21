@@ -12,7 +12,7 @@ function Home() {
     const fetchRandomProducts = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/produitsRandom" // Replace with your API endpoint to fetch random products
+            `${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produitsRandom`
         );
         const data = await response.json();
         setRandomProducts(data); // Assuming data is an array of random products
