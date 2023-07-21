@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { format } from "date-fns-tz";
+
 
 const CommandesList = () => {
   const [commands, setCommands] = useState([]);
@@ -37,6 +39,13 @@ const CommandesList = () => {
     setActiveCommand(activeCommand === commandId ? null : commandId);
   };
 
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return format(date, "dd/MM/yyyy", { timeZone: "UTC" });
+  };
+  
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Liste des commandes</h2>
@@ -48,12 +57,12 @@ const CommandesList = () => {
             style={{ cursor: 'pointer' }}
           >
             <h5 className="mb-0">
-              Commande N° {commande.id_commande}
+              Commande du {formatDate(commande.date_commande)}
             </h5>
           </div>
           {activeCommand === commande.id_commande && (
             <div className="card-body">
-              <p>Date: {commande.date_commande}</p>
+              <p>Date: {formatDate(commande.date_commande)}</p>
               <p>Prix Total: {commande.prix_total}</p>
               {/* Additional details */}
               {commandsDetails.map((commandeDetail) => {
@@ -61,7 +70,8 @@ const CommandesList = () => {
                   return (
                     <div key={commandeDetail.id_produit}>
                       <hr className="my-2" /> {/* Horizontal line */}
-                      <p>Produit: {commandeDetail.nom_produit}</p>
+                      <p>Produit: {commandeDetail.nom_produit}</p>       
+                      <p>Quantité: {commandeDetail.quantite}</p>
                       <p>Description: {commandeDetail.description}</p>
                       <p>Prix du produit: {commandeDetail.prix}</p>
                     </div>
