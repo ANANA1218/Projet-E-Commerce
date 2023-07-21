@@ -89,6 +89,11 @@ class ProduitController extends AbstractController
             ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
             ->join('p.id_categorie', 'c');
 
+        $stock = $data['stock'] ?? null;
+        if ($stock === true) {
+            $query->andWhere('p.stock > 0');
+        }
+
         $categoryId = $data['categorie'] ?? null;
         if ($categoryId) {
             $query->andWhere('c.id_categorie = :categoryId')
