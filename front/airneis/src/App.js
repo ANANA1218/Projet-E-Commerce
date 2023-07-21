@@ -19,6 +19,7 @@ import DetailCategory from "./pages/backoffice/DetailCategory";
 import AddProduct from "./pages/backoffice/AddProduct";
 import AddCategory from "./pages/backoffice/AddCategory";
 import ListMessages from "./pages/backoffice/ListMessages";
+import Login from "./pages/backoffice/Login";
 
 
 function App() {
@@ -29,12 +30,13 @@ function App() {
             <Route path="/products/:id" element={WithTemplate(ProductDetail)} />
             <Route path="/panier" element={WithTemplate(Commande)} />
             <Route path="/commandes" element={WithTemplate(ListCommande)} />
-            <Route path="/profile" element={WithTemplate(UserProfile)}/>
-            <Route path="/cgu" element={WithTemplate(CGU)}/>
-            <Route path="/mentions-legales" element={WithTemplate(MentionsLegales)}/>
-            <Route path="/about" element={WithTemplate(AboutUs)}/>
+            <Route path="/profile" element={WithTemplate(UserProfile)} />
+            <Route path="/cgu" element={WithTemplate(CGU)} />
+            <Route path="/mentions-legales" element={WithTemplate(MentionsLegales)} />
+            <Route path="/about" element={WithTemplate(AboutUs)} />
             <Route path="/login" element={<LoginForm />} />
             <Route path="/inscription" element={<RegisterForm />} />
+            <Route path="/backoffice/login" element={<Login />} />
             <Route path="/backoffice" element={<Index />} />
             <Route path="/backoffice/products" element={<Products />} />
             <Route path="/backoffice/product/:id" element={<DetailProduct />} />
