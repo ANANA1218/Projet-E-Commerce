@@ -3,6 +3,8 @@ import SingleScreen from './SingleScreen';
 import { Dimensions, View, Text, Image, StyleSheet, Button } from "react-native";
 import { ScrollView } from 'react-native-gesture-handler';
 import axios from 'axios'
+import { TouchableOpacity } from "react-native-gesture-handler";
+
 
 import ProduitCard from './ProduitCard';
 import Footer from './Footer';
@@ -76,7 +78,7 @@ export default function HomeScreen() {
           return(
             // {/* //Home made Card */}
             <View key={produit.nom_produit} style={Styles.card}>
-              <Image style={[Styles.cardImage, {height: 300, flex: 1, width: null}]} source={{uri:produit.img}}/>
+              <Image style={[Styles.cardImage, {height: 300, flex: 1, width: null}]} source={{uri:produit.img[0]}}/>
               <View style={{alignItems: 'center', justifyContent: 'center', padding:5}}>
                 <Text style={{fontSize:30,fontWeight:'700', margin:10}}>{produit.nom_produit}</Text>
                 <Text style={{fontSize:15,fontWeight:'300', color:'black'}}>{produit.description}</Text>
@@ -87,14 +89,18 @@ export default function HomeScreen() {
                 </View>
 
                 <View style={{ margin:10, flexDirection:'row'}}>
-                  <Button
-                    onPress={() => {navigation.navigate('SingleScreen', { idProduit : produit.id })}}
+                <TouchableOpacity
+                    onPress={ () => {navigation.navigate('SingleScreen', { idProduit : produit.id })} }
+                    style={[ Styles.button , Styles.buttonOutLine]}>
+                    <Text style={ [ Styles.buttonText , Styles.buttonOutLineText ] }>Voir</Text>
+                </TouchableOpacity>   
+                  <TouchableOpacity
+                    onPress={ () => {} }
                     title="Ajouter au panier"
-                    // color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
-                    // style={{backgroundColor:'#654321'}}
-                    color={'#2a2626'}
-                  />
+                    style={ Styles.button}
+                  >
+                    <Text style={ Styles.buttonText}>Ajouter au panier</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

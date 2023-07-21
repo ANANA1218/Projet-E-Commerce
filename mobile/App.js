@@ -22,11 +22,11 @@ import {  onAuthStateChanged } from "firebase/auth";
 const Drawer = createDrawerNavigator()
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => {
+const HomeStack = (user) => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="SingleScreen"  component={SingleScreen} />
+      <Stack.Screen name="SingleScreen"  component={SingleScreen}/>
       {/* Ajoutez d'autres écrans du StackNavigator ici si nécessaire */}
     </Stack.Navigator>
   );
