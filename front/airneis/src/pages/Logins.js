@@ -79,7 +79,7 @@ const handleLogin = async (event) => {
                   <div className="mt-3">
                     <p className="mb-0 text-center">
                       Vous n'avez pas de compte ?{" "}
-                      <a href={`#/inscription`} className="text-primary fw-bold">
+                      <a href={`/inscription`} className="text-primary fw-bold">
                         Inscription
                       </a>
                     </p>
