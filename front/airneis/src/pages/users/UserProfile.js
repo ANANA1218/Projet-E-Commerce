@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
 
 const ParametresPage = () => {
   const [user, setUser] = useState(null);
-  const [selectedAddress, setSelectedAddress] = useState(null);
   const [livraisonAddresses, setLivraisonAddresses] = useState([]);
   const [facturationAddresses, setFacturationAddresses] = useState([]);
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,7 +52,17 @@ const ParametresPage = () => {
     // You may need to add form inputs for old password and new password
   };
 
-  
+
+  const handleEditAddress = (addressId) => {
+    // Implement logic to handle editing the address with the given ID
+    // You may need to display a form or a modal to edit the address details
+  };
+
+  // Function to handle adding a new address
+  const handleAddAddress = () => {
+    // Implement logic to handle adding a new address
+    // You may need to display a form or a modal to enter the new address details
+  };
 
   return (
     <Container>
@@ -98,26 +106,79 @@ const ParametresPage = () => {
             <hr />
 
             <h4>Adresses de livraison</h4>
-      {livraisonAddresses.map((adresse) => (
-        <div key={adresse.id_adresse_livraison}>
-          <p>{adresse.rue}</p>
-          <p>{adresse.complement_adresse}</p>
-          <p>{adresse.code_postal} {adresse.ville}</p>
-          <p>{adresse.region}</p>
-          <p>{adresse.pays}</p>
-        </div>
-      ))}
+      <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th>Rue</th>
+            <th>Complément d'adresse</th>
+            <th>Code postal</th>
+            <th>Ville</th>
+            <th>Région</th>
+            <th>Pays</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {livraisonAddresses.map((adresse) => (
+            <tr key={adresse.id_adresse_livraison}>
+              <td>{adresse.rue}</td>
+              <td>{adresse.complement_adresse}</td>
+              <td>{adresse.code_postal}</td>
+              <td>{adresse.ville}</td>
+              <td>{adresse.region}</td>
+              <td>{adresse.pays}</td>
+              <td>
+                <Button variant="primary" onClick={() => handleEditAddress(adresse.id_adresse_livraison)}>
+                  Edit
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      <Button variant="success" onClick={handleAddAddress}>
+        Add Address
+      </Button>
+
+      <br />
+      <hr />
 
       <h4>Adresses de Facturation</h4>
-      {facturationAddresses.map((adresse) => (
-        <div key={adresse.id_adresse_facturation}>
-          <p>{adresse.rue}</p>
-          <p>{adresse.complement_adresse}</p>
-          <p>{adresse.code_postal} {adresse.ville}</p>
-          <p>{adresse.region}</p>
-          <p>{adresse.pays}</p>
-        </div>
-      ))}
+      <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th>Rue</th>
+            <th>Complément d'adresse</th>
+            <th>Code postal</th>
+            <th>Ville</th>
+            <th>Région</th>
+            <th>Pays</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {facturationAddresses.map((adresse) => (
+            <tr key={adresse.id_adresse_facturation}>
+              <td>{adresse.rue}</td>
+              <td>{adresse.complement_adresse}</td>
+              <td>{adresse.code_postal}</td>
+              <td>{adresse.ville}</td>
+              <td>{adresse.region}</td>
+              <td>{adresse.pays}</td>
+              <td>
+                <Button variant="primary" onClick={() => handleEditAddress(adresse.id_adresse_facturation)}>
+                  Edit
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      <Button variant="success" onClick={handleAddAddress}>
+        Add Address
+      </Button>
           </Form>
         </Col>
       </Row>
