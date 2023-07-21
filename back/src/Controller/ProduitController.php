@@ -37,25 +37,25 @@ class ProduitController extends AbstractController
     public function getAllProduitRandom(ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
     {
         $query = $produitRepository->createQueryBuilder('p')
-        ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
-        ->join('p.id_categorie', 'c');
+            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
+            ->join('p.id_categorie', 'c');
 
-    $produits = $query->getQuery()->getResult();
+        $produits = $query->getQuery()->getResult();
 
-    // Shuffle the array of products to randomize the order
-    shuffle($produits);
+        // Shuffle the array of products to randomize the order
+        shuffle($produits);
 
-    // Take the first 6 elements from the shuffled array to get random products
-    $randomProduits = array_slice($produits, 0, 6);
+        // Take the first 6 elements from the shuffled array to get random products
+        $randomProduits = array_slice($produits, 0, 6);
 
-    $jsonProduits = $serializer->serialize($randomProduits, 'json', [AbstractNormalizer::GROUPS => 'product']);
+        $jsonProduits = $serializer->serialize($randomProduits, 'json', [AbstractNormalizer::GROUPS => 'product']);
 
-    return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
+        return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
-    
 
 
-    #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'])]
+
+    #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function getOneProduit(Produit $produit): JsonResponse
     {
         $produitData = [
@@ -80,6 +80,45 @@ class ProduitController extends AbstractController
         return new JsonResponse($jsonProduit, Response::HTTP_OK, ['Content-Type' => 'application/json'], true);
     }
 
+    #[Route('/api/produits/filters', name: 'getFilteredProduits', methods: ['GET'])]
+    public function getFilteredProduits(Request $request, ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $query = $produitRepository->createQueryBuilder('p')
+            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
+            ->join('p.id_categorie', 'c');
+
+        // Filter by category (if provided)
+        $categoryId = $request->query->get('categorie');
+        if ($categoryId) {
+            $query->andWhere('c.id_categorie = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        // Filter by material (if provided)
+        $materialId = $request->query->get('materiel');
+        if ($materialId) {
+            // Assuming there is a ManyToMany relationship between Produit and Materiel
+            $query->join('p.materiaux', 'm')
+                ->andWhere('m.id_materiel = :materialId')
+                ->setParameter('materialId', $materialId);
+        }
+
+        // Filter by price range (if provided)
+        $minPrice = $request->query->get('minPrice');
+        $maxPrice = $request->query->get('maxPrice');
+        if ($minPrice && $maxPrice) {
+            $query->andWhere('p.prix >= :minPrice AND p.prix <= :maxPrice')
+                ->setParameter('minPrice', $minPrice)
+                ->setParameter('maxPrice', $maxPrice);
+        }
+
+        // Execute the query and fetch the filtered results
+        $produits = $query->getQuery()->getResult();
+
+        $jsonProduits = $serializer->serialize($produits, 'json', [AbstractNormalizer::GROUPS => 'product']);
+
+        return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
+    }
 
     #[Route('/api/produits', name: 'addProduit', methods: ['POST'])]
     public function addProduit(Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -114,7 +153,7 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produits/{id}', name: 'updateProduit', methods: ['PUT'])]
+    #[Route('/api/produits/{id}', name: 'updateProduit', methods: ['PUT'], requirements: ['id' => '\d+'])]
     public function updateProduit(Request $request, EntityManagerInterface $entityManager, Produit $produit): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -139,12 +178,67 @@ class ProduitController extends AbstractController
     }
 
 
-    #[Route('/api/produits/{id}', name: 'deleteProduit', methods: ['DELETE'])]
+    #[Route('/api/produits', name: 'updateMultipleProduits', methods: ['PUT'])]
+    public function updateMultipleProduits(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $productIds = $data['ids'];
+        $idCategorie = !empty($data['categorie']) ? $entityManager->getRepository(Categorie::class)->find($data['categorie']) : null;
+        $newPrice = !empty($data['prix']) ? floatval($data['prix']) : null;
+        $newStock = !empty($data['stock']) ? intval($data['stock']) : null;
+
+        $products = $entityManager->getRepository(Produit::class)->findBy(['id_produit' => $productIds]);
+
+        foreach ($products as $product) {
+            if (!is_null($newPrice)) {
+                $product->setPrix($newPrice);
+            }
+            if (!is_null($newStock)) {
+                $product->setStock($newStock);
+            }
+            if (!is_null($idCategorie)) {
+                $product->setIdCategorie($idCategorie);
+            }
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Produits mis à jour avec succès', 'productIds' => $productIds], Response::HTTP_OK);
+    }
+
+
+    #[Route('/api/produits/{id}', name: 'deleteProduit', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     public function deleteProduit(EntityManagerInterface $entityManager, Produit $produit): JsonResponse
     {
         $entityManager->remove($produit);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Produit supprimé avec succès'], Response::HTTP_OK);
+    }
+
+
+    #[Route('/api/produits/multiple', name: 'deleteProduits', methods: ['DELETE'])]
+    public function deleteMultipleProduits(Request $request, EntityManagerInterface $entityManager)
+    {
+        $requestData = json_decode($request->getContent(), true);
+
+        if (!isset($requestData['ids']) || !is_array($requestData['ids'])) {
+            return new JsonResponse(['error' => 'Invalid request data'], 400);
+        }
+
+        $productIds = $requestData['ids'];
+        $products = $entityManager->getRepository(Produit::class)->findBy(['id_produit' => $productIds]);
+
+        if (count($products) !== count($productIds)) {
+            return new JsonResponse(['error' => 'Some products not found'], 404);
+        }
+
+        foreach ($products as $product) {
+            $entityManager->remove($product);
+        }
+        $entityManager->flush();
+
+        return new JsonResponse(['message' => 'Produits supprimés avec succès'], 200);
     }
 }

@@ -17,7 +17,11 @@ function ListMessages() {
 
     return (
         <Template title={"Contact - Messages"}>
-            <Table columns={columns} data={messages} />
+            <div>
+                <div className="m-5">
+                    <Table columns={columns} data={messages} />
+                </div>
+            </div>
         </Template>
     )
 }
