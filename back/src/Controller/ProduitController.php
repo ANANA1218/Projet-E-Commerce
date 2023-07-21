@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Entity\Categorie;
 use App\Repository\ProduitRepository;
-use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProduitController extends AbstractController
@@ -83,38 +83,45 @@ class ProduitController extends AbstractController
     #[Route('/api/produits/filters', name: 'getFilteredProduits', methods: ['GET'])]
     public function getFilteredProduits(Request $request, ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
     {
+        $data = json_decode($request->getContent(), true);
+
         $query = $produitRepository->createQueryBuilder('p')
             ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
             ->join('p.id_categorie', 'c');
 
-        // Filter by category (if provided)
-        $categoryId = $request->query->get('categorie');
+        $stock = $data['stock'] ?? null;
+        if ($stock === true) {
+            $query->andWhere('p.stock > 0');
+        }
+
+        $categoryId = $data['categorie'] ?? null;
         if ($categoryId) {
             $query->andWhere('c.id_categorie = :categoryId')
                 ->setParameter('categoryId', $categoryId);
         }
 
-        // Filter by material (if provided)
-        $materialId = $request->query->get('materiel');
-        if ($materialId) {
-            // Assuming there is a ManyToMany relationship between Produit and Materiel
-            $query->join('p.materiaux', 'm')
-                ->andWhere('m.id_materiel = :materialId')
-                ->setParameter('materialId', $materialId);
+        $materielId = $data['materiel'] ?? null;
+        if ($materielId) {
+            $materiauxCollection = new ArrayCollection($materielId);
+            $query->andWhere($query->expr()->isMemberOf(':materiauxCollection', 'p.id_materiel'))
+                ->setParameter('materiauxCollection', $materiauxCollection);
         }
 
-        // Filter by price range (if provided)
-        $minPrice = $request->query->get('minPrice');
-        $maxPrice = $request->query->get('maxPrice');
-        if ($minPrice && $maxPrice) {
+        $minPrice = $data['min_prix'] ?? null;
+        $maxPrice = $data['max_prix'] ?? null;
+        if ($minPrice !== null && $maxPrice !== null) {
             $query->andWhere('p.prix >= :minPrice AND p.prix <= :maxPrice')
                 ->setParameter('minPrice', $minPrice)
                 ->setParameter('maxPrice', $maxPrice);
+        } elseif ($minPrice !== null) {
+            $query->andWhere('p.prix >= :minPrice')
+                ->setParameter('minPrice', $minPrice);
+        } elseif ($maxPrice !== null) {
+            $query->andWhere('p.prix <= :maxPrice')
+                ->setParameter('maxPrice', $maxPrice);
         }
 
-        // Execute the query and fetch the filtered results
         $produits = $query->getQuery()->getResult();
-
         $jsonProduits = $serializer->serialize($produits, 'json', [AbstractNormalizer::GROUPS => 'product']);
 
         return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
