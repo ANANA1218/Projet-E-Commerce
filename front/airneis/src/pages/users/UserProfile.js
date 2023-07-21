@@ -6,7 +6,28 @@ const ParametresPage = () => {
   const [user, setUser] = useState(null);
   const [livraisonAddresses, setLivraisonAddresses] = useState([]);
   const [facturationAddresses, setFacturationAddresses] = useState([]);
+  const [showAddAddressFormFacturation, setShowAddAddressFormFacturation] = useState(false);
+  const [newAddress, setNewAddress] = useState({
+    rue: '',
+    complement_adresse: '',
+    code_postal: '',
+    ville: '',
+    region: '',
+    pays: '',
+    carnet_adresse: '', 
+  });
+  const [showAddAddressForm, setShowAddAddressForm] = useState(false);
+  const [newAddressFacturation, setNewAddressFacturation] = useState({
+    rue: '',
+    complement_adresse: '',
+    code_postal: '',
+    ville: '',
+    region: '',
+    pays: '',
+    carnet_adresse: '', 
+  });
 
+ 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -58,11 +79,98 @@ const ParametresPage = () => {
     // You may need to display a form or a modal to edit the address details
   };
 
-  // Function to handle adding a new address
-  const handleAddAddress = () => {
-    // Implement logic to handle adding a new address
-    // You may need to display a form or a modal to enter the new address details
+
+ 
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress((prevState) => ({ ...prevState, [name]: value }));
   };
+
+ 
+  const handleAddAddress = async () => {
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:8000/api/adresses_livraison',
+        newAddress,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+     
+      setLivraisonAddresses((prevAddresses) => [...prevAddresses, response.data]);
+
+      setNewAddress({
+        rue: '',
+        complement_adresse: '',
+        code_postal: '',
+        ville: '',
+        region: '',
+        pays: '',
+        carnet_adresse: '',
+      });
+
+      
+      alert('Adresse de livraison ajoutée avec succès');
+    } catch (error) {
+      console.error('An error occurred while adding the address:', error);
+      
+      alert('Une erreur s\'est produite lors de l\'ajout de l\'adresse.');
+    }
+  };
+
+
+  const toggleAddAddressForm = () => {
+    setShowAddAddressForm((prevState) => !prevState);
+  };
+
+  const handleAddressChangeFacturation = (e) => {
+    const { name, value } = e.target;
+    setNewAddressFacturation((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const toggleAddAddressFormFacturation = () => {
+    setShowAddAddressFormFacturation((prevState) => !prevState);
+  };
+
+   
+    const handleAddAddressFacturation = async () => {
+      try {
+       
+        const response = await axios.post(
+          'http://127.0.0.1:8000/api/adresses_facturation',
+          newAddressFacturation,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+  
+       
+        setLivraisonAddresses((prevAddresses) => [...prevAddresses, response.data]);
+  
+        
+        setNewAddressFacturation({
+          rue: '',
+          complement_adresse: '',
+          code_postal: '',
+          ville: '',
+          region: '',
+          pays: '',
+          carnet_adresse: '',
+        });
+  
+      
+        alert('Adresse de Facturation ajoutée avec succès');
+      } catch (error) {
+        console.error('An error occurred while adding the address:', error);
+        
+        alert('Une erreur s\'est produite lors de l\'ajout de l\'adresse.');
+      }
+    };
 
   return (
     <Container>
@@ -134,11 +242,75 @@ const ParametresPage = () => {
               </td>
             </tr>
           ))}
+           {/* Display the "Add Address" form if showAddAddressForm is true */}
+           {showAddAddressForm && (
+                  <tr>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="rue"
+                        value={newAddress.rue}
+                        onChange={handleAddressChange}
+                        placeholder="Rue"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="complement_adresse"
+                        value={newAddress.complement_adresse}
+                        onChange={handleAddressChange}
+                        placeholder="Complément d'adresse"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="code_postal"
+                        value={newAddress.code_postal}
+                        onChange={handleAddressChange}
+                        placeholder="Code postal"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="ville"
+                        value={newAddress.ville}
+                        onChange={handleAddressChange}
+                        placeholder="Ville"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="region"
+                        value={newAddress.region}
+                        onChange={handleAddressChange}
+                        placeholder="Région"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="pays"
+                        value={newAddress.pays}
+                        onChange={handleAddressChange}
+                        placeholder="Pays"
+                      />
+                    </td>
+                    <td>
+                      <Button variant="primary" onClick={handleAddAddress}>
+                        Save
+                      </Button>
+                    </td>
+                  </tr>
+                )}
         </tbody>
       </Table>
 
-      <Button variant="success" onClick={handleAddAddress}>
-        Add Address
+      <Button variant="success" onClick={toggleAddAddressForm}>
+              {showAddAddressForm ? 'Cancel' : 'Add Address'}
       </Button>
 
       <br />
@@ -173,11 +345,74 @@ const ParametresPage = () => {
               </td>
             </tr>
           ))}
+          {showAddAddressFormFacturation && (
+                  <tr>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="rue"
+                        value={newAddressFacturation.rue}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Rue"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="complement_adresse"
+                        value={newAddressFacturation.complement_adresse}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Complément d'adresse"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="code_postal"
+                        value={newAddressFacturation.code_postal}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Code postal"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="ville"
+                        value={newAddressFacturation.ville}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Ville"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="region"
+                        value={newAddressFacturation.region}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Région"
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        name="pays"
+                        value={newAddressFacturation.pays}
+                        onChange={handleAddressChangeFacturation}
+                        placeholder="Pays"
+                      />
+                    </td>
+                    <td>
+                      <Button variant="primary" onClick={handleAddAddressFacturation}>
+                        Save
+                      </Button>
+                    </td>
+                  </tr>
+                )}
         </tbody>
       </Table>
 
-      <Button variant="success" onClick={handleAddAddress}>
-        Add Address
+      <Button variant="success" onClick={toggleAddAddressFormFacturation}>
+              {showAddAddressFormFacturation ? 'Cancel' : 'Add Address'}
       </Button>
           </Form>
         </Col>
