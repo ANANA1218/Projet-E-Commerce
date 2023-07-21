@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Entity\Categorie;
 use App\Repository\ProduitRepository;
+use Doctrine\ORM\Query\Expr\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,6 +31,29 @@ class ProduitController extends AbstractController
 
         return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
     }
+
+
+    #[Route('/api/produitsRandom', name: 'getAllProduitRandom', methods: ['GET'])]
+    public function getAllProduitRandom(ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $query = $produitRepository->createQueryBuilder('p')
+        ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
+        ->join('p.id_categorie', 'c');
+
+    $produits = $query->getQuery()->getResult();
+
+    // Shuffle the array of products to randomize the order
+    shuffle($produits);
+
+    // Take the first 6 elements from the shuffled array to get random products
+    $randomProduits = array_slice($produits, 0, 6);
+
+    $jsonProduits = $serializer->serialize($randomProduits, 'json', [AbstractNormalizer::GROUPS => 'product']);
+
+    return new JsonResponse($jsonProduits, Response::HTTP_OK, [], true);
+    }
+    
+
 
     #[Route('/api/produits/{id}', name: 'getOneProduit', methods: ['GET'])]
     public function getOneProduit(Produit $produit): JsonResponse

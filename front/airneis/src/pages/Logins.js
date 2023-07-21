@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = async (event) => {
+  /*const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const loginData = {
@@ -41,6 +41,44 @@ const Login = () => {
       setErrorMessage("Erreur : Impossible de se connecter");
     }
   };
+*/
+
+const handleLogin = async (event) => {
+  event.preventDefault();
+  try {
+    const loginData = {
+      email: email,
+      password: password,
+    };
+
+    const result = await axios.post('http://127.0.0.1:8000/api/utilisateur/login', loginData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (result.status === 200) {
+      const token = result.data.token;
+      const id_utilisateur = result.data.id_utilisateur; // Retrieve id_utilisateur from the response
+      console.log('token', token);
+      console.log('id_utilisateur', id_utilisateur);
+
+      // Stocker le token et id_utilisateur dans le local storage
+      localStorage.setItem('token', token);
+      localStorage.setItem('id_utilisateur', id_utilisateur);
+
+      // Rediriger vers la page des paramètres (ou une autre page de votre choix)
+      navigate('/profile');
+    } else {
+      // Handle other status codes, if needed
+      setErrorMessage("Erreur : Mot de passe ou identifiant incorrect");
+    }
+  } catch (error) {
+    // Handle network errors or unexpected errors
+    setErrorMessage("Erreur : Impossible de se connecter");
+  }
+};
+
 
   return (
     <form onSubmit={handleLogin}>
