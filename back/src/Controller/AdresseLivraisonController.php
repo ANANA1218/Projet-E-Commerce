@@ -182,6 +182,57 @@ class AdresseLivraisonController extends AbstractController
     }
     
 
+    #[Route('/api/adresses_livraison/{id}', name: 'editAdresseLivraison', methods: ['PUT'])]
+    public function editAdresseLivraison(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UtilisateurRepository $userRepository
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+    
+        // Get the token from the request headers
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+    
+        if (!$token) {
+            return new JsonResponse('Token non fourni', Response::HTTP_BAD_REQUEST);
+        }
+    
+        // Fetch the user associated with the token
+        $user = $userRepository->findOneBy(['token' => $token]);
+    
+        if (!$user) {
+            return new JsonResponse('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+        }
+    
+        // Find the existing delivery address by ID
+        $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($id);
+    
+        if (!$adresseLivraison) {
+            return new JsonResponse('Adresse de livraison non trouvée', Response::HTTP_NOT_FOUND);
+        }
+    
+        // Check if the delivery address belongs to the user
+       /* if ($adresseLivraison->getCarnetAdresse() !== $user) {
+            return new JsonResponse('Adresse de livraison non autorisée', Response::HTTP_FORBIDDEN);
+        }*/
+    
+        // Update the delivery address with the new data
+        $adresseLivraison->setRue($data['rue']);
+        $adresseLivraison->setComplementAdresse($data['complement_adresse']);
+        $adresseLivraison->setRegion($data['region']);
+        $adresseLivraison->setVille($data['ville']);
+        $adresseLivraison->setCodePostal($data['code_postal']);
+        $adresseLivraison->setPays($data['pays']);
+        // $adresseLivraison->setCarnetAdresse($data['carnet_adresse']); // Not updating this field, as it's already associated with the user
+    
+        $entityManager->flush();
+    
+        return new JsonResponse(['message' => 'Adresse de livraison mise à jour avec succès'], Response::HTTP_OK);
+    }
+
+
+
 
 
     #[Route('/api/adresses_livraison/{id}', name: 'deleteAdresseLivraison', methods: ['DELETE'])]
