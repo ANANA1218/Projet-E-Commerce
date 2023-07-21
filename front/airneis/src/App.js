@@ -10,7 +10,6 @@ import AboutUs from "./pages/AboutUs";
 import MentionsLegales from "./pages/MentionsLegales";
 import ProductList from "./pages/ProductList";
 import ListCommande from "./pages/commande/ListCommande";
-
 import UserProfile from './pages/users/UserProfile';
 import Index from "./pages/backoffice/Index";
 import Products from "./pages/backoffice/Products";
