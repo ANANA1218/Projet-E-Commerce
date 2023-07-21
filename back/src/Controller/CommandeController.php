@@ -62,353 +62,156 @@ class CommandeController extends AbstractController
         return new JsonResponse($json, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
-  
- 
-    /*public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
-   
+
+    #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
+    public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
     {
         $data = json_decode($request->getContent(), true);
-    
-        if (!isset($data['id_utilisateur']) || !isset($data['produits'])) {
+
+        // Vérifie les données manquantes
+        if (!isset($data['produits']) || !isset($data['id_adresse_facturation']) || !isset($data['id_adresse_livraison'])) {
             return new Response('Données manquantes', 400);
         }
-    
+
+
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+
+        if (!$token) {
+            return new Response('Token non fourni', 400);
+        }
+
+        $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
+
+        if (!$user) {
+            return new Response('Utilisateur non trouvé', 404);
+        }
+
+
         $commande = new Commande();
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-        $commande->setIdUtilisateur($utilisateur);
+        $commande->setIdUtilisateur($user);
+
+
+        $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($data['id_adresse_facturation']);
+        $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($data['id_adresse_livraison']);
+
+
+        $commande->setIdAdresseFacturation($adresseFacturation);
+        $commande->setIdAdresseLivraison($adresseLivraison);
         $commande->setDateCommande(new \DateTime());
-       // $commande->setStatut('En attente');
         $commande->setPrixTotal(0);
-    
+
         $entityManager->persist($commande);
-    
-        $prixTotal = 0; 
-    
+
+        $prixTotal = 0;
+
         foreach ($data['produits'] as $produitData) {
             if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
                 return new Response('Données de produit manquantes', 400);
             }
-    
+
             $assoCommandeProduit = new AssoCommandeProduit();
             $assoCommandeProduit->setIdCommande($commande);
             $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
             $assoCommandeProduit->setIdProduit($produit);
             $assoCommandeProduit->setQuantite($produitData['quantite']);
-    
+
             $entityManager->persist($assoCommandeProduit);
-    
+
             $produit->setStock($produit->getStock() - $produitData['quantite']);
-    
-           
+
             $prixPartiel = $produit->getPrix() * $produitData['quantite'];
-            $prixTotal += $prixPartiel; 
+            $prixTotal += $prixPartiel;
         }
-    
-        $commande->setPrixTotal($prixTotal); 
-    
+
+        $commande->setPrixTotal($prixTotal);
+
         $entityManager->flush();
-    
+
         return new Response('Commande ajoutée avec succès', 200);
     }
 
+    #[Route('/api/commande', name: 'getAllCommandes', methods: ['GET'])]
 
- #[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
-public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $data = json_decode($request->getContent(), true);
+    public function getCommande(CommandeRepository $commandeRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $query = $commandeRepository->createQueryBuilder('c')
+            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction')
+            ->leftJoin('c.id_reduction', 'reduc')
+            ->join('c.id_utilisateur', 'u');
 
-    if (!isset($data['id_utilisateur']) || !isset($data['produits']) || !isset($data['id_adresse_facturation']) || !isset($data['id_adresse_livraison'])) {
-        return new Response('Données manquantes', 400);
+        $commandes = $query->getQuery()->getResult();
+
+        $jsonCommande = $serializer->serialize($commandes, 'json');
+
+        return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
     }
 
-    $commande = new Commande();
-    $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-    $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($data['id_adresse_facturation']);
-    $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($data['id_adresse_livraison']);
-    $commande->setIdUtilisateur($utilisateur);
-    $commande->setIdAdresseFacturation($adresseFacturation);
-    $commande->setIdAdresseLivraison($adresseLivraison);
-    $commande->setDateCommande(new \DateTime());
-    $commande->setPrixTotal(0);
 
-    $entityManager->persist($commande);
 
-    $prixTotal = 0;
+    #[Route('/api/commandes', name: 'getCommandes', methods: ['GET'])]
+    public function getCommandes(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
+    {
 
-    foreach ($data['produits'] as $produitData) {
-        if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
-            return new Response('Données de produit manquantes', 400);
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
+
+        if (!$token) {
+            return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
         }
 
-        $assoCommandeProduit = new AssoCommandeProduit();
-        $assoCommandeProduit->setIdCommande($commande);
-        $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
-        $assoCommandeProduit->setIdProduit($produit);
-        $assoCommandeProduit->setQuantite($produitData['quantite']);
+        $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
 
-        $entityManager->persist($assoCommandeProduit);
-
-        $produit->setStock($produit->getStock() - $produitData['quantite']);
-
-        $prixPartiel = $produit->getPrix() * $produitData['quantite'];
-        $prixTotal += $prixPartiel;
-    }
-
-    $commande->setPrixTotal($prixTotal);
-
-    $entityManager->flush();
-
-    return new Response('Commande ajoutée avec succès', 200);
-}
-*/
-
-/*
-#[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
-public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $data = json_decode($request->getContent(), true);
-
-    // Vérifie les données manquantes
-    if (!isset($data['id_utilisateur']) || !isset($data['produits']) || !isset($data['id_adresse_facturation']) || !isset($data['id_adresse_livraison'])) {
-        return new Response('Données manquantes', 400);
-    }
-
-    // Initialise les valeurs par défaut
-   // $status = isset($data['status']) ? $data['status'] : 1;
-    //$reduction = isset($data['reduction']) ? $data['reduction'] : 1;
-    //$modePaiement = isset($data['mode_paiement']) ? $data['mode_paiement'] : 1;
-
-    $commande = new Commande();
-    $utilisateur = $entityManager->getRepository(Utilisateur::class)->find($data['id_utilisateur']);
-    $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($data['id_adresse_facturation']);
-    $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($data['id_adresse_livraison']);
-
-    $commande->setIdUtilisateur($utilisateur);
-    $commande->setIdAdresseFacturation($adresseFacturation);
-    $commande->setIdAdresseLivraison($adresseLivraison);
-    $commande->setDateCommande(new \DateTime());
-    $commande->setPrixTotal(0);
-   // $commande->setStatut($status); // Nouveau champ status
-    //$commande->setIdReduction($reduction); // Nouveau champ reduction
-   // $commande->setIdModePaiement($modePaiement); // Nouveau champ mode de paiement
-
-    $entityManager->persist($commande);
-
-    $prixTotal = 0;
-
-    foreach ($data['produits'] as $produitData) {
-        if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
-            return new Response('Données de produit manquantes', 400);
+        if (!$user) {
+            return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
         }
 
-        $assoCommandeProduit = new AssoCommandeProduit();
-        $assoCommandeProduit->setIdCommande($commande);
-        $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
-        $assoCommandeProduit->setIdProduit($produit);
-        $assoCommandeProduit->setQuantite($produitData['quantite']);
 
-        $entityManager->persist($assoCommandeProduit);
+        $query = $commandeRepository->createQueryBuilder('c')
+            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction')
+            ->leftJoin('c.id_reduction', 'reduc')
+            ->join('c.id_utilisateur', 'u')
+            ->where('u = :user')
+            ->setParameter('user', $user);
 
-        $produit->setStock($produit->getStock() - $produitData['quantite']);
-
-        $prixPartiel = $produit->getPrix() * $produitData['quantite'];
-        $prixTotal += $prixPartiel;
-    }
-
-    $commande->setPrixTotal($prixTotal);
-
-    $entityManager->flush();
-
-    return new Response('Commande ajoutée avec succès', 200);
-}
+        $commandes = $query->getQuery()->getResult();
 
 
-*/
+        $jsonCommande = $serializer->serialize($commandes, 'json');
 
-#[Route('/api/commande', name: 'createCommande', methods: ['POST'])]
-public function createCommande(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $data = json_decode($request->getContent(), true);
-
-    // Vérifie les données manquantes
-    if (!isset($data['produits']) || !isset($data['id_adresse_facturation']) || !isset($data['id_adresse_livraison'])) {
-        return new Response('Données manquantes', 400);
-    }
-
-  
-    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
-
-    if (!$token) {
-        return new Response('Token non fourni', 400);
-    }
-
-    $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
-
-    if (!$user) {
-        return new Response('Utilisateur non trouvé', 404);
+        return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
     }
 
    
-    $commande = new Commande();
-    $commande->setIdUtilisateur($user);
 
+    #[Route('/api/commande-details', name: 'getCommandeDetails', methods: ['GET'])]
+    public function getCommandeDetails(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
+    {
    
-    $adresseFacturation = $entityManager->getRepository(AdresseFacturation::class)->find($data['id_adresse_facturation']);
-    $adresseLivraison = $entityManager->getRepository(AdresseLivraison::class)->find($data['id_adresse_livraison']);
+        $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
 
-   
-    $commande->setIdAdresseFacturation($adresseFacturation);
-    $commande->setIdAdresseLivraison($adresseLivraison);
-    $commande->setDateCommande(new \DateTime());
-    $commande->setPrixTotal(0);
-
-    $entityManager->persist($commande);
-
-    $prixTotal = 0;
-
-    foreach ($data['produits'] as $produitData) {
-        if (!isset($produitData['id_produit']) || !isset($produitData['quantite'])) {
-            return new Response('Données de produit manquantes', 400);
+        if (!$token) {
+            return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
         }
 
-        $assoCommandeProduit = new AssoCommandeProduit();
-        $assoCommandeProduit->setIdCommande($commande);
-        $produit = $entityManager->getRepository(Produit::class)->find($produitData['id_produit']);
-        $assoCommandeProduit->setIdProduit($produit);
-        $assoCommandeProduit->setQuantite($produitData['quantite']);
+        $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
 
-        $entityManager->persist($assoCommandeProduit);
+        if (!$user) {
+            return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
+        }
 
-        $produit->setStock($produit->getStock() - $produitData['quantite']);
+        
+        $query = $commandeRepository->createQueryBuilder('c')
+            ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction', 'acp.quantite', 'p.id_produit', 'p.nom_produit', 'p.description', 'p.prix')
+            ->leftJoin('c.id_reduction', 'reduc')
+            ->join('c.id_utilisateur', 'u')
+            ->leftJoin('App\Entity\AssoCommandeProduit', 'acp', 'WITH', 'c.id_commande = acp.id_commande')
+            ->leftJoin('acp.id_produit', 'p')
+            ->where('u = :user')
+            ->setParameter('user', $user);
 
-        $prixPartiel = $produit->getPrix() * $produitData['quantite'];
-        $prixTotal += $prixPartiel;
+        $commandeDetails = $query->getQuery()->getResult();
+
+        $jsonCommandeDetails = $serializer->serialize($commandeDetails, 'json');
+
+        return new JsonResponse($jsonCommandeDetails, Response::HTTP_OK, [], true);
     }
-
-    $commande->setPrixTotal($prixTotal);
-
-    $entityManager->flush();
-
-    return new Response('Commande ajoutée avec succès', 200);
-}
-
-#[Route('/api/commande', name: 'getAllCommandes', methods: ['GET'])]
-
-public function getCommande(CommandeRepository $commandeRepository, SerializerInterface $serializer): JsonResponse
-{
-    $query = $commandeRepository->createQueryBuilder('c')
-        ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction')
-        ->leftJoin('c.id_reduction', 'reduc')
-        ->join('c.id_utilisateur', 'u');
-
-    $commandes = $query->getQuery()->getResult();
-
-    $jsonCommande = $serializer->serialize($commandes, 'json');
-
-    return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
-}
-
-
-
-#[Route('/api/commandes', name: 'getCommandes', methods: ['GET'])]
-public function getCommandes(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
-{
-    // Retrieve the authenticated user based on the token passed in the request header
-    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
-
-    if (!$token) {
-        return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
-    }
-
-    $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
-
-    if (!$user) {
-        return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Retrieve the commands associated with the authenticated user
-    $query = $commandeRepository->createQueryBuilder('c')
-        ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction')
-        ->leftJoin('c.id_reduction', 'reduc')
-        ->join('c.id_utilisateur', 'u')
-        ->where('u = :user')
-        ->setParameter('user', $user);
-
-    $commandes = $query->getQuery()->getResult();
-
-    // Serialize the command data to JSON
-    $jsonCommande = $serializer->serialize($commandes, 'json');
-
-    return new JsonResponse($jsonCommande, Response::HTTP_OK, [], true);
-}
-
-/*
-#[Route('/api/commande-details', name: 'getCommandeDetails', methods: ['GET'])]
-public function getCommandeDetails(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
-{
-    // Retrieve the authenticated user based on the token passed in the request header
-    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
-
-    if (!$token) {
-        return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
-    }
-
-    $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
-
-    if (!$user) {
-        return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Retrieve the commands and associated elements for the authenticated user
-    $query = $commandeRepository->createQueryBuilder('c')
-        ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction', 'acp.quantite', 'p.id_produit')
-        ->leftJoin('c.id_reduction', 'reduc')
-        ->join('c.id_utilisateur', 'u')
-        ->leftJoin('App\Entity\AssoCommandeProduit', 'acp', 'WITH', 'c.id_commande = acp.id_commande')
-        ->leftJoin('acp.id_produit', 'p')
-        ->where('u = :user')
-        ->setParameter('user', $user);
-
-    $commandeDetails = $query->getQuery()->getResult();
-
-    // Serialize the command details data to JSON
-    $jsonCommandeDetails = $serializer->serialize($commandeDetails, 'json');
-
-    return new JsonResponse($jsonCommandeDetails, Response::HTTP_OK, [], true);
-}*/
-
-#[Route('/api/commande-details', name: 'getCommandeDetails', methods: ['GET'])]
-public function getCommandeDetails(CommandeRepository $commandeRepository, SerializerInterface $serializer, Request $request): JsonResponse
-{
-    // Retrieve the authenticated user based on the token passed in the request header
-    $token = str_replace('Bearer ', '', $request->headers->get('Authorization'));
-
-    if (!$token) {
-        return new JsonResponse(['message' => 'Token non fourni'], Response::HTTP_BAD_REQUEST);
-    }
-
-    $user = $this->utilisateurRepository->findOneBy(['token' => $token]);
-
-    if (!$user) {
-        return new JsonResponse(['message' => 'Utilisateur non trouvé'], Response::HTTP_NOT_FOUND);
-    }
-
-    // Retrieve the commands and associated elements for the authenticated user
-    $query = $commandeRepository->createQueryBuilder('c')
-        ->select('c.id_commande', 'u.id_utilisateur', 'c.date_commande', 'c.prix_total', 'reduc.id_reduction', 'acp.quantite', 'p.id_produit', 'p.nom_produit','p.description', 'p.prix')
-        ->leftJoin('c.id_reduction', 'reduc')
-        ->join('c.id_utilisateur', 'u')
-        ->leftJoin('App\Entity\AssoCommandeProduit', 'acp', 'WITH', 'c.id_commande = acp.id_commande')
-        ->leftJoin('acp.id_produit', 'p')
-        ->where('u = :user')
-        ->setParameter('user', $user);
-
-    $commandeDetails = $query->getQuery()->getResult();
-
-    // Serialize the command details data to JSON
-    $jsonCommandeDetails = $serializer->serialize($commandeDetails, 'json');
-
-    return new JsonResponse($jsonCommandeDetails, Response::HTTP_OK, [], true);
-}
-
 }
