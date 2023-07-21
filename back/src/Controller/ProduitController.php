@@ -22,7 +22,7 @@ class ProduitController extends AbstractController
     public function getAllProduit(ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
     {
         $query = $produitRepository->createQueryBuilder('p')
-            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout','p.image')
+            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
             ->join('p.id_categorie', 'c');
 
         $produits = $query->getQuery()->getResult();
@@ -37,7 +37,7 @@ class ProduitController extends AbstractController
     public function getAllProduitRandom(ProduitRepository $produitRepository, SerializerInterface $serializer): JsonResponse
     {
         $query = $produitRepository->createQueryBuilder('p')
-            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout','p.image')
+            ->select('p.id_produit', 'c.nom_categorie', 'p.nom_produit', 'p.description', 'p.stock', 'p.prix', 'p.date_ajout')
             ->join('p.id_categorie', 'c');
 
         $produits = $query->getQuery()->getResult();

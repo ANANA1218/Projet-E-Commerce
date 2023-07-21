@@ -65,11 +65,7 @@ const iconPath =
                       All Products
                     </Link>
                   </li>
-                  <li className="breadcrumb-item">
-                    <a className="text-decoration-none link-secondary" href="!#">
-                      Cases &amp; Covers
-                    </a>
-                  </li>
+                  
                   <li className="breadcrumb-item active" aria-current="page">
                     {product.nom_produit}
                   </li>
@@ -77,46 +73,14 @@ const iconPath =
               </nav>
             )}
             <div className="row mb-4">
-              <div className="d-none d-lg-block col-lg-1">
-                <div className="image-vertical-scroller">
-                  <div className="d-flex flex-column">
-                    {/* a changer images */}
-                    {Array.from({ length: 10 }, (_, i) => {
-                      let selected = i !== 1 ? "opacity-6" : "";
-                      return (
-                        <a key={i} href="!#">
-                          <img className={"rounded mb-2 ratio " + selected} alt="" src={Image} />
-                        </a>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+             
               <div className="col-lg-6">
                 <div className="row">
                   <div className="col-12 mb-4">
                     <img className="border rounded ratio ratio-1x1" alt="" src={Image} />
                   </div>
                 </div>
-                {/* <div className="row mt-2">
-                  <div className="col-12">
-                    <div className="d-flex flex-nowrap" style={{ overflowX: "scroll" }}>
-                      {Array.from({ length: 8 }, (_, i) => {
-                        return (
-                          <a key={i} href="!#">
-                            <img
-                              className="cover rounded mb-2 me-2"
-                              width="70"
-                              height="70"
-                              alt=""
-                              src={Image}
-                            />
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div> */}
+               
               </div>
               <div className="col-lg-5">
                 <div className="d-flex flex-column h-100">
@@ -172,17 +136,7 @@ const iconPath =
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-12 mb-4">
-                <hr />
-                <h4 className="text-muted my-4">Related products</h4>
-                <div className="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-3">
-                  {Array.from({ length: 4 }, (_, i) => {
-                    return <RelatedProduct key={i} percentOff={i % 2 === 0 ? 15 : null} />;
-                  })}
-                </div>
-              </div>
-            </div>
+           
           </div>
         );
       }
