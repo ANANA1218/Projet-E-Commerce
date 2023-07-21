@@ -22,7 +22,6 @@ const logo = {
   height: 64,
 };
 
-console.log(Styles)
 
 
 export default function HomeScreen() {
@@ -44,7 +43,7 @@ export default function HomeScreen() {
     //   });
 
 
-        axios({method:"get", url:"https://projet-e-commerce-temp-default-rtdb.europe-west1.firebasedatabase.app/Produit.json"})
+        axios({method:"get", url:"https://airneis-api-default-rtdb.europe-west1.firebasedatabase.app//Produit.json"})
         .then(({data}) => {
           const resultat = []
           for(const key in data) {
@@ -54,7 +53,7 @@ export default function HomeScreen() {
       }
         )
         .catch((err) => {
-          console.log(err);
+          console.log(err.message);
         });
   }, []);
 

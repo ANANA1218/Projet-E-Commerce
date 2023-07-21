@@ -20,7 +20,7 @@ const Styles = StyleSheet.create({
     buttonContainer : {
       marginTop:40,
       width:'70%',
-      marginBottom:50,
+      paddingBottom:50,
     },
 
     image: {
@@ -62,15 +62,25 @@ const Styles = StyleSheet.create({
     },
 
     button : {
-      backgroundColor:"white",
+      backgroundColor:"black",
       borderWidth:0.5,
       borderRadius:6,
       padding:10,
+      marginTop: 5,
     },
 
     buttonText : {
       textAlign:'center',
-      fontSize:15
+      fontSize:15,
+      color : 'white',
+    },
+
+    buttonOutLine : {
+      backgroundColor : 'white',
+    },
+
+    buttonOutLineText : {
+      color : 'black',
     },
 
     titleCategory: {
