@@ -19,7 +19,7 @@ const Products = () => {
 
     useEffect(() => {
         axios
-            .get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits`)
+            .get(`http://127.0.0.1:8000/api/produits`)
             .then((res) => {
                 setProducts(res.data);
             })
@@ -28,7 +28,7 @@ const Products = () => {
             });
 
         axios
-            .get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories`)
+            .get(`$http://127.0.0.1:8000/api/categories`)
             .then((res) => {
                 setCategories(res.data);
             })
@@ -40,7 +40,7 @@ const Products = () => {
 
     const handleIndividualDelete = (id) => {
         axios
-            .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/${id}`)
+            .delete(`http://127.0.0.1:8000/api/produits/${id}`)
             .then(() => {
                 setProducts((prevProducts) => prevProducts.filter((product) => product.id_produit !== id));
                 setSuccessMessage('Produit supprimé avec succès !');
@@ -64,7 +64,7 @@ const Products = () => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ces produits ?')) {
 
             axios
-                .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/multiple`, {
+                .delete(`http://127.0.0.1:8000/api/produits/multiple`, {
                     data: { ids: selectedProductIds },
                 })
                 .then(() => {
@@ -124,7 +124,7 @@ const Products = () => {
         const selectedProductIds = checkedRows;
         if (window.confirm('Êtes-vous sûr de vouloir modifier ces produits ?')) {
             axios
-                .put(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits`, {
+                .put(`http://127.0.0.1:8000/api/produits`, {
                     ids: selectedProductIds,
                     categorie: selectedCategoryId !== '' ? parseInt(selectedCategoryId) : null,
                     prix: newPrice ?? undefined,

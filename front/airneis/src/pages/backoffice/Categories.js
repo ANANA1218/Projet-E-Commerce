@@ -12,7 +12,7 @@ function Categories() {
     const [checkedRows, setCheckedRows] = useState([]);
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories`).then(res => {
+        axios.get(`http://127.0.0.1:8000/api/categories`).then(res => {
             setCategories(res.data);
         });
     }, []);
@@ -23,7 +23,7 @@ function Categories() {
             setErrorMessage('');
 
             axios
-                .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories/${id}`)
+                .delete(`http://127.0.0.1:8000/api/categories/${id}`)
                 .then(() => {
                     setCategories((prevCategories) => prevCategories.filter((category) => category.id_categorie !== id));
                     setSuccessMessage('Supprimé avec succès !');
@@ -48,7 +48,7 @@ function Categories() {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ces catégories ?')) {
 
             axios
-                .delete(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories/multiple/${selectedProductIds}`)
+                .delete(`http://127.0.0.1:8000/api/categories/multiple/${selectedProductIds}`)
                 .then(() => {
                     setCategories((prevCategories) => prevCategories.filter((category) => !checkedRows.includes(category.id_categorie)));
                     setSuccessMessage('Catégories supprimés avec succès !');

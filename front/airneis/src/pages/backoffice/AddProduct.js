@@ -20,7 +20,7 @@ function AddProduct() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories`);
+                const response = await axios.get(`http://127.0.0.1:8000/api/categories`);
                 setCategories(response.data);
             } catch (error) {
                 console.log('Error fetching categories');
@@ -71,7 +71,7 @@ function AddProduct() {
         };
 
         axios
-            .post(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits`, newProduct)
+            .post(`http://127.0.0.1:8000/api/produits`, newProduct)
             .then(() => {
                 setSuccessMessage('Produit ajouté avec succès');
                 setErrorMessage('');

@@ -13,7 +13,7 @@ function DetailCategory() {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories/${id}`).then(res => {
+        axios.get(`http://127.0.0.1:8000/api/categories/${id}`).then(res => {
             setCategory(res.data);
             setUpdatedCategory(res.data);
         });
@@ -28,7 +28,7 @@ function DetailCategory() {
     };
 
     const handleUpdate = () => {
-        axios.put(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories/${id}`, updatedCategory)
+        axios.put(`http://127.0.0.1:8000/api/categories/${id}`, updatedCategory)
             .then(() => {
                 setSuccessMessage('Catégorie modifiée avec succès');
                 setErrorMessage('');

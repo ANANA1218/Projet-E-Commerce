@@ -19,50 +19,25 @@ function Sidebar() {
             </div>
 
             <li className="nav-item">
-                <a className="nav-link collapsed" href="/backoffice/products" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+                <a className="nav-link" href="/backoffice/products">
                     <i className="fas fa-fw fa-cog"></i>
                     <span>Produits</span>
                 </a>
-                <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div className="bg-white py-2 collapse-inner rounded">
-                        <h6 className="collapse-header">Custom Components:</h6>
-                        <a className="collapse-item" href="buttons.html">Buttons</a>
-                        <a className="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
             </li>
 
             <li className="nav-item">
-                <a className="nav-link collapsed" href="/backoffice/categories" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+                <a className="nav-link" href="/backoffice/categories">
                     <i className="fas fa-fw fa-cog"></i>
                     <span>Catégories</span>
                 </a>
-                <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div className="bg-white py-2 collapse-inner rounded">
-                        <h6 className="collapse-header">Custom Components:</h6>
-                        <a className="collapse-item" href="buttons.html">Buttons</a>
-                        <a className="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
             </li>
 
             <li className="nav-item">
-                <a className="nav-link collapsed" href="/backoffice/messages" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
+                <a className="nav-link" href="/backoffice/messages">
                     <i className="fas fa-fw fa-cog"></i>
                     <span>Contact - Messages</span>
                 </a>
-                <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div className="bg-white py-2 collapse-inner rounded">
-                        <h6 className="collapse-header">Custom Components:</h6>
-                        <a className="collapse-item" href="buttons.html">Buttons</a>
-                        <a className="collapse-item" href="cards.html">Cards</a>
-                    </div>
-                </div>
             </li>
-
             <div className="sidebar-divider d-none d-md-block" style={{ borderTop: '1px solid rgba(255,255,255,.15)', margin: '10px 0' }}></div>
         </ul>
     );

@@ -10,7 +10,7 @@ function ListMessages() {
     const columns = ["id_contact", "id_utilisateur", "email", "texte"];
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/contact`).then(res => {
+        axios.get(`http://127.0.0.1:8000/api/contact`).then(res => {
             setMessages(res.data);
         });
     }, []);

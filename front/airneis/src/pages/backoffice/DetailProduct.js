@@ -18,8 +18,8 @@ function DetailProduct() {
         const fetchData = async () => {
             try {
                 const [productRes, categoriesRes] = await Promise.all([
-                    axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/${id}`),
-                    axios.get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories`)
+                    axios.get(`http://127.0.0.1:8000/api/produits/${id}`),
+                    axios.get(`http://127.0.0.1:8000/api/categories`)
                 ]);
                 setProduct(productRes.data);
                 setEditedProduct(productRes.data);
@@ -55,7 +55,7 @@ function DetailProduct() {
         };
 
         axios
-            .put(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/produits/${id}`, updatedProduct)
+            .put(`http://127.0.0.1:8000/api/produits/${id}`, updatedProduct)
             .then(() => {
                 setSuccessMessage('Produit modifié avec succès');
                 setErrorMessage('');

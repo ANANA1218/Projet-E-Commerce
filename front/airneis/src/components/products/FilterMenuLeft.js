@@ -18,7 +18,7 @@ function FilterMenuLeft({ handleFilter }) {
 
     useEffect(() => {
         axios
-            .get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/categories`)
+            .get(`http://127.0.0.1:8000/api/categories`)
             .then((res) => {
                 setCategories(res.data);
             })
@@ -26,7 +26,7 @@ function FilterMenuLeft({ handleFilter }) {
                 console.error('Error fetching categories:', error);
             });
         axios
-            .get(`${process.env.REACT_APP_PUBLIC_BACKEND_URL}/materiel`)
+            .get(`http://127.0.0.1:8000/api/materiel`)
             .then((res) => {
                 setMateriaux(res.data);
             })
